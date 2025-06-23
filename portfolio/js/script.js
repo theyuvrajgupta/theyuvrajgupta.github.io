@@ -44,3 +44,14 @@ document.querySelectorAll('.navbar a').forEach(a => {
     window.scrollTo({ top: tgt.offsetTop - 60, behavior: 'smooth' });
   });
 });
+
+// Animate progress bars with random widths every 2 seconds
+function updateProgressBars() {
+  const progressBars = document.querySelectorAll('.progress-bar');
+  progressBars.forEach(bar => {
+    const randomWidth = Math.floor(Math.random() * 80) + 20; // Between 20% and 100%
+    bar.style.width = randomWidth + '%';
+  });
+}
+
+setInterval(updateProgressBars, 3000);
