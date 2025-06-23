@@ -99,6 +99,7 @@ body {
   margin: 0 auto;
 }
 
+/* Base styling for each ring */
 .ring {
   position: absolute;
   width: 100%;
@@ -106,35 +107,41 @@ body {
   top: 0;
   left: 0;
   transform-style: preserve-3d;
-  /* All rings rotate infinitely; specific durations differentiate them */
-  animation: rotateRing linear infinite;
+  animation-timing-function: ease-in-out;
+  /* Continuous rotation but with a gentle pace */
+  animation: rotateRing 30s infinite;
 }
 
+/* Different durations for variation */
 .ring.outer {
+  animation-duration: 30s;
+}
+.ring.middle {
+  animation-duration: 25s;
+}
+.ring.inner {
   animation-duration: 20s;
 }
 
-.ring.middle {
-  animation-duration: 15s;
+/* Pause rotation on hover so text is easier to read */
+.rings-container:hover .ring {
+  animation-play-state: paused;
 }
 
-.ring.inner {
-  animation-duration: 10s;
-}
-
+/* Keyframes for rotation */
 @keyframes rotateRing {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
 
+/* Styling for individual ring items */
 .ring span.ring-item {
   position: absolute;
   left: 50%;
   top: 50%;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--fg);
   white-space: nowrap;
-  /* Add a subtle shadow or background for readability */
   text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
 }
 
