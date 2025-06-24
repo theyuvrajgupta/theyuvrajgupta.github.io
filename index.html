@@ -8,6 +8,8 @@
   <!-- GSAP for scroll-triggered animations -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+  <!-- D3 for force-directed network -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
 
@@ -82,68 +84,9 @@
     </div>
   </section>
 
-  <!-- EXPERTISE RINGS -->
-  <section id="expertise" style="padding: 4rem 0; text-align: center;">
-  <h2 style="margin-bottom: 2rem; color: #3498db;">My Expertise</h2>
-  <div class="rings-container">
-    <!-- Outer Ring: Domains -->
-    <div class="ring outer">
-      <div class="ring-item">
-        <span>HealthTech</span>
-        <div class="progress-bar"></div>
-      </div>
-      <div class="ring-item">
-        <span>Cloud Transformation</span>
-        <div class="progress-bar"></div>
-      </div>
-      <div class="ring-item">
-        <span>Machine Learning</span>
-        <div class="progress-bar"></div>
-      </div>
-      <div class="ring-item">
-        <span>AI Products</span>
-        <div class="progress-bar"></div>
-      </div>
-    </div>
-    <!-- Middle Ring: Core Strengths -->
-    <div class="ring middle">
-      <div class="ring-item">
-        <span>Product Thinking</span>
-        <div class="progress-bar"></div>
-      </div>
-      <div class="ring-item">
-        <span>Agile Leadership</span>
-        <div class="progress-bar"></div>
-      </div>
-      <div class="ring-item">
-        <span>Cloud Architecture</span>
-        <div class="progress-bar"></div>
-      </div>
-      <div class="ring-item">
-        <span>ML Engineering</span>
-        <div class="progress-bar"></div>
-      </div>
-    </div>
-    <!-- Inner Ring: Personal Traits -->
-    <div class="ring inner">
-      <div class="ring-item">
-        <span>Empathy</span>
-        <div class="progress-bar"></div>
-      </div>
-      <div class="ring-item">
-        <span>Grit</span>
-        <div class="progress-bar"></div>
-      </div>
-      <div class="ring-item">
-        <span>Curiosity</span>
-        <div class="progress-bar"></div>
-      </div>
-      <div class="ring-item">
-        <span>Storytelling</span>
-        <div class="progress-bar"></div>
-      </div>
-    </div>
-  </div>
+  <section id="network" class="network-container">
+  <h2>AI Innovator</h2>
+  <svg id="network-canvas" width="600" height="400"></svg>
 </section>
 
   <!-- VISION 2030 -->
