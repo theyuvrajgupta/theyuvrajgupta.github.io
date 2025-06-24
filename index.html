@@ -2,9 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Yuvraj Gupta | Health-Tech Leader & AI Innovator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yuvraj Gupta's Portfolio</title>
   <link rel="stylesheet" href="portfolio/css/style.css" />
+  <!-- Enable smooth scrolling -->
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
   <!-- GSAP for scroll-triggered animations -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
@@ -12,20 +18,36 @@
   <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-
+<!-- Header with Profile Picture, Intro & Resume Link -->
+  <header id="home">
+    <div class="header-content">
+      <div class="profile-pic">
+        <img src="images/headshot.jpg" alt="Yuvraj Gupta">
+      </div>
+      <div class="intro-text">
+        <h1>Yuvraj Gupta</h1>
+        <p>Health-Tech Leader &amp; AI Innovator</p>
+        <a class="btn resume-btn" href="resume.pdf" download>Download Resume</a>
+      </div>
+    </div>
+  </header>
   <!-- Custom Cursor -->
   <div id="cursor"></div>
 
-  <!-- NAVBAR -->
+ <!-- Sticky Navigation Bar -->
   <nav class="navbar">
-    <div class="logo">YG</div>
-    <ul>
-      <li><a href="#journey">Journey</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#vision">Vision 2030</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#projects">My Journey</a>
+    <a href="#expertise">Expertise</a>
+    <a href="#vision">Vision</a>
+    <a href="#contact">Contact</a>
   </nav>
+   <!-- About Section -->
+  <section id="about">
+    <h2>About Me</h2>
+    <p>Technical Lead | Product & AI Innovator in HealthTech</p>
+  </section>
 
   <!-- HERO -->
   <section class="hero">
@@ -40,11 +62,11 @@
     <div class="events">
       <div class="event" data-year="2015">
         <h3>Roots & Research</h3>
-        <p>Authored a paper on vehicular-emission monitoring; joined Siemens Healthineers in oncology inspired by my mother’s cancer journey.</p>
+        <p>Authored a paper on vehicular-emission monitoring; Joined Siemens Healthineers in oncology inspired by my mother’s cancer journey.</p>
       </div>
       <div class="event" data-year="2016">
         <h3>AI for PET-CT</h3>
-        <p>Led Siemens’s first AI tool for PET-CT imaging—90% tumor-detection accuracy, 30% revenue boost, showcased at RSNA.</p>
+        <p>Led Siemens’s first AI tool for PET-CT imaging—90% tumor-detection accuracy, 30% revenue boost, showcased at global healthcare events.</p>
       </div>
       <div class="event" data-year="2021">
         <h3>ML & Melanoma</h3>
@@ -64,26 +86,31 @@
   <!-- PROJECTS -->
   <section id="projects" class="section projects">
     <h2>Projects That Shaped Me</h2>
-    <div class="grid">
-      <div class="card">
+    <div class="projects-grid">
+      <div class="project-card">
         <h3>Melanoma Detector</h3>
+        <img src="portfolio/assets/images/melanoma-detector.jpg" alt="Melanoma Detector">
         <p>CNN in TensorFlow with custom augmentations to flag melanoma in patient images with high precision.</p>
       </div>
-      <div class="card">
+      <div class="project-card">
         <h3>PET-CT AI Classifier</h3>
+        <img src="portfolio/assets/images/ai.jpg" alt="PET-CT AI Classifier">
         <p>Intelligent suggestions for radiologists to distinguish benign vs malignant tumors—featured at global healthcare forums.</p>
       </div>
-      <div class="card">
+      <div class="project-card">
         <h3>Serverless QA Pipeline</h3>
+        <img src="portfolio/assets/images/lambda.jpg" alt="AWS Cloud Development">
         <p>AWS Lambda–driven automation slashed manual QA from hours to minutes, improving release velocity and quality.</p>
       </div>
-      <div class="card">
+      <div class="project-card">
         <h3>Agile Transformation & Mentorship</h3>
+        <img src="portfolio/assets/images/agile.jpg" alt="Agile Transformation & Mentorship">
         <p>As Scrum Master, reduced sprint cycles from 15 to 10 days and mentored freshers into productive team members.</p>
       </div>
     </div>
   </section>
 
+  <!-- Interactive neural network visualization -->
   <section id="network" class="network-container">
   <h2>AI Innovator</h2>
   <svg id="network-canvas" width="600" height="400"></svg>
