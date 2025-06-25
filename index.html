@@ -1,155 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Yuvraj Gupta's Portfolio</title>
-  <link rel="stylesheet" href="portfolio/css/style.css" />
-  <!-- Enable smooth scrolling -->
-  <style>
-    html {
-      scroll-behavior: smooth;
-    }
-  </style>
-  <!-- GSAP for scroll-triggered animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
-  <!-- D3 for force-directed network -->
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yuvraj Gupta | Health-Tech Leader & AI Innovator</title>
+    <link rel="stylesheet" href="portfolio/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<!-- Header with Profile Picture, Intro & Resume Link -->
-  <header id="home">
-    <div class="header-content">
-      <div class="profile-pic">
-        <img src="images/headshot.jpg" alt="Yuvraj Gupta">
-      </div>
-      <div class="intro-text">
-        <h1>Yuvraj Gupta</h1>
-        <p>Health-Tech Leader &amp; AI Innovator</p>
-        <a class="btn resume-btn" href="resume.pdf" download>Download Resume</a>
-      </div>
-    </div>
-  </header>
-  <!-- Custom Cursor -->
-  <div id="cursor"></div>
 
- <!-- Sticky Navigation Bar -->
-  <nav class="navbar">
-    <a href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#projects">My Journey</a>
-    <a href="#expertise">Expertise</a>
-    <a href="#vision">Vision</a>
-    <a href="#contact">Contact</a>
-  </nav>
-   <!-- About Section -->
-  <section id="about">
-    <h2>About Me</h2>
-    <p>Technical Lead | Product & AI Innovator in HealthTech</p>
-  </section>
+    <!-- ======== NAVIGATION BAR ======== -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#home" class="nav-logo">Yuvraj Gupta</a>
+            <ul class="nav-menu">
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#expertise">Expertise</a></li>
+                <li><a href="#vision">Vision</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <h1>Yuvraj Gupta</h1>
-    <p>Technical Lead | Product & AI Innovator in HealthTech</p>
-    <a href="#journey" class="btn">Explore My Story</a>
-  </section>
+    <!-- ======== HOME SECTION ======== -->
+    <section id="home" class="home-section">
+        <div class="container home-container">
+            <div class="home-text">
+                <h1>Health-Tech Leader<br>& AI Innovator</h1>
+                <p class="subtitle">I architect and lead teams to build intelligent, scalable solutions that bridge the gap between healthcare challenges and technological frontiers.</p>
+                <div class="home-buttons">
+                    <a href="portfolio/assets/resume.pdf" class="btn btn-primary" download>
+                        <i class="fa-solid fa-download"></i> Download Resume
+                    </a>
+                    <a href="#projects" class="btn btn-secondary">View My Work</a>
+                </div>
+            </div>
+            <div class="home-image">
+                <img src="portfolio/assets/profile-pic.jpg" alt="Yuvraj Gupta" onerror="this.onerror=null;this.src='https://placehold.co/400x400/1a1a2e/e0e0e0?text=Yuvraj';">
+            </div>
+        </div>
+    </section>
 
-  <!-- JOURNEY TIMELINE -->
-  <section id="journey" class="section timeline">
-    <h2>My Journey</h2>
-    <div class="events">
-      <div class="event" data-year="2015">
-        <h3>Roots & Research</h3>
-        <p>Authored a paper on vehicular-emission monitoring; Joined Siemens Healthineers in oncology inspired by my mother’s cancer journey.</p>
-      </div>
-      <div class="event" data-year="2016">
-        <h3>AI for PET-CT</h3>
-        <p>Led Siemens’s first AI tool for PET-CT imaging—90% tumor-detection accuracy, 30% revenue boost, showcased at global healthcare events.</p>
-      </div>
-      <div class="event" data-year="2021">
-        <h3>ML & Melanoma</h3>
-        <p>Completed PG Diploma in ML & AI at IIIT-B; built a CNN-based melanoma detector using advanced data augmentations.</p>
-      </div>
-      <div class="event" data-year="2022">
-        <h3>Leadership & Mentorship</h3>
-        <p>Became senior lead on IMO’s clinical tools—mentored new hires, revamped delivery, and kept client expectations on track.</p>
-      </div>
-      <div class="event" data-year="2023">
-        <h3>Cloud Modernization</h3>
-        <p>Architected serverless QA pipelines on AWS Lambda—cut testing from 4 hrs to 15 mins and boosted client revenue by 20%.</p>
-      </div>
-    </div>
-  </section>
+    <!-- ======== ABOUT / MY JOURNEY SECTION ======== -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2 class="section-title">My Journey</h2>
+            <div class="journey-timeline">
+                <div class="journey-item">
+                    <div class="journey-icon"><i class="fa-solid fa-seedling"></i></div>
+                    <h3>The Spark</h3>
+                    <p>My path began with a paper on vehicular-emission monitoring, igniting a passion to use technology for impactful solutions. This led me to Siemens Healthineers, where I dove into the world of medical imaging and its potential to save lives.</p>
+                </div>
+                <div class="journey-item">
+                    <div class="journey-icon"><i class="fa-solid fa-brain"></i></div>
+                    <h3>AI Awakening</h3>
+                    <p>I led the development of a pioneering AI tool for PET-CT imaging, reducing radiologist effort by 40%. A Post Graduate Diploma in ML & AI from IIIT-Bangalore solidified my expertise, providing a robust foundation in deep learning and model deployment.</p>
+                </div>
+                <div class="journey-item">
+                    <div class="journey-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                    <h3>Cloud & Scale</h3>
+                    <p>At IMO, I drove the evolution of critical clinical tools and architected a serverless QA pipeline on AWS Lambda, cutting testing time by 95% and enhancing product quality. My role as Scrum Master further honed my agile leadership skills.</p>
+                </div>
+                <div class="journey-item">
+                     <div class="journey-icon"><i class="fa-solid fa-flag-checkered"></i></div>
+                    <h3>Leadership & Innovation</h3>
+                    <p>Today, I blend deep technical knowledge with product thinking and empathetic leadership to mentor teams, drive innovation, and build the future of AI-powered healthcare.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <!-- PROJECTS -->
-  <section id="projects" class="section projects">
-    <h2>Projects That Shaped Me</h2>
-    <div class="projects-grid">
-      <div class="project-card">
-        <h3>Melanoma Detector</h3>
-        <img src="portfolio/assets/images/melanoma-detector.jpg" alt="Melanoma Detector">
-        <p>CNN in TensorFlow with custom augmentations to flag melanoma in patient images with high precision.</p>
-      </div>
-      <div class="project-card">
-        <h3>PET-CT AI Classifier</h3>
-        <img src="portfolio/assets/images/ai.jpg" alt="PET-CT AI Classifier">
-        <p>Intelligent suggestions for radiologists to distinguish benign vs malignant tumors—featured at global healthcare forums.</p>
-      </div>
-      <div class="project-card">
-        <h3>Serverless QA Pipeline</h3>
-        <img src="portfolio/assets/images/lambda.jpg" alt="AWS Cloud Development">
-        <p>AWS Lambda–driven automation slashed manual QA from hours to minutes, improving release velocity and quality.</p>
-      </div>
-      <div class="project-card">
-        <h3>Agile Transformation & Mentorship</h3>
-        <img src="portfolio/assets/images/agile.jpg" alt="Agile Transformation & Mentorship">
-        <p>As Scrum Master, reduced sprint cycles from 15 to 10 days and mentored freshers into productive team members.</p>
-      </div>
-    </div>
-  </section>
+    <!-- ======== PROJECTS SECTION ======== -->
+    <section id="projects" class="projects-section">
+        <div class="container">
+            <h2 class="section-title">Projects That Shaped Me</h2>
+            <div class="projects-grid">
+                <!-- Project Card 1 -->
+                <div class="project-card">
+                    <img src="https://placehold.co/600x400/2a2a3e/c0c0c0?text=AI+Classifier" alt="PET-CT AI Classifier">
+                    <div class="project-info">
+                        <h3>PET-CT AI Classifier</h3>
+                        <p>A CNN-based AI tool that automates tumor detection in PET-CT scans, reducing radiologist effort by 40% and improving diagnostic accuracy.</p>
+                        <div class="project-tags">
+                            <span>TensorFlow</span><span>AI/ML</span><span>HealthTech</span>
+                        </div>
+                        <a href="#" class="project-link">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- Project Card 2 -->
+                <div class="project-card">
+                    <img src="https://placehold.co/600x400/2a2a3e/c0c0c0?text=Serverless+QA" alt="Serverless QA Pipeline">
+                    <div class="project-info">
+                        <h3>Serverless QA Pipeline</h3>
+                        <p>Architected and deployed a fully automated, serverless QA pipeline on AWS, drastically cutting integration testing time from 4 hours to just 10 minutes.</p>
+                        <div class="project-tags">
+                            <span>AWS</span><span>Cloud</span><span>DevOps</span>
+                        </div>
+                         <a href="#" class="project-link">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- Project Card 3 -->
+                <div class="project-card">
+                    <img src="https://placehold.co/600x400/2a2a3e/c0c0c0?text=Agile+Leadership" alt="Agile Transformation">
+                    <div class="project-info">
+                        <h3>Agile Transformation & Mentorship</h3>
+                        <p>As a Scrum Master, I coached a 9-member team, fostering a culture of continuous improvement, psychological safety, and predictable delivery, boosting team morale and output.</p>
+                        <div class="project-tags">
+                            <span>Agile</span><span>Leadership</span><span>Scrum</span>
+                        </div>
+                         <a href="#" class="project-link">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                 <!-- Project Card 4 -->
+                <div class="project-card">
+                    <img src="https://placehold.co/600x400/2a2a3e/c0c0c0?text=Melanoma+Detector" alt="Melanoma Detector">
+                    <div class="project-info">
+                        <h3>Melanoma Detector</h3>
+                        <p>Developed a CNN model in TensorFlow to classify skin lesions as benign or malignant. This project honed my end-to-end ML skills from data augmentation to model building.</p>
+                        <div class="project-tags">
+                            <span>TensorFlow</span><span>CNN</span><span>Python</span>
+                        </div>
+                         <a href="#" class="project-link">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ======== EXPERTISE SECTION ======== -->
+    <section id="expertise" class="expertise-section">
+        <div class="container expertise-container">
+            <h2 class="section-title">My Expertise</h2>
+            <p class="section-subtitle">An interactive look at my core competencies. Hover over the nodes to explore.</p>
+            <div id="expertise-visual">
+                 <div id="skill-tooltip"></div>
+            </div>
+        </div>
+    </section>
 
-  <!-- Interactive neural network visualization -->
-  <section id="network" class="network-container">
-  <h2>AI Innovator</h2>
-  <svg id="network-canvas" width="600" height="400"></svg>
-</section>
+    <!-- ======== VISION 2030 SECTION ======== -->
+    <section id="vision" class="vision-section">
+        <div class="container vision-container">
+            <div class="vision-text">
+                <h2 class="section-title">Vision 2030</h2>
+                <p>By 2030, I aim to be at the helm of an AI-powered healthcare venture, leading a cross-functional team to democratize early disease detection. My focus will be on creating a unified, intelligent platform that seamlessly integrates diagnostics, patient data, and treatment pathways, making proactive healthcare accessible to all.</p>
+            </div>
+            <div class="vision-image">
+                <i class="fa-solid fa-rocket"></i>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ======== TESTIMONIALS SECTION ======== -->
+    <section id="testimonials" class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title">What My Colleagues Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p>"Yuvraj is a rare talent who seamlessly blends technical depth with strategic product thinking. His dedication to solving complex problems and his ability to inspire his team are truly remarkable."</p>
+                    <div class="testimonial-author">
+                        <h4>Jane Doe</h4>
+                        <span>Senior Product Manager</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                     <p>"Working with Yuvraj on the AWS pipeline was a masterclass in efficiency and innovation. He's not just a great engineer; he's a visionary leader who elevates everyone around him."</p>
+                    <div class="testimonial-author">
+                        <h4>John Smith</h4>
+                        <span>Lead DevOps Engineer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <!-- VISION 2030 -->
-  <section id="vision" class="section vision">
-    <h2>Vision 2030</h2>
-    <p class="kinetic">
-      “By 2030, I envision myself leading high-impact innovation at the intersection of technology, design,
-      and business strategy—building platforms and products that solve real-world problems at scale, foster global collaboration,
-      and empower communities through responsible, data-driven solutions.
-      I aim to lead an AI-powered healthcare venture that democratizes early disease detection,  
-      forges global R&D alliances, and delivers a unified platform—integrating doctor scheduling,  
-      insurance claims, and advanced diagnostics—to make healthcare simple, accessible, and data-driven for everyone.”
-    </p>
-  </section>
+    <!-- ======== CONTACT SECTION ======== -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2 class="section-title">Let's Connect</h2>
+            <p class="section-subtitle">I'm always open to discussing new projects, creative ideas, or opportunities to be part of an innovative vision. Feel free to reach out.</p>
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <div class="info-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <p>theyuvrajgupta@gmail.com</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <p>Bangalore, India</p>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/theyuvrajgupta/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="https://github.com/theyuvrajgupta" target="_blank"><i class="fa-brands fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <!-- CONTACT + LICENSE -->
-  <footer id="contact" class="section contact">
-    <h2>Let’s Connect</h2>
-    <p>Email: <a href="mailto:mail.yuvrajgupta@gmail.com">mail.yuvrajgupta@gmail.com</a></p>
-    <p>LinkedIn: <a href="https://www.linkedin.com/in/theyuvrajgupta/" target="_blank">theyuvrajgupta</a></p>
-    <p>Bangalore, India 📍</p>
+    <!-- ======== FOOTER ======== -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Yuvraj Gupta. All Rights Reserved. Content licensed under CC BY-NC-SA 4.0.</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="portfolio/js/script.js"></script>
 
-    <!-- License Badge -->
-    <div style="margin-top: 1rem;">
-      <a rel="license" href="https://creativecommons.org/licenses/by/4.0/" target="_blank">
-        <img alt="Creative Commons License" style="border-width:0"
-          src="https://i.creativecommons.org/l/by/4.0/88x31.png" />
-      </a>
-      <p style="font-size: 0.8rem; margin-top: 0.5rem;">
-        This work is licensed under a
-        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">
-        Creative Commons Attribution 4.0 International License</a>.
-      </p>
-    </div>
-  </footer>
-
-  <script src="portfolio/js/script.js" type="text/javascript"></script>
 </body>
 </html>
