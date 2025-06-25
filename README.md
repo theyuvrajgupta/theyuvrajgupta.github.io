@@ -12,23 +12,22 @@ This is my animated, scroll-driven portfolio showcasing my professional journey 
 
 ---
 
-## 🔍 What's Inside
+✨ Key Features
 
-- **Timeline** of career milestones & transitions
-- **Projects** that showcase real-world health-tech impact
-- Futuristic **Vision 2030** crafted from MBA essays
-- Subtle animations, smooth scrolling & custom styling
-- GitHub Pages–ready out of the box
+- Modern & Responsive Design: A clean, dark-themed, single-page layout that looks great on all devices.
+- Interactive Skills Showcase: A unique, 3D "Neural Synapse" visualization built with Three.js to dynamically display my expertise across different domains.
+- Structured Content: Clear sections for my professional journey, key projects, testimonials, and future vision.
+- Streamlined UX: Features a sticky navigation, a prominent resume download link, and a functional contact form.
 
 ---
 
 ## 🛠️ Built With
 
-- HTML5 / SCSS
-- Vanilla JavaScript
-- [GSAP ScrollTrigger](https://greensock.com/scrolltrigger/)
-- Custom cursor + scroll behavior
-- Responsive design (mobile-first)
+- HTML5
+- CSS3 (with Flexbox and Grid for layout)
+- JavaScript (ES6+)
+- Three.js (for the 3D interactive skills graph)
+- Font Awesome (for icons)
 
 ---
 
