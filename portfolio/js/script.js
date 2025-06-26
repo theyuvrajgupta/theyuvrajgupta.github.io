@@ -25,12 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
     };
 
-    // --- DYNAMIC BACKGROUND ---
+    // --- NEW: DYNAMIC PLEXUS BACKGROUND ---
     const bgCanvas = document.getElementById('background-canvas');
     if (bgCanvas) {
         const ctx = bgCanvas.getContext('2d');
-        let stars = [];
-        const numStars = 100;
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 150 };
 
         function resizeBgCanvas() {
             bgCanvas.width = window.innerWidth;
@@ -39,43 +39,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function initBg() {
             resizeBgCanvas();
-            for (let i = 0; i < numStars; i++) {
-                stars.push({
-                    x: Math.random() * bgCanvas.width,
-                    y: Math.random() * bgCanvas.height,
-                    radius: Math.random() * 1.2,
-                    alpha: Math.random() * 0.5 + 0.2,
-                    vx: (Math.random() - 0.5) * 0.1,
-                    vy: (Math.random() - 0.5) * 0.1
-                });
+            particles = [];
+            let numberOfParticles = (bgCanvas.width * bgCanvas.height) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = Math.random() * 2 + 1;
+                let x = Math.random() * (innerWidth - size * 2) + size;
+                let y = Math.random() * (innerHeight - size * 2) + size;
+                let directionX = (Math.random() * .4) - .2;
+                let directionY = (Math.random() * .4) - .2;
+                particles.push({ x, y, directionX, directionY, size });
             }
             animateBg();
         }
 
         function animateBg() {
             requestAnimationFrame(animateBg);
-            ctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-            
-            // Subtle gradient
-            const gradient = ctx.createRadialGradient(bgCanvas.width / 2, bgCanvas.height / 2, 0, bgCanvas.width / 2, bgCanvas.height / 2, bgCanvas.width/1.5);
-            gradient.addColorStop(0, '#12183c');
-            gradient.addColorStop(1, '#0a0f2c');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
 
-            // Draw stars
-            stars.forEach(star => {
-                star.x += star.vx;
-                star.y += star.vy;
-                if (star.x < 0 || star.x > bgCanvas.width) star.vx *= -1;
-                if (star.y < 0 || star.y > bgCanvas.height) star.vy *= -1;
-                
+            particles.forEach(p => {
+                p.x += p.directionX;
+                p.y += p.directionY;
+                if (p.x > innerWidth || p.x < 0) p.directionX = -p.directionX;
+                if (p.y > innerHeight || p.y < 0) p.directionY = -p.directionY;
                 ctx.beginPath();
-                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(230, 241, 255, ${star.alpha})`;
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = 'rgba(35, 42, 85, 0.8)';
                 ctx.fill();
             });
+
+            connect();
         }
+
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a; b < particles.length; b++) {
+                    let distance = ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x)) +
+                        ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y));
+                    if (distance < (innerWidth / 7) * (innerHeight / 7)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = `rgba(168, 178, 209, ${opacityValue})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        
         window.addEventListener('resize', resizeBgCanvas);
         initBg();
     }
@@ -95,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.2 });
     timelineItems.forEach(item => observer.observe(item));
 
-    // --- PROJECT MODALS LOGIC (FIXED) ---
     const projectCards = document.querySelectorAll('.project-card');
     const modalContainer = document.getElementById('modal-container');
     
@@ -112,21 +124,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeAllModals() {
         modalContainer.classList.add('hidden');
-        document.querySelectorAll('.modal-content.active').forEach(modal => {
-            modal.classList.remove('active');
-        });
+        document.querySelectorAll('.modal-content.active').forEach(modal => modal.classList.remove('active'));
     }
     document.querySelectorAll('.modal-close-btn').forEach(btn => btn.addEventListener('click', closeAllModals));
     document.querySelector('.modal-backdrop').addEventListener('click', closeAllModals);
 
 
-    // --- EXPERTISE: THREE.JS NEURAL SYNAPSE (OVERHAULED) ---
+    // --- EXPERTISE: THREE.JS NEURAL SYNAPSE (OVERHAULED V3.2) ---
     const expertiseContainer = document.getElementById('expertise-visual');
     if (expertiseContainer) {
         let scene, camera, renderer, nodes = [], lines = [], labels = [];
-        let group, isMouseDown = false, mouseX = 0, mouseY = 0, targetRotationX = 0, targetRotationY = 0;
+        let group, isMouseDown = false, lastMouseX = 0, lastMouseY = 0, targetRotationX = 0, targetRotationY = 0;
         let isFocused = false, targetNode = null;
-        const initialCameraPos = new THREE.Vector3(0, 0, 120);
+        const initialCameraPos = new THREE.Vector3(0, 0, 110);
         const resetButton = document.getElementById('reset-camera-btn');
 
         function initExpertise() {
@@ -145,10 +155,17 @@ document.addEventListener('DOMContentLoaded', () => {
             createGraph();
             addLights();
 
-            expertiseContainer.addEventListener('mousedown', onMouseDown);
-            expertiseContainer.addEventListener('mousemove', onMouseMove);
-            expertiseContainer.addEventListener('mouseup', onMouseUp);
-            expertiseContainer.addEventListener('mouseleave', onMouseUp);
+            expertiseContainer.addEventListener('mousedown', e => { isMouseDown = true; lastMouseX = e.clientX; lastMouseY = e.clientY; });
+            expertiseContainer.addEventListener('mousemove', e => {
+                if (isMouseDown) {
+                    targetRotationY += (e.clientX - lastMouseX) * 0.005;
+                    let newTargetX = targetRotationX + (e.clientY - lastMouseY) * 0.005;
+                    targetRotationX = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, newTargetX)); // Clamp vertical rotation
+                    lastMouseX = e.clientX; lastMouseY = e.clientY;
+                }
+            });
+            expertiseContainer.addEventListener('mouseup', () => { isMouseDown = false; });
+            expertiseContainer.addEventListener('mouseleave', () => { isMouseDown = false; });
             expertiseContainer.addEventListener('click', onNodeClick);
             resetButton.addEventListener('click', resetCamera);
             window.addEventListener('resize', onWindowResize);
@@ -156,16 +173,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function createGraph() {
             const mainNodesData = skillsData.nodes.filter(n => n.type === 'main');
-            const skillNodesData = skillsData.nodes.filter(n => n.type === 'skill');
-
-            const layoutRadius = 40;
             mainNodesData.forEach((data, i) => {
                 const angle = (i / mainNodesData.length) * Math.PI * 2;
-                const node = createNode(data, new THREE.Vector3(Math.cos(angle) * layoutRadius, Math.sin(angle) * layoutRadius, 0), 4, 0x00f5c3, 0.5);
-                nodes.push(node);
+                const pos = new THREE.Vector3(Math.cos(angle) * 40, Math.sin(angle) * 40, 0);
+                nodes.push(createNode(data, pos, 4, 0x00f5c3, 0.5));
             });
 
-            skillNodesData.forEach(data => {
+            skillsData.nodes.filter(n => n.type === 'skill').forEach(data => {
                 const parentNode = nodes.find(n => n.userData.id === data.parent);
                 const angle = Math.random() * Math.PI * 2;
                 const dist = 20 + Math.random() * 5;
@@ -173,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const node = createNode(data, pos, 2, 0xe6f1ff, 0.1);
                 nodes.push(node);
                 lines.push(createLine(parentNode.position, node.position));
-                labels.push(createLabelSprite(data.name, pos));
+                labels.push(createLabelSprite(data.name, node));
             });
         }
         
@@ -192,52 +206,43 @@ document.addEventListener('DOMContentLoaded', () => {
             const geometry = new THREE.BufferGeometry().setFromPoints([start, end]);
             const line = new THREE.Line(geometry, material);
             group.add(line);
+            line.userData.start = start;
+            line.userData.end = end;
             return line;
         }
         
-        function createLabelSprite(text, position) {
+        function createLabelSprite(text, parentNode) {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
-            context.font = "Bold 32px Lexend";
+            const font = "Bold 36px Lexend";
+            context.font = font;
             const width = context.measureText(text).width;
-            canvas.width = width + 20; // padding
-            canvas.height = 48; // padding
-            context.font = "Bold 32px Lexend";
+            canvas.width = width + 20;
+            canvas.height = 50;
+            context.font = font;
             context.fillStyle = "rgba(230, 241, 255, 1)";
-            context.fillText(text, 10, 34);
+            context.fillText(text, 10, 38);
 
             const texture = new THREE.CanvasTexture(canvas);
-            const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+            const spriteMaterial = new THREE.SpriteMaterial({ map: texture, depthTest: false, transparent: true });
             const sprite = new THREE.Sprite(spriteMaterial);
             sprite.scale.set(canvas.width / 10, canvas.height / 10, 1.0);
-            sprite.position.copy(position.clone().add(new THREE.Vector3(0, 3, 0))); // Offset label
+            sprite.position.copy(parentNode.position.clone().add(new THREE.Vector3(0, 4, 0)));
             sprite.visible = false;
+            sprite.userData.skillId = parentNode.userData.id;
             group.add(sprite);
             return sprite;
         }
         
         function addLights() {
-            scene.add(new THREE.AmbientLight(0xffffff, 0.2));
-            const pointLight = new THREE.PointLight(0xffffff, 0.8);
-            camera.add(pointLight); // Attach light to camera
+            scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+            const pointLight = new THREE.PointLight(0xffffff, 0.7);
+            camera.add(pointLight);
             scene.add(camera);
         }
 
-        function onMouseDown(event) { isMouseDown = true; mouseX = event.clientX; mouseY = event.clientY; }
-        function onMouseMove(event) {
-            if (isMouseDown) {
-                const deltaX = event.clientX - mouseX;
-                const deltaY = event.clientY - mouseY;
-                targetRotationY += deltaX * 0.005;
-                targetRotationX += deltaY * 0.005;
-                mouseX = event.clientX;
-                mouseY = event.clientY;
-            }
-        }
-        function onMouseUp() { isMouseDown = false; }
-        
         function onNodeClick(event) {
-            if (Math.abs(event.clientX - mouseX) > 2 || Math.abs(event.clientY - mouseY) > 2) return; // Prevent click on drag
+            if (event.clientX !== lastMouseX || event.clientY !== lastMouseY) return;
             const raycaster = new THREE.Raycaster();
             const mouse = new THREE.Vector2();
             const rect = renderer.domElement.getBoundingClientRect();
@@ -255,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function focusOnNode(node) {
             isFocused = true;
             targetNode = node;
-            const targetPos = node.position.clone().add(new THREE.Vector3(0, 0, 50));
+            const targetPos = node.position.clone().add(new THREE.Vector3(0, 0, 65)); // Increased zoom-out distance
             gsap.to(camera.position, { x: targetPos.x, y: targetPos.y, z: targetPos.z, duration: 1.5, ease: 'power3.inOut' });
             resetButton.classList.remove('hidden');
         }
@@ -275,16 +280,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function animateExpertise() {
             requestAnimationFrame(animateExpertise);
+            if (!isMouseDown) targetRotationY += 0.001; // Increased rotation speed
             
-            if (!isMouseDown) {
-                targetRotationY += 0.0005;
-            }
-            group.rotation.y += (targetRotationY - group.rotation.y) * 0.1;
-            group.rotation.x += (targetRotationX - group.rotation.x) * 0.1;
-            
-            labels.forEach((label, i) => {
-                const node = nodes.find(n => n.userData.name === label.material.map.image.getContext('2d').measureText(label.material.map.image.getContext('2d').font = "Bold 32px Lexend",label.material.map.image.getContext('2d').fillText(label.material.map.image.getContext('2d').font,0,0),label.material.map.image.getContext('2d').font= "Bold 32px Lexend",label.material.map.image.getContext('2d').fillText(label.material.map.image.getContext('2d').font,0,0)).input);
-                if(node) label.visible = isFocused && node.userData.parent === targetNode.userData.id;
+            group.rotation.y += (targetRotationY - group.rotation.y) * 0.05;
+            group.rotation.x += (targetRotationX - group.rotation.x) * 0.05;
+
+            labels.forEach(label => {
+                const skillNode = nodes.find(n => n.userData.id === label.userData.skillId);
+                if(skillNode) label.visible = isFocused && skillNode.userData.parent === targetNode.userData.id;
             });
 
             if (isFocused) camera.lookAt(targetNode.position);
@@ -316,7 +319,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function initVision() {
             resizeVisionCanvas();
-            for (let i = 0; i < 70; i++) particles.push({ x: Math.random(), y: Math.random(), radius: Math.random() * 1.5 });
+            particles = [];
+            for (let i = 0; i < 80; i++) particles.push({ x: Math.random(), y: Math.random(), radius: Math.random() * 1.8 });
             visionPillars.forEach(p => particles.push({ isPillar: true, ...p, radius: 5, baseRadius: 5, pulseSpeed: Math.random()*0.05+0.01 }));
             animateVision();
         }
@@ -340,27 +344,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
             particles.forEach(p => {
                 ctx.beginPath();
+                const xPos = p.x * w;
+                const yPos = p.y * h;
                 if (p.isPillar) {
-                    p.radius = p.baseRadius + Math.sin(Date.now() * 0.001 + p.pulseSpeed) * 1.5;
-                    ctx.arc(p.x * w, p.y * h, p.radius, 0, Math.PI * 2);
+                    p.radius = p.baseRadius + Math.sin(Date.now() * 0.002 + p.pulseSpeed * 10) * 2;
+                    ctx.arc(xPos, yPos, p.radius, 0, Math.PI * 2);
                     ctx.fillStyle = '#00f5c3';
                     ctx.shadowColor = '#00f5c3';
-                    ctx.shadowBlur = 10;
+                    ctx.shadowBlur = 15;
                     ctx.fill();
                     ctx.shadowBlur = 0;
                     ctx.fillStyle = '#e6f1ff';
                     ctx.font = `500 14px 'Lexend'`;
-                    const textX = p.x > 0.5 ? p.x * w - ctx.measureText(p.text).width - 15 : p.x * w + 15;
-                    ctx.fillText(p.text, textX, p.y * h + 5);
+                    const textWidth = ctx.measureText(p.text).width;
+                    const textX = p.x > 0.5 ? xPos - textWidth - 20 : xPos + 20;
+                    ctx.fillText(p.text, textX, yPos + 5);
                 } else {
-                    ctx.arc(p.x * w, p.y * h, p.radius, 0, Math.PI * 2);
+                    ctx.arc(xPos, yPos, p.radius, 0, Math.PI * 2);
                     ctx.fillStyle = 'rgba(230, 241, 255, 0.4)';
                     ctx.fill();
                 }
             });
         }
         
-        window.addEventListener('resize', resizeVisionCanvas);
+        window.addEventListener('resize', initVision);
         initVision();
     }
 });
