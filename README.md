@@ -14,20 +14,29 @@ This is my animated, scroll-driven portfolio showcasing my professional journey 
 
 ✨ Key Features
 
-- Modern & Responsive Design: A clean, dark-themed, single-page layout that looks great on all devices.
-- Interactive Skills Showcase: A unique, 3D "Neural Synapse" visualization built with Three.js to dynamically display my expertise across different domains.
-- Structured Content: Clear sections for my professional journey, key projects, testimonials, and future vision.
-- Streamlined UX: Features a sticky navigation, a prominent resume download link, and a functional contact form.
+- Strategic Narrative: Content is re-framed to highlight business impact, leadership, and strategic thinking, tailored for post-MBA career opportunities.
+
+- Advanced Interactive Skills Graph: The "Neural Synapse" now features a Focused Cluster View. Clicking a core competency zooms in, revealing detailed skills for enhanced readability and exploration. The skills themselves are curated from my hands-on experience.
+
+- In-Depth Project Case Studies: Project cards now launch modal windows, presenting detailed case studies with sections on the business challenge, my strategic contribution, and quantifiable outcomes.
+
+- Animated Journey Timeline: My career progression is now visualized as an animated timeline, enriched with personal and professional insights from my MBA application essays to show the 'why' behind my work.
+
+- Interactive Vision Constellation: My long-term career vision is represented as an interactive star constellation, making my future goals tangible and engaging.
+
+- "Bioluminescent Tech" Aesthetic: A unique, custom "Synaptic Night" color theme with a dynamic, animated gradient mesh background and a professional font pairing (Space Grotesk & Lexend) for a premium, modern feel.
+
+- Professional Endorsements
 
 ---
 
 ## 🛠️ Built With
 
-- HTML5
-- CSS3 (with Flexbox and Grid for layout)
+- HTML5 & CSS3
 - JavaScript (ES6+)
-- Three.js (for the 3D interactive skills graph)
-- Font Awesome (for icons)
+- Three.js: For the 3D interactive skills graph.
+- GSAP (GreenSock Animation Platform): For high-performance animations, particularly the camera movements.
+- Font Awesome: For icons.
 
 ---
 
@@ -41,10 +50,13 @@ portfolio/ ├─ index.html ├─ css/ │   └─ style.css ├─ js/ │  
 
 1. **Fork / clone / download** this repo.
 2. Customize content in `index.html`, and tweak styles in `style.css`.
-3. Push changes to `main` branch.
-4. GitHub Pages automatically updates at:
+3. Update assets/resume.pdf and assets/profile-pic.jpg.
+4. Update the Skills Graph: The skills data is in a skillsData object at the top of script.js.
+5. Update Project Modals: All modal content is located in the <div id="modal-container">...</div> at the bottom of index.html
+6. Push changes to `main` branch.
+7. GitHub Pages automatically updates at:
    https://yourusername.github.io
-5. Optional: Add your resume PDF, blog posts, or personal branding assets.
+8. Optional: Add your resume PDF, blog posts, or personal branding assets.
 
 ---
 
