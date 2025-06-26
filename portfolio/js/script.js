@@ -1,257 +1,342 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- Data for the Expertise Visualization ---
-    // You can easily customize your skills here.
+    // --- DATA ---
     const skillsData = {
         nodes: [
             // Main Nodes (Categories)
-            { id: "HealthTech", type: "main", name: "HealthTech" },
-            { id: "AI & ML", type: "main", name: "AI & ML" },
-            { id: "Cloud Architecture", type: "main", name: "Cloud Architecture" },
+            { id: "HealthTech", type: "main", name: "HealthTech Strategy" },
+            { id: "AI & ML", type: "main", name: "AI & ML Innovation" },
+            { id: "Cloud Architecture", type: "main", name: "Cloud & Scalability" },
             { id: "Product Leadership", type: "main", name: "Product Leadership" },
 
-            // Skill Nodes
-            { id: "Clinical Tools", type: "skill", parent: "HealthTech", name: "Clinical Tools" },
+            // Skill Nodes from Resume
+            { id: "Clinical Workflows", type: "skill", parent: "HealthTech", name: "Clinical Workflows" },
             { id: "Medical Imaging", type: "skill", parent: "HealthTech", name: "Medical Imaging (PET-CT)" },
-            { id: "Patient Data", type: "skill", parent: "HealthTech", name: "Patient Data Platforms" },
-
-            { id: "ML Engineering", type: "skill", parent: "AI & ML", name: "ML Engineering" },
-            { id: "Deep Learning", type: "skill", parent: "AI & ML", name: "Deep Learning" },
-            { id: "TensorFlow", type: "skill", parent: "AI & ML", name: "TensorFlow" },
-            { id: "CNNs", type: "skill", parent: "AI & ML", name: "CNNs" },
+            { id: "DICOM", type: "skill", parent: "HealthTech", name: "DICOM Standards" },
             
-            { id: "Serverless", type: "skill", parent: "Cloud Architecture", name: "Serverless" },
-            { id: "AWS Lambda", type: "skill", parent: "Cloud Architecture", name: "AWS Lambda" },
-            { id: "Microservices", type: "skill", parent: "Cloud Architecture", name: "Microservices" },
-            { id: "DevOps", type: "skill", parent: "Cloud Architecture", name: "DevOps" },
+            { id: "ML Engineering", type: "skill", parent: "AI & ML", name: "ML Engineering" },
+            { id: "Deep Learning", type: "skill", parent: "AI & ML", name: "Deep Learning (CNN)" },
+            { id: "TensorFlow", type: "skill", parent: "AI & ML", name: "TensorFlow & Python" },
+            { id: "Data-driven decisions", type: "skill", parent: "AI & ML", name: "Data-Driven Decisions" },
 
-            { id: "Agile & Scrum", type: "skill", parent: "Product Leadership", name: "Agile & Scrum" },
-            { id: "Product Thinking", type: "skill", parent: "Product Leadership", name: "Product Thinking" },
+            { id: "Serverless Arch", type: "skill", parent: "Cloud Architecture", name: "Serverless Architecture" },
+            { id: "AWS", type: "skill", parent: "Cloud Architecture", name: "AWS (Lambda, SQS, S3)" },
+            { id: "Process Optimization", type: "skill", parent: "Cloud Architecture", name: "Process Optimization" },
+            { id: "Terraform", type: "skill", parent: "Cloud Architecture", name: "Infrastructure as Code" },
+
+            { id: "Agile & Scrum", type: "skill", parent: "Product Leadership", name: "Agile & Scrum Mastery" },
+            { id:g: "Product Thinking", type: "skill", parent: "Product Leadership", name: "Product Thinking" },
             { id: "Mentorship", type: "skill", parent: "Product Leadership", name: "Team Mentorship" },
-            { id: "Roadmapping", type: "skill", parent: "Product Leadership", name: "Product Roadmapping" },
+            { id: "Stakeholder Mngmt", type: "skill", parent: "Product Leadership", name: "Stakeholder Management" },
         ]
     };
-
-    // --- Navbar Scroll Effect ---
+    
+    // --- GENERAL UI ---
+    // Navbar Scroll Effect
     const navbar = document.querySelector('.navbar');
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
+        if (window.scrollY > 50) navbar.classList.add('scrolled');
+        else navbar.classList.remove('scrolled');
     });
 
-    // --- Three.js Expertise Visualization ---
-    const container = document.getElementById('expertise-visual');
-    if (container) {
-        let scene, camera, renderer, raycaster, mouse;
-        let nodes = [], lines = [];
-        let hoveredNode = null;
-        const tooltip = document.getElementById('skill-tooltip');
+    // Animate-on-scroll for Journey Timeline
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+            }
+        });
+    }, { threshold: 0.1 });
+    timelineItems.forEach(item => observer.observe(item));
 
-        // --- Initialization ---
-        function init() {
-            // Scene
+    // Project Modals Logic
+    const projectCards = document.querySelectorAll('.project-card');
+    const modalContainer = document.getElementById('modal-container');
+    const modalBackdrop = document.querySelector('.modal-backdrop');
+    
+    projectCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const targetModalId = card.getAttribute('data-modal-target');
+            const targetModal = document.getElementById(targetModalId);
+            if(targetModal) {
+                modalContainer.classList.remove('hidden');
+                targetModal.classList.add('active');
+            }
+        });
+    });
+
+    const closeButtons = document.querySelectorAll('.modal-close-btn');
+    closeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            closeAllModals();
+        });
+    });
+    
+    modalBackdrop.addEventListener('click', closeAllModals);
+
+    function closeAllModals() {
+        modalContainer.classList.add('hidden');
+        document.querySelectorAll('.modal-content.active').forEach(modal => {
+            modal.classList.remove('active');
+        });
+    }
+
+    // --- EXPERTISE: THREE.JS NEURAL SYNAPSE ---
+    const expertiseContainer = document.getElementById('expertise-visual');
+    if (expertiseContainer) {
+        let scene, camera, renderer, nodes = [], skillLabels = [];
+        let isFocused = false, targetNode = null;
+        const initialCameraPos = new THREE.Vector3(0, 0, 120);
+        const resetButton = document.getElementById('reset-camera-btn');
+
+        function initExpertise() {
             scene = new THREE.Scene();
-            scene.fog = new THREE.Fog(0x0f0f1a, 200, 400);
+            camera = new THREE.PerspectiveCamera(75, expertiseContainer.clientWidth / expertiseContainer.clientHeight, 0.1, 1000);
+            camera.position.copy(initialCameraPos);
 
-            // Camera
-            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-            camera.position.z = 100;
-
-            // Renderer
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setSize(expertiseContainer.clientWidth, expertiseContainer.clientHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
-            container.appendChild(renderer.domElement);
+            expertiseContainer.appendChild(renderer.domElement);
             
-            // Raycaster for mouse interaction
-            raycaster = new THREE.Raycaster();
-            mouse = new THREE.Vector2();
-
-            // Create the graph
             createGraph();
-            
-            // Event Listeners
-            container.addEventListener('mousemove', onMouseMove, false);
-            window.addEventListener('resize', onWindowResize, false);
+            addLights();
+
+            expertiseContainer.addEventListener('click', onNodeClick);
+            resetButton.addEventListener('click', resetCamera);
+            window.addEventListener('resize', onWindowResize);
         }
 
-        // --- Graph Creation ---
         function createGraph() {
-            const mainNodes = skillsData.nodes.filter(n => n.type === 'main');
-            const skillNodes = skillsData.nodes.filter(n => n.type === 'skill');
+            const mainNodesData = skillsData.nodes.filter(n => n.type === 'main');
+            const skillNodesData = skillsData.nodes.filter(n => n.type === 'skill');
 
-            const mainNodeRadius = 4;
-            const skillNodeRadius = 2;
-            const layoutRadius = 50;
-
-            // Create Main Nodes
-            mainNodes.forEach((nodeData, i) => {
-                const angle = (i / mainNodes.length) * Math.PI * 2;
+            const layoutRadius = 40;
+            mainNodesData.forEach((data, i) => {
+                const angle = (i / mainNodesData.length) * Math.PI * 2;
                 const x = Math.cos(angle) * layoutRadius;
                 const y = Math.sin(angle) * layoutRadius;
-                
-                const geometry = new THREE.SphereGeometry(mainNodeRadius, 32, 32);
-                const material = new THREE.MeshPhongMaterial({ color: 0x4f46e5, shininess: 80 });
-                const node = new THREE.Mesh(geometry, material);
-                
-                node.position.set(x, y, 0);
-                node.userData = nodeData;
-                scene.add(node);
+                const node = createNode(data, new THREE.Vector3(x, y, 0), 4, 0x00f5c3);
                 nodes.push(node);
             });
 
-            // Create Skill Nodes and Lines
-            skillNodes.forEach(nodeData => {
-                const parentNode = nodes.find(n => n.userData.id === nodeData.parent);
+            skillNodesData.forEach(data => {
+                const parentNode = nodes.find(n => n.userData.id === data.parent);
                 if (!parentNode) return;
-                
-                // Position skill nodes around their parent
-                const skillCount = skillNodes.filter(s => s.parent === nodeData.parent).length;
-                const skillIndex = skillNodes.filter(s => s.parent === nodeData.parent).indexOf(nodeData);
 
-                const angle = (skillIndex / skillCount) * Math.PI * 2;
-                const dist = 25;
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 20 + Math.random() * 5;
                 const x = parentNode.position.x + Math.cos(angle) * dist;
                 const y = parentNode.position.y + Math.sin(angle) * dist;
-                const z = (Math.random() - 0.5) * 10;
-                
-                const geometry = new THREE.SphereGeometry(skillNodeRadius, 16, 16);
-                const material = new THREE.MeshPhongMaterial({ color: 0xe0e0e0, shininess: 50 });
-                const node = new THREE.Mesh(geometry, material);
+                const z = (Math.random() - 0.5) * 15;
 
-                node.position.set(x, y, z);
-                node.userData = nodeData;
-                scene.add(node);
+                const node = createNode(data, new THREE.Vector3(x, y, z), 2, 0xe6f1ff);
                 nodes.push(node);
 
-                // Create line
-                const lineMaterial = new THREE.LineBasicMaterial({ color: 0x2a2a3e, transparent: true, opacity: 0.5 });
-                const points = [parentNode.position, node.position];
-                const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-                const line = new THREE.Line(lineGeometry, lineMaterial);
-                scene.add(line);
-                lines.push({line, from: parentNode, to: node});
+                createLine(parentNode.position, node.position);
+                createSkillLabel(node);
             });
-
-            // Lights
-            scene.add(new THREE.AmbientLight(0x404040, 2));
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-            directionalLight.position.set(0, 0, 1);
-            scene.add(directionalLight);
-        }
-
-        // --- Event Handlers ---
-        function onWindowResize() {
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
         }
         
-        function onMouseMove(event) {
+        function createNode(data, position, size, color) {
+            const geometry = new THREE.SphereGeometry(size, 32, 16);
+            const material = new THREE.MeshPhongMaterial({ color, emissive: color, emissiveIntensity: 0.2, shininess: 80 });
+            const node = new THREE.Mesh(geometry, material);
+            node.position.copy(position);
+            node.userData = data;
+            scene.add(node);
+            return node;
+        }
+
+        function createLine(start, end) {
+            const material = new THREE.LineBasicMaterial({ color: 0x232a55, transparent: true, opacity: 0.3 });
+            const geometry = new THREE.BufferGeometry().setFromPoints([start, end]);
+            const line = new THREE.Line(geometry, material);
+            scene.add(line);
+        }
+
+        function createSkillLabel(node) {
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'skill-label';
+            labelDiv.textContent = node.userData.name;
+            expertiseContainer.appendChild(labelDiv);
+            skillLabels.push({ div: labelDiv, node: node });
+        }
+        
+        function addLights() {
+            scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+            const pointLight = new THREE.PointLight(0xffffff, 0.8);
+            pointLight.position.set(0, 0, 150);
+            scene.add(pointLight);
+        }
+
+        function onNodeClick(event) {
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
             const rect = renderer.domElement.getBoundingClientRect();
             mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
             mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        }
-
-        // --- Animation Loop ---
-        function animate() {
-            requestAnimationFrame(animate);
-
-            // Update raycaster
+            
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(nodes);
 
             if (intersects.length > 0) {
-                const intersectedObject = intersects[0].object;
-                if (hoveredNode !== intersectedObject) {
-                    hoveredNode = intersectedObject;
-                    updateVisuals();
-                    
-                    // Tooltip logic
-                    const screenPosition = toScreenPosition(hoveredNode, camera);
-                    tooltip.style.opacity = '1';
-                    tooltip.style.left = `${screenPosition.x}px`;
-                    tooltip.style.top = `${screenPosition.y}px`;
-                    tooltip.textContent = hoveredNode.userData.name;
-                }
-            } else {
-                if (hoveredNode !== null) {
-                    hoveredNode = null;
-                    updateVisuals();
-                    tooltip.style.opacity = '0';
+                const clickedNode = intersects[0].object;
+                if (clickedNode.userData.type === 'main') {
+                    focusOnNode(clickedNode);
                 }
             }
+        }
 
-            // Animate nodes
-            const time = Date.now() * 0.0005;
-            nodes.forEach(node => {
-                if(node.userData.type === 'skill') {
-                     node.position.z += Math.sin(time + node.id) * 0.01;
+        function focusOnNode(node) {
+            isFocused = true;
+            targetNode = node;
+            const targetPos = node.position.clone().add(new THREE.Vector3(0, 0, 50));
+            gsap.to(camera.position, {
+                x: targetPos.x, y: targetPos.y, z: targetPos.z,
+                duration: 1.5, ease: 'power3.inOut'
+            });
+            resetButton.classList.remove('hidden');
+        }
+
+        function resetCamera() {
+            isFocused = false;
+            targetNode = null;
+            gsap.to(camera.position, {
+                x: initialCameraPos.x, y: initialCameraPos.y, z: initialCameraPos.z,
+                duration: 1.5, ease: 'power3.inOut'
+            });
+            resetButton.classList.add('hidden');
+        }
+
+        function updateLabels() {
+            skillLabels.forEach(label => {
+                const isVisible = isFocused && label.node.userData.parent === targetNode.userData.id;
+                label.div.classList.toggle('visible', isVisible);
+
+                if (isVisible) {
+                    const screenPos = toScreenPosition(label.node, camera);
+                    label.div.style.left = `${screenPos.x}px`;
+                    label.div.style.top = `${screenPos.y}px`;
                 }
             });
-            
-            // Rotate the whole scene
-            scene.rotation.z += 0.0005;
-            scene.rotation.x += 0.0001;
+        }
+        
+        function toScreenPosition(obj, camera) {
+            const vector = new THREE.Vector3();
+            obj.getWorldPosition(vector).project(camera);
+            const rect = renderer.domElement.getBoundingClientRect();
+            return {
+                x: (vector.x * 0.5 + 0.5) * rect.width + rect.left,
+                y: (-vector.y * 0.5 + 0.5) * rect.height + rect.top,
+            };
+        }
 
+        function onWindowResize() {
+            camera.aspect = expertiseContainer.clientWidth / expertiseContainer.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(expertiseContainer.clientWidth, expertiseContainer.clientHeight);
+        }
+
+        function animateExpertise() {
+            requestAnimationFrame(animateExpertise);
+            const time = Date.now() * 0.0001;
+            scene.rotation.y = time;
+            scene.rotation.z = time * 0.5;
+            if (isFocused) {
+                camera.lookAt(targetNode.position);
+            } else {
+                 camera.lookAt(scene.position);
+            }
+            updateLabels();
             renderer.render(scene, camera);
         }
         
-        // --- Visual Update Logic ---
-        function updateVisuals() {
-            nodes.forEach(node => {
-                const isHovered = (node === hoveredNode);
-                const isRelated = isNodeRelated(node);
-                const targetOpacity = (hoveredNode === null || isRelated) ? 1 : 0.2;
-                const targetColor = new THREE.Color(getNodeColor(node, isHovered, isRelated));
+        initExpertise();
+        animateExpertise();
+    }
+    
+    // --- VISION: 2D CONSTELLATION ---
+    const visionCanvas = document.getElementById('vision-constellation');
+    if(visionCanvas) {
+        const ctx = visionCanvas.getContext('2d');
+        let particles = [];
+        const visionPillars = [
+            { text: "AI-Powered Venture", x: 0.3, y: 0.25 },
+            { text: "Democratized Detection", x: 0.7, y: 0.35 },
+            { text: "Unified Platform", x: 0.2, y: 0.7 },
+            { text: "Proactive Healthcare", x: 0.8, y: 0.8 }
+        ];
+
+        function resizeCanvas() {
+            visionCanvas.width = visionCanvas.offsetWidth;
+            visionCanvas.height = visionCanvas.offsetHeight;
+        }
+
+        function initVision() {
+            resizeCanvas();
+            // Create background particles
+            for (let i = 0; i < 50; i++) {
+                particles.push({
+                    x: Math.random() * visionCanvas.width,
+                    y: Math.random() * visionCanvas.height,
+                    radius: Math.random() * 1.5,
+                    vx: (Math.random() - 0.5) * 0.2,
+                    vy: (Math.random() - 0.5) * 0.2
+                });
+            }
+            // Add vision pillars as larger particles
+            visionPillars.forEach(pillar => {
+                particles.push({
+                    isPillar: true, text: pillar.text,
+                    x: pillar.x * visionCanvas.width,
+                    y: pillar.y * visionCanvas.height,
+                    radius: 4,
+                    baseRadius: 4,
+                    vx: 0, vy: 0,
+                });
+            });
+            animateVision();
+        }
+
+        function animateVision() {
+            requestAnimationFrame(animateVision);
+            ctx.clearRect(0, 0, visionCanvas.width, visionCanvas.height);
+
+            particles.forEach((p, i) => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > visionCanvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > visionCanvas.height) p.vy *= -1;
                 
-                // Animate color and opacity
-                node.material.color.lerp(targetColor, 0.1);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.isPillar ? '#00f5c3' : 'rgba(230, 241, 255, 0.5)';
+                ctx.fill();
+                
+                if (p.isPillar) {
+                    ctx.fillStyle = '#a8b2d1';
+                    ctx.font = "14px 'Lexend'";
+                    ctx.fillText(p.text, p.x + 10, p.y + 5);
+                }
             });
-
-            lines.forEach(l => {
-                const isRelated = (hoveredNode && (l.from === hoveredNode || l.to === hoveredNode || (l.from.userData.parent === hoveredNode.userData.parent && hoveredNode.userData.type === 'skill')));
-                l.line.material.opacity = (hoveredNode === null || isRelated) ? 0.5 : 0.1;
-                l.line.material.color = new THREE.Color((isRelated) ? 0x7c3aed : 0x2a2a3e);
-            });
-        }
-
-        // --- Helper Functions ---
-        function isNodeRelated(node) {
-            if (!hoveredNode) return false;
-            if (node === hoveredNode) return true;
-            if (hoveredNode.userData.type === 'main') {
-                return node.userData.parent === hoveredNode.userData.id;
+            
+            // Draw lines between pillars
+            const pillars = particles.filter(p => p.isPillar);
+            for(let i = 0; i < pillars.length; i++) {
+                for(let j = i + 1; j < pillars.length; j++) {
+                    ctx.beginPath();
+                    ctx.moveTo(pillars[i].x, pillars[i].y);
+                    ctx.lineTo(pillars[j].x, pillars[j].y);
+                    ctx.strokeStyle = 'rgba(35, 42, 85, 0.8)';
+                    ctx.stroke();
+                }
             }
-            if (hoveredNode.userData.type === 'skill') {
-                return node.userData.id === hoveredNode.userData.parent || node.userData.parent === hoveredNode.userData.parent;
-            }
-            return false;
         }
-
-        function getNodeColor(node, isHovered, isRelated) {
-             if(isHovered) return 0x7c3aed; // bright purple on hover
-             if(node.userData.type === 'main') return 0x4f46e5; // primary blue for main
-             if(isRelated) return 0xffffff; // white for related
-             return 0xe0e0e0; // default grey for unrelated skills
-        }
-
-        function toScreenPosition(obj, camera) {
-            const vector = new THREE.Vector3();
-            obj.getWorldPosition(vector);
-            vector.project(camera);
-
-            const rect = renderer.domElement.getBoundingClientRect();
-            const x = (vector.x * 0.5 + 0.5) * rect.width + rect.left;
-            const y = (-vector.y * 0.5 + 0.5) * rect.height + rect.top;
-
-            return { x, y };
-        }
-
-        init();
-        animate();
+        
+        window.addEventListener('resize', resizeCanvas);
+        initVision();
     }
 });
