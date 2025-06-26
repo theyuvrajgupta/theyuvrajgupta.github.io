@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Lexend:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="background-animation"></div>
+    <canvas id="background-canvas"></canvas>
 
     <!-- ======== NAVIGATION BAR ======== -->
     <nav class="navbar">
@@ -19,7 +19,7 @@
             <a href="#home" class="nav-logo">Yuvraj Gupta</a>
             <ul class="nav-menu">
                 <li><a href="#about">Journey</a></li>
-                <li><a href="#projects">Projects</a></li>
+                <li><a href="#projects">Work</a></li>
                 <li><a href="#expertise">Expertise</a></li>
                 <li><a href="#vision">Vision</a></li>
                 <li><a href="#contact">Contact</a></li>
@@ -34,14 +34,14 @@
                 <h1>Strategist. Innovator.<br>Health-Tech Leader.</h1>
                 <p class="subtitle">Leveraging a decade of technical expertise to build the future of AI-driven healthcare. Poised to drive product strategy and innovation post-MBA.</p>
                 <div class="home-buttons">
-                    <a href="portfolio/assets/resume.pdf" class="btn btn-primary" download>
+                    <a href="./portfolio/assets/resume.pdf" class="btn btn-primary" download>
                         <i class="fa-solid fa-download"></i> Download Resume
                     </a>
                     <a href="#projects" class="btn btn-secondary">View My Work</a>
                 </div>
             </div>
             <div class="home-image">
-                <img src="portfolio/assets/profile-pic.jpg" alt="Yuvraj Gupta" onerror="this.onerror=null;this.src='https://placehold.co/400x400/1a1a2e/e0e0e0?text=Yuvraj';">
+                <img src="./portfolio/assets/profile-pic.jpg" alt="Yuvraj Gupta" onerror="this.onerror=null;this.src='https://placehold.co/400x400/1a1a2e/e0e0e0?text=Yuvraj';">
             </div>
         </div>
     </section>
@@ -77,7 +77,7 @@
                      <div class="timeline-icon"><i class="fa-solid fa-graduation-cap"></i></div>
                      <div class="timeline-content">
                         <h3>The Next Chapter: MBA</h3>
-                        <p>With a decade of deep technical experience, I am pursuing an MBA at Nanyang Business School to build upon my foundation with world-class strategic, marketing, and operational frameworks, preparing to lead at the intersection of technology and business.</p>
+                        <p>With a decade of deep technical experience, I am pursuing an MBA at Nanyang to build upon my foundation with world-class strategic, marketing, and operational frameworks, preparing to lead at the intersection of technology and business.</p>
                     </div>
                 </div>
             </div>
@@ -87,7 +87,7 @@
     <!-- ======== PROJECTS SECTION ======== -->
     <section id="projects" class="projects-section">
         <div class="container">
-            <h2 class="section-title">Project Case Studies</h2>
+            <h2 class="section-title">Signature Projects</h2>
             <div class="projects-grid">
                 <!-- Project cards now trigger modals. The data-modal-target corresponds to the modal ID. -->
                 <div class="project-card" data-modal-target="project1">
@@ -96,7 +96,7 @@
                         <h3>AI-Driven PET-CT Analysis</h3>
                         <p>Led the development of a pioneering AI tool that automates tumor detection and classification in PET-CT scans.</p>
                         <div class="project-tags"><span>AI/ML</span><span>HealthTech</span><span>Product Innovation</span></div>
-                        <span class="project-link">View Details <i class="fa-solid fa-arrow-right"></i></span>
+                        <span class="project-link">View Case Study <i class="fa-solid fa-arrow-right"></i></span>
                     </div>
                 </div>
                 <div class="project-card" data-modal-target="project2">
@@ -105,7 +105,7 @@
                         <h3>Serverless QA Automation Pipeline</h3>
                         <p>Architected and deployed a fully automated QA pipeline on AWS, transforming the software development lifecycle.</p>
                         <div class="project-tags"><span>AWS</span><span>Cloud</span><span>Process Optimization</span></div>
-                        <span class="project-link">View Details <i class="fa-solid fa-arrow-right"></i></span>
+                        <span class="project-link">View Case Study <i class="fa-solid fa-arrow-right"></i></span>
                     </div>
                 </div>
                 <div class="project-card" data-modal-target="project3">
@@ -114,7 +114,7 @@
                         <h3>Agile Team Leadership & Turnaround</h3>
                         <p>Stepped up as technical lead and Scrum Master to guide a team through a critical transition period, ensuring project continuity and morale.</p>
                         <div class="project-tags"><span>Agile</span><span>Leadership</span><span>Mentorship</span></div>
-                        <span class="project-link">View Details <i class="fa-solid fa-arrow-right"></i></span>
+                        <span class="project-link">View Case Study <i class="fa-solid fa-arrow-right"></i></span>
                     </div>
                 </div>
             </div>
@@ -125,7 +125,7 @@
     <section id="expertise" class="expertise-section">
         <div class="container expertise-container">
             <h2 class="section-title">Core Competencies</h2>
-            <p class="section-subtitle">A map of my strategic and technical capabilities. Click any primary node to focus.</p>
+            <p class="section-subtitle">A map of my strategic and technical capabilities. Drag to rotate and click a primary node to focus.</p>
             <div id="expertise-visual"></div>
             <button id="reset-camera-btn" class="btn btn-secondary hidden"><i class="fa-solid fa-arrows-to-eye"></i> Reset View</button>
         </div>
@@ -167,7 +167,7 @@
                      <p>"Yuvraj has a great ability to take initiatives and to see them through. He leads by example and is a great mentor to have. His problem solving skills coupled with his ability to stay calm and composed in any situation is an asset for any team."</p>
                     <div class="endorsement-author">
                         <h4>Ayush Kumar</h4>
-                        <span>Senior Software Engineer</span>
+                        <span>Senior Software Development Engineer</span>
                     </div>
                 </div>
             </div>
@@ -178,7 +178,7 @@
     <section id="contact" class="contact-section">
         <div class="container">
             <h2 class="section-title">Let's Connect</h2>
-            <p class="section-subtitle">I'm actively seeking internship and full-time opportunities for 2026/27 and am always open to discussing new projects, creative ideas, or ways to innovate to solve challenges.</p>
+            <p class="section-subtitle">I'm actively seeking internship and full-time opportunities for 2025/26 and am always open to discussing new projects, creative ideas, or ways to innovate in Health-Tech.</p>
             <div class="contact-wrapper">
                 <div class="contact-info">
                     <div class="info-item"><i class="fa-solid fa-envelope"></i><p>theyuvrajgupta@gmail.com</p></div>
@@ -220,7 +220,7 @@
                 </div>
                  <div>
                     <h3>Impact & Business Value</h3>
-                    <p>The tool achieved **90% accuracy** in identifying malignant tumors, leading to a **~40% reduction in radiologist effort**. This innovation drove a **~30% revenue boost** for the product line and was featured as a showstopper at premier industry events like RSNA.</p>
+                    <p>The tool achieved **90% accuracy** in identifying malignant tumors, leading to a **40% reduction in radiologist effort**. This innovation drove a **30% revenue boost** for the product line and was featured as a showstopper at premier industry events like RSNA.</p>
                 </div>
             </div>
         </div>
