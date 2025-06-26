@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: "Terraform", type: "skill", parent: "Cloud Architecture", name: "Infrastructure as Code" },
 
             { id: "Agile & Scrum", type: "skill", parent: "Product Leadership", name: "Agile & Scrum Mastery" },
-            { id:g: "Product Thinking", type: "skill", parent: "Product Leadership", name: "Product Thinking" },
+            { id: "Product Thinking", type: "skill", parent: "Product Leadership", name: "Product Thinking" },
             { id: "Mentorship", type: "skill", parent: "Product Leadership", name: "Team Mentorship" },
             { id: "Stakeholder Mngmt", type: "skill", parent: "Product Leadership", name: "Stakeholder Management" },
         ]
