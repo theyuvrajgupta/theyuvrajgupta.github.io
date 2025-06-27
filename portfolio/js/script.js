@@ -100,7 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- EXPERTISE: THREE.JS NEURAL SYNAPSE (STABLE V3.3) ---
     const expertiseContainer = document.getElementById('expertise-visual');
+    console.log('⚙️ expertiseContainer firing…');
+    console.log('expertiseContainer →', expertiseContainer);
     if (expertiseContainer && typeof THREE !== 'undefined') {
+        console.log('Starting scene render for neural synapse now');
         let scene, camera, renderer, nodes = [], labels = [], group;
         let isMouseDown = false, lastMousePos = { x: 0, y: 0 }, targetRotation = { x: 0.3, y: 0 };
         let isFocused = false, targetNode = null;
@@ -108,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const resetButton = document.getElementById('reset-camera-btn');
 
         const initExpertise = () => {
+            console.log('⚙️ initExpertise firing…');
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, expertiseContainer.clientWidth / expertiseContainer.clientHeight, 0.1, 1000);
             camera.position.copy(initialCameraPos);
