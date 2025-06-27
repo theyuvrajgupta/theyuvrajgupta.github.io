@@ -198,7 +198,27 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        const focusOnNode = (node) => { isFocused = true; targetNode = node; gsap.to(camera.position, { ...node.position.clone().add(new THREE.Vector3(0, 0, 80)), duration: 1.5, ease: 'power3.inOut' }); resetButton.classList.remove('hidden'); };
+        const focusOnNode = (node) => {
+    isFocused = true;
+    targetNode = node;
+
+    const center = node.position.clone();
+    const offsetDirection = camera.position.clone().sub(scene.position).normalize();
+    const newCameraPos = center.clone().add(offsetDirection.multiplyScalar(60));
+
+    gsap.to(camera.position, {
+        duration: 1.5,
+        x: newCameraPos.x,
+        y: newCameraPos.y,
+        z: newCameraPos.z,
+        ease: 'power3.inOut',
+        onUpdate: () => {
+            camera.lookAt(center);
+        }
+    });
+
+    resetButton.classList.remove('hidden');
+};
         const resetCamera = () => { isFocused = false; targetNode = null; gsap.to(camera.position, { ...initialCameraPos, duration: 1.5, ease: 'power3.inOut' }); resetButton.classList.add('hidden'); };
         const onWindowResize = () => { camera.aspect = expertiseContainer.clientWidth / expertiseContainer.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(expertiseContainer.clientWidth, expertiseContainer.clientHeight); };
 
