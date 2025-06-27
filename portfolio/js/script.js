@@ -171,13 +171,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const setupEventListeners = () => {
             expertiseContainer.addEventListener('mousedown', e => { isMouseDown = true; lastMousePos = { x: e.clientX, y: e.clientY }; });
             expertiseContainer.addEventListener('mousemove', e => { if (isMouseDown) { const dX = e.clientX - lastMousePos.x, dY = e.clientY - lastMousePos.y; targetRotation.y += dX * 0.005; targetRotation.x = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, targetRotation.x + dY * 0.005)); lastMousePos = { x: e.clientX, y: e.clientY }; }});
-            const onMouseUp = () => isMouseDown = false;
+            const onMouseUp = () => { isMouseDown = false; };
             expertiseContainer.addEventListener('mouseup', onMouseUp);
             expertiseContainer.addEventListener('mouseleave', onMouseUp);
             expertiseContainer.addEventListener('click', onNodeClick);
             resetButton.addEventListener('click', resetCamera);
             window.addEventListener('resize', onWindowResize);
-        }
+        };
 
         const onNodeClick = (event) => {
             const dx = Math.abs(event.clientX - lastMousePos.x);
@@ -188,7 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const mouse = new THREE.Vector2((event.clientX / expertiseContainer.clientWidth) * 2 - 1, -(event.clientY / expertiseContainer.clientHeight) * 2 + 1);
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(nodes);
-            if (intersects.length > 0 && intersects[0].object.userData.type === 'main') focusOnNode(intersects[0].object);
+            if (intersects.length > 0 && intersects[0].object.userData.type === 'main') {
+                focusOnNode(intersects[0].object);
+            }
         };
 
         const focusOnNode = (node) => { isFocused = true; targetNode = node; gsap.to(camera.position, { ...node.position.clone().add(new THREE.Vector3(0, 0, 80)), duration: 1.5, ease: 'power3.inOut' }); resetButton.classList.remove('hidden'); };
@@ -197,11 +199,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const animateExpertise = () => {
             requestAnimationFrame(animateExpertise);
-            if (!isMouseDown && !isFocused) targetRotation.y += 0.001;
+            const time = Date.now() * 0.0001;
+            if (!isMouseDown && !isFocused) {
+                targetRotation.y = time * 0.5;
+            }
             group.rotation.y += (targetRotation.y - group.rotation.y) * 0.05;
             group.rotation.x += (targetRotation.x - group.rotation.x) * 0.05;
-            labels.forEach(label => { const shouldBeVisible = isFocused && label.userData.parentId === targetNode.userData.id; gsap.to(label.material, { opacity: shouldBeVisible ? 1 : 0, duration: 0.5 }); });
-            if (isFocused) camera.lookAt(targetNode.position); else camera.lookAt(scene.position);
+
+            labels.forEach(label => {
+                const shouldBeVisible = isFocused && label.userData.parentId === targetNode.userData.id;
+                gsap.to(label.material, { opacity: shouldBeVisible ? 1 : 0, duration: 0.5 });
+            });
+
+            if (isFocused) {
+                camera.lookAt(targetNode.position);
+            } else {
+                camera.lookAt(scene.position);
+            }
             renderer.render(scene, camera);
         };
         
@@ -210,18 +224,20 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- VISION SCROLL-DRIVEN SECTION ---
     const visionSection = document.querySelector('.vision-scroll-section');
-    if (visionSection) {
+    if (visionSection && typeof gsap !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
         const slides = gsap.utils.toArray(".vision-slide");
         const images = gsap.utils.toArray(".vision-bg-image");
         gsap.set(images, { autoAlpha: 0 });
-        gsap.set(images[0], { autoAlpha: 1 });
+        gsap.set(images[0], { autoAlpha: 0.2 });
+        gsap.set(slides[0], { autoAlpha: 1, y: 0 });
 
         slides.forEach((slide, i) => {
-            const slideTimeline = gsap.timeline({
+            gsap.timeline({
                 scrollTrigger: {
-                    trigger: slide,
-                    start: "top center",
-                    end: "bottom center",
+                    trigger: visionSection,
+                    start: () => `top+=${i * window.innerHeight} top`,
+                    end: () => `top+=${(i + 1) * window.innerHeight} top`,
                     scrub: true,
                     onEnter: () => setActiveSlide(i),
                     onEnterBack: () => setActiveSlide(i),
@@ -230,8 +246,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         const setActiveSlide = (index) => {
-            slides.forEach((s, i) => s.classList.toggle('active', i === index));
-            images.forEach((img, i) => gsap.to(img, { autoAlpha: i === index ? 0.2 : 0, duration: 1 }));
+            gsap.to(slides, { autoAlpha: 0, y: 30, duration: 0.5, stagger: 0.1 });
+            gsap.to(slides[index], { autoAlpha: 1, y: 0, duration: 0.8, delay: 0.2 });
+            gsap.to(images, { autoAlpha: 0, scale: 1.1, duration: 1 });
+            gsap.to(images[index], { autoAlpha: 0.2, scale: 1, duration: 1 });
         };
     }
 });
