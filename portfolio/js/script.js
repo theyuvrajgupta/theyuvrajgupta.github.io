@@ -199,26 +199,23 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const focusOnNode = (node) => {
-    isFocused = true;
-    targetNode = node;
+            isFocused = true;
+            targetNode = node;
 
-    const center = node.position.clone();
-    const offsetDirection = camera.position.clone().sub(scene.position).normalize();
-    const newCameraPos = center.clone().add(offsetDirection.multiplyScalar(60));
+            const center = node.position.clone();
+            const camOffset = new THREE.Vector3(0, 0, 60);
+            const newPos = center.clone().add(camOffset);
 
-    gsap.to(camera.position, {
-        duration: 1.5,
-        x: newCameraPos.x,
-        y: newCameraPos.y,
-        z: newCameraPos.z,
-        ease: 'power3.inOut',
-        onUpdate: () => {
-            camera.lookAt(center);
-        }
-    });
-
-    resetButton.classList.remove('hidden');
-};
+            gsap.to(camera.position, {
+                duration: 1.5,
+                x: newPos.x,
+                y: newPos.y,
+                z: newPos.z,
+                ease: 'power3.inOut',
+            });
+            resetButton.classList.remove('hidden');
+        };
+        
         const resetCamera = () => { isFocused = false; targetNode = null; gsap.to(camera.position, { ...initialCameraPos, duration: 1.5, ease: 'power3.inOut' }); resetButton.classList.add('hidden'); };
         const onWindowResize = () => { camera.aspect = expertiseContainer.clientWidth / expertiseContainer.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(expertiseContainer.clientWidth, expertiseContainer.clientHeight); };
 
@@ -226,17 +223,20 @@ document.addEventListener('DOMContentLoaded', () => {
             requestAnimationFrame(animateExpertise);
             const time = Date.now() * 0.0001;
             if (!isMouseDown && !isFocused) {
-                targetRotation.y = time * 0.5;
+                targetRotation.y += 0.005;
             }
-            group.rotation.y += (targetRotation.y - group.rotation.y) * 0.05;
-            group.rotation.x += (targetRotation.x - group.rotation.x) * 0.05;
+
+            if (!isFocused) {
+                group.rotation.y += (targetRotation.y - group.rotation.y) * 0.05;
+                group.rotation.x += (targetRotation.x - group.rotation.x) * 0.05;
+            }
 
             labels.forEach(label => {
                 const shouldBeVisible = isFocused && label.userData.parentId === targetNode.userData.id;
                 gsap.to(label.material, { opacity: shouldBeVisible ? 1 : 0, duration: 0.5 });
             });
 
-            if (isFocused) {
+            if (isFocused && targetNode) {
                 camera.lookAt(targetNode.position);
             } else {
                 camera.lookAt(scene.position);
