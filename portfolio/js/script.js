@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const expertiseContainer = document.getElementById('expertise-visual');
     console.log('⚙️ expertiseContainer firing…');
     console.log('expertiseContainer →', expertiseContainer);
+    console.log('typeof THREE →', typeof THREE);
     if (expertiseContainer && typeof THREE !== 'undefined') {
         console.log('Starting scene render for neural synapse now');
         let scene, camera, renderer, nodes = [], labels = [], group;
