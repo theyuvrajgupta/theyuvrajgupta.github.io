@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: "AWS", type: "skill", parent: "Cloud Architecture", name: "AWS (Lambda, SQS, S3)" },
             { id: "Process Optimization", type: "skill", parent: "Cloud Architecture", name: "Process Optimization" },
             { id: "Terraform", type: "skill", parent: "Cloud Architecture", name: "Infrastructure as Code" },
-            { id: "Agile & Scrum", type: "skill", parent: "Product Leadership", name: "Agile & Scrum Mastery" },
+            { id: "Agile & Scrum", type: "skill", parent: "Product Leadership", name: "Agile & Scrum Master" },
             { id: "Product Thinking", type: "skill", parent: "Product Leadership", name: "Product Thinking" },
             { id: "Mentorship", type: "skill", parent: "Product Leadership", name: "Team Mentorship" },
             { id: "Stakeholder Mngmt", type: "skill", parent: "Product Leadership", name: "Stakeholder Management" },
