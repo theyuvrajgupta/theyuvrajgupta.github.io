@@ -98,13 +98,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.modal-backdrop').addEventListener('click', closeAllModals);
 
 
-    // --- EXPERTISE: THREE.JS NEURAL SYNAPSE (STABLE V3.3) ---
+    // --- EXPERTISE: THREE.JS NEURAL SYNAPSE (STABLE V3.6 - CLICK FIXED) ---
     const expertiseContainer = document.getElementById('expertise-visual');
-    console.log('⚙️ expertiseContainer firing…');
-    console.log('expertiseContainer →', expertiseContainer);
-    console.log('typeof THREE →', typeof THREE);
     if (expertiseContainer && typeof THREE !== 'undefined') {
-        console.log('Starting scene render for neural synapse now');
         let scene, camera, renderer, nodes = [], labels = [], group;
         let isMouseDown = false, lastMousePos = { x: 0, y: 0 }, targetRotation = { x: 0.3, y: 0 };
         let isFocused = false, targetNode = null;
@@ -112,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const resetButton = document.getElementById('reset-camera-btn');
 
         const initExpertise = () => {
-            console.log('⚙️ initExpertise firing…');
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, expertiseContainer.clientWidth / expertiseContainer.clientHeight, 0.1, 1000);
             camera.position.copy(initialCameraPos);
@@ -182,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             expertiseContainer.addEventListener('click', onNodeClick);
             resetButton.addEventListener('click', resetCamera);
             window.addEventListener('resize', onWindowResize);
-        };
+        }
 
         const onNodeClick = (event) => {
             const dx = Math.abs(event.clientX - lastMousePos.x);
@@ -190,7 +185,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if(isMouseDown && (dx > 3 || dy > 3)) return; 
             
             const raycaster = new THREE.Raycaster();
-            const mouse = new THREE.Vector2((event.clientX / expertiseContainer.clientWidth) * 2 - 1, -(event.clientY / expertiseContainer.clientHeight) * 2 + 1);
+            const mouse = new THREE.Vector2();
+            
+            // *** CRITICAL FIX: Calculate mouse coordinates relative to the canvas element ***
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(nodes);
             if (intersects.length > 0 && intersects[0].object.userData.type === 'main') {
@@ -198,49 +199,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        const focusOnNode = (node) => {
-            isFocused = true;
-            targetNode = node;
-
-            const center = node.position.clone();
-            const camOffset = new THREE.Vector3(0, 0, 60);
-            const newPos = center.clone().add(camOffset);
-
-            gsap.to(camera.position, {
-                duration: 1.5,
-                x: newPos.x,
-                y: newPos.y,
-                z: newPos.z,
-                ease: 'power3.inOut',
-            });
-            resetButton.classList.remove('hidden');
-        };
-        
+        const focusOnNode = (node) => { isFocused = true; targetNode = node; gsap.to(camera.position, { ...node.position.clone().add(new THREE.Vector3(0, 0, 80)), duration: 1.5, ease: 'power3.inOut' }); resetButton.classList.remove('hidden'); };
         const resetCamera = () => { isFocused = false; targetNode = null; gsap.to(camera.position, { ...initialCameraPos, duration: 1.5, ease: 'power3.inOut' }); resetButton.classList.add('hidden'); };
         const onWindowResize = () => { camera.aspect = expertiseContainer.clientWidth / expertiseContainer.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(expertiseContainer.clientWidth, expertiseContainer.clientHeight); };
 
         const animateExpertise = () => {
             requestAnimationFrame(animateExpertise);
-            const time = Date.now() * 0.0001;
-            if (!isMouseDown && !isFocused) {
-                targetRotation.y += 0.005;
-            }
-
-            if (!isFocused) {
-                group.rotation.y += (targetRotation.y - group.rotation.y) * 0.05;
-                group.rotation.x += (targetRotation.x - group.rotation.x) * 0.05;
-            }
+            const time = Date.now() * 0.00005;
+            if (!isMouseDown && !isFocused) targetRotation.y = time * 0.5;
+            
+            group.rotation.y += (targetRotation.y - group.rotation.y) * 0.05;
+            group.rotation.x += (targetRotation.x - group.rotation.x) * 0.05;
 
             labels.forEach(label => {
                 const shouldBeVisible = isFocused && label.userData.parentId === targetNode.userData.id;
                 gsap.to(label.material, { opacity: shouldBeVisible ? 1 : 0, duration: 0.5 });
             });
 
-            if (isFocused && targetNode) {
-                camera.lookAt(targetNode.position);
-            } else {
-                camera.lookAt(scene.position);
-            }
+            if (isFocused) camera.lookAt(targetNode.position); else camera.lookAt(scene.position);
             renderer.render(scene, camera);
         };
         
@@ -255,18 +231,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const images = gsap.utils.toArray(".vision-bg-image");
         gsap.set(images, { autoAlpha: 0 });
         gsap.set(images[0], { autoAlpha: 0.2 });
+        gsap.set(slides, { autoAlpha: 0, y: 30 });
         gsap.set(slides[0], { autoAlpha: 1, y: 0 });
 
         slides.forEach((slide, i) => {
-            gsap.timeline({
-                scrollTrigger: {
-                    trigger: visionSection,
-                    start: () => `top+=${i * window.innerHeight} top`,
-                    end: () => `top+=${(i + 1) * window.innerHeight} top`,
-                    scrub: true,
-                    onEnter: () => setActiveSlide(i),
-                    onEnterBack: () => setActiveSlide(i),
-                }
+            ScrollTrigger.create({
+                trigger: visionSection,
+                start: () => `top+=${i * window.innerHeight} top`,
+                end: () => `top+=${(i + 1) * window.innerHeight} top`,
+                onEnter: () => setActiveSlide(i),
+                onEnterBack: () => setActiveSlide(i),
             });
         });
         
