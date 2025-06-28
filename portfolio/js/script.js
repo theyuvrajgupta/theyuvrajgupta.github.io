@@ -32,24 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
         let particles = [], stars = [];
         const numStars = 50;
         
-        const resizeBgCanvas = () => {
-            bgCanvas.width = window.innerWidth;
-            bgCanvas.height = window.innerHeight;
-        };
-
+        const resizeBgCanvas = () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; };
         const initBg = () => {
-            resizeBgCanvas();
-            particles = [];
-            stars = [];
-            let numberOfParticles = (bgCanvas.width * bgCanvas.height) / 12000;
-            for (let i = 0; i < numberOfParticles; i++) {
-                particles.push({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, directionX: (Math.random() * .4) - .2, directionY: (Math.random() * .4) - .2, size: Math.random() * 2 + 1 });
-            }
-            for (let i = 0; i < numStars; i++) {
-                stars.push({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, radius: Math.random() * 0.8, alpha: Math.random() * 0.3 + 0.1 });
-            }
+            resizeBgCanvas(); particles = []; stars = [];
+            let numParticles = (bgCanvas.width * bgCanvas.height) / 12000;
+            for (let i = 0; i < numParticles; i++) particles.push({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, directionX: (Math.random() * .4) - .2, directionY: (Math.random() * .4) - .2, size: Math.random() * 2 + 1 });
+            for (let i = 0; i < numStars; i++) stars.push({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, radius: Math.random() * 0.8, alpha: Math.random() * 0.3 + 0.1 });
         };
-
         const animateBg = () => {
             requestAnimationFrame(animateBg);
             ctx.clearRect(0, 0, innerWidth, innerHeight);
@@ -57,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
             particles.forEach(p => { p.x += p.directionX; p.y += p.directionY; if (p.x > innerWidth || p.x < 0) p.directionX *= -1; if (p.y > innerHeight || p.y < 0) p.directionY *= -1; });
             connect();
         };
-
         const connect = () => {
             let opacityValue = 1;
             for (let a = 0; a < particles.length; a++) {
@@ -75,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         };
-        
         window.addEventListener('resize', initBg);
         initBg();
         animateBg();
@@ -88,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const timelineItems = document.querySelectorAll('.timeline-item');
     const observer = new IntersectionObserver(entries => { entries.forEach(entry => entry.target.classList.toggle('is-visible', entry.isIntersecting)); }, { threshold: 0.2 });
     timelineItems.forEach(item => observer.observe(item));
-
     const projectCards = document.querySelectorAll('.project-card');
     const modalContainer = document.getElementById('modal-container');
     projectCards.forEach(card => card.addEventListener('click', () => { const targetModalId = card.getAttribute('data-modal-target'); const targetModal = document.getElementById(targetModalId); if (targetModal) { modalContainer.classList.remove('hidden'); targetModal.classList.add('active'); animateNumbers(targetModal); } }));
@@ -97,16 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.modal-close-btn').forEach(btn => btn.addEventListener('click', closeAllModals));
     document.querySelector('.modal-backdrop').addEventListener('click', closeAllModals);
 
-
-    // --- EXPERTISE: THREE.JS NEURAL SYNAPSE (STABLE V3.6 - CLICK FIXED) ---
+    // --- EXPERTISE: THREE.JS NEURAL SYNAPSE (V3.7 - ALWAYS-ON LABELS) ---
     const expertiseContainer = document.getElementById('expertise-visual');
-    if (expertiseContainer && typeof THREE !== 'undefined') {
+    if (expertiseContainer && typeof THREE !== 'undefined' && typeof gsap !== 'undefined') {
         let scene, camera, renderer, nodes = [], labels = [], group;
         let isMouseDown = false, lastMousePos = { x: 0, y: 0 }, targetRotation = { x: 0.3, y: 0 };
-        let isFocused = false, targetNode = null;
         const initialCameraPos = new THREE.Vector3(0, 0, 110);
-        const resetButton = document.getElementById('reset-camera-btn');
-
+        
         const initExpertise = () => {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, expertiseContainer.clientWidth / expertiseContainer.clientHeight, 0.1, 1000);
@@ -124,10 +107,16 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const createGraph = () => {
+            // New layout to better utilize horizontal space
+            const mainPositions = [
+                new THREE.Vector3(-55, 10, 0),  // Top-Left
+                new THREE.Vector3(55, 10, 0),   // Top-Right
+                new THREE.Vector3(-55, -40, 0), // Bottom-Left
+                new THREE.Vector3(55, -40, 0)   // Bottom-Right
+            ];
+            
             skillsData.nodes.filter(n => n.type === 'main').forEach((data, i) => {
-                const angle = (i / 4) * Math.PI * 2;
-                const pos = new THREE.Vector3(Math.cos(angle) * 40, Math.sin(angle) * 40, 0);
-                nodes.push(createNode(data, pos, 4, 0x00f5c3, 0.5));
+                nodes.push(createNode(data, mainPositions[i], 4, 0x00f5c3, 0.5));
             });
             skillsData.nodes.filter(n => n.type === 'skill').forEach(data => {
                 const parent = nodes.find(n => n.userData.id === data.parent);
@@ -145,23 +134,31 @@ document.addEventListener('DOMContentLoaded', () => {
             node.position.copy(position);
             node.userData = data;
             group.add(node);
-            if (data.type === 'main') node.add(new THREE.PointLight(color, 0.8, 30));
+            if (data.type === 'main') {
+                node.add(new THREE.PointLight(color, 0.8, 30));
+                labels.push(createLabelSprite(data.name, node, true)); // Create main labels
+            }
             return node;
         };
 
         const createLine = (start, end) => group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([start, end]), new THREE.LineBasicMaterial({ color: 0x232a55, transparent: true, opacity: 0.3 })));
         
-        const createLabelSprite = (text, parentNode) => {
+        const createLabelSprite = (text, parentNode, isMain = false) => {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
-            const font = "Bold 36px Lexend"; context.font = font;
+            const font = isMain ? "Bold 48px Space Grotesk" : "Bold 36px Lexend";
+            context.font = font;
             const width = context.measureText(text).width;
-            canvas.width = width + 20; canvas.height = 50;
-            context.font = font; context.fillStyle = "#c869ff"; context.fillText(text, 10, 38);
-            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), depthTest: false, transparent: true, opacity: 0 }));
-            sprite.scale.set(canvas.width / 12, canvas.height / 12, 1.0);
-            sprite.position.copy(parentNode.position.clone().add(new THREE.Vector3(0, 5, 0)));
-            sprite.userData = { skillId: parentNode.userData.id, parentId: parentNode.userData.parent };
+            canvas.width = width + 20; canvas.height = isMain ? 60 : 50;
+            context.font = font;
+            context.fillStyle = isMain ? "#00f5c3" : "#c869ff";
+            context.fillText(text, 10, isMain ? 45 : 38);
+            
+            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), depthTest: false, transparent: true, opacity: 1 }));
+            const scaleFactor = isMain ? 10 : 12;
+            sprite.scale.set(canvas.width / scaleFactor, canvas.height / scaleFactor, 1.0);
+            const yOffset = isMain ? -7 : 5;
+            sprite.position.copy(parentNode.position.clone().add(new THREE.Vector3(0, yOffset, 0)));
             group.add(sprite);
             return sprite;
         };
@@ -171,52 +168,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const setupEventListeners = () => {
             expertiseContainer.addEventListener('mousedown', e => { isMouseDown = true; lastMousePos = { x: e.clientX, y: e.clientY }; });
             expertiseContainer.addEventListener('mousemove', e => { if (isMouseDown) { const dX = e.clientX - lastMousePos.x, dY = e.clientY - lastMousePos.y; targetRotation.y += dX * 0.005; targetRotation.x = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, targetRotation.x + dY * 0.005)); lastMousePos = { x: e.clientX, y: e.clientY }; }});
-            const onMouseUp = () => { isMouseDown = false; };
+            const onMouseUp = () => isMouseDown = false;
             expertiseContainer.addEventListener('mouseup', onMouseUp);
             expertiseContainer.addEventListener('mouseleave', onMouseUp);
-            expertiseContainer.addEventListener('click', onNodeClick);
-            resetButton.addEventListener('click', resetCamera);
             window.addEventListener('resize', onWindowResize);
-        }
-
-        const onNodeClick = (event) => {
-            const dx = Math.abs(event.clientX - lastMousePos.x);
-            const dy = Math.abs(event.clientY - lastMousePos.y);
-            if(isMouseDown && (dx > 3 || dy > 3)) return; 
-            
-            const raycaster = new THREE.Raycaster();
-            const mouse = new THREE.Vector2();
-            
-            // *** CRITICAL FIX: Calculate mouse coordinates relative to the canvas element ***
-            const rect = renderer.domElement.getBoundingClientRect();
-            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(nodes);
-            if (intersects.length > 0 && intersects[0].object.userData.type === 'main') {
-                focusOnNode(intersects[0].object);
-            }
         };
-
-        const focusOnNode = (node) => { isFocused = true; targetNode = node; gsap.to(camera.position, { ...node.position.clone().add(new THREE.Vector3(0, 0, 80)), duration: 1.5, ease: 'power3.inOut' }); resetButton.classList.remove('hidden'); };
-        const resetCamera = () => { isFocused = false; targetNode = null; gsap.to(camera.position, { ...initialCameraPos, duration: 1.5, ease: 'power3.inOut' }); resetButton.classList.add('hidden'); };
+        
         const onWindowResize = () => { camera.aspect = expertiseContainer.clientWidth / expertiseContainer.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(expertiseContainer.clientWidth, expertiseContainer.clientHeight); };
 
         const animateExpertise = () => {
             requestAnimationFrame(animateExpertise);
-            const time = Date.now() * 0.00005;
-            if (!isMouseDown && !isFocused) targetRotation.y = time * 0.5;
-            
+            const time = Date.now() * 0.0001;
+            if (!isMouseDown) targetRotation.y = time * 0.2;
             group.rotation.y += (targetRotation.y - group.rotation.y) * 0.05;
             group.rotation.x += (targetRotation.x - group.rotation.x) * 0.05;
-
-            labels.forEach(label => {
-                const shouldBeVisible = isFocused && label.userData.parentId === targetNode.userData.id;
-                gsap.to(label.material, { opacity: shouldBeVisible ? 1 : 0, duration: 0.5 });
-            });
-
-            if (isFocused) camera.lookAt(targetNode.position); else camera.lookAt(scene.position);
+            camera.lookAt(scene.position);
             renderer.render(scene, camera);
         };
         
