@@ -89,8 +89,17 @@
         <section id="expertise" class="expertise-section">
             <div class="container expertise-container">
                 <h2 class="section-title">Core Competencies</h2>
-                <p class="section-subtitle">A map of my strategic and technical capabilities. Drag to explore the full synapse.</p>
-                <div id="expertise-visual"></div>
+                <!-- This is the container for the new particle animation -->
+                <div id="skill-reveal-container">
+                    <!-- The canvas will be dynamically inserted here by the script -->
+                </div>
+                <!-- These text elements are hidden but used by the script to generate particle targets -->
+                <div id="skill-text-targets" style="display: none;">
+                    <h2 data-skill-text>HealthTech Strategy</h2>
+                    <h2 data-skill-text>AI & ML Innovation</h2>
+                    <h2 data-skill-text>Cloud & Scalability</h2>
+                    <h2 data-skill-text>Product Leadership</h2>
+                </div>
             </div>
         </section>
     </div><!-- End of Main Content Wrapper -->

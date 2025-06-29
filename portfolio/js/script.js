@@ -83,111 +83,225 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.modal-close-btn').forEach(btn => btn.addEventListener('click', closeAllModals));
     document.querySelector('.modal-backdrop').addEventListener('click', closeAllModals);
 
-    // --- EXPERTISE: THREE.JS NEURAL SYNAPSE (V3.7 - ALWAYS-ON LABELS) ---
-    const expertiseContainer = document.getElementById('expertise-visual');
-    if (expertiseContainer && typeof THREE !== 'undefined' && typeof gsap !== 'undefined') {
-        let scene, camera, renderer, nodes = [], labels = [], group;
-        let isMouseDown = false, lastMousePos = { x: 0, y: 0 }, targetRotation = { x: 0.3, y: 0 };
-        const initialCameraPos = new THREE.Vector3(0, 0, 110);
-        
-        const initExpertise = () => {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, expertiseContainer.clientWidth / expertiseContainer.clientHeight, 0.1, 1000);
-            camera.position.copy(initialCameraPos);
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(expertiseContainer.clientWidth, expertiseContainer.clientHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            expertiseContainer.appendChild(renderer.domElement);
-            group = new THREE.Group();
-            scene.add(group);
-            createGraph();
-            addLights();
-            setupEventListeners();
-            animateExpertise();
+    // --- EXPERTISE/CORE COMPETENCIES: PARTICLE-TO-TEXT REVEAL ---
+    const skillRevealContainer = document.getElementById('skill-reveal-container');
+
+    if (skillRevealContainer && typeof gsap !== 'undefined') {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        skillRevealContainer.appendChild(canvas);
+
+        let particlePool = [];
+        let textPoints = {};
+        let animationFrameId;
+
+        const skillElements = document.querySelectorAll('[data-skill-text]');
+        const skills = Array.from(skillElements).map(el => el.textContent);
+
+        // Particle configuration
+        const PARTICLE_CONFIG = {
+            friction: 0.96,
+            ease: 0.1
         };
 
-        const createGraph = () => {
-            // New layout to better utilize horizontal space
-            const mainPositions = [
-                new THREE.Vector3(-55, 10, 0),  // Top-Left
-                new THREE.Vector3(55, 10, 0),   // Top-Right
-                new THREE.Vector3(-55, -40, 0), // Bottom-Left
-                new THREE.Vector3(55, -40, 0)   // Bottom-Right
-            ];
-            
-            skillsData.nodes.filter(n => n.type === 'main').forEach((data, i) => {
-                nodes.push(createNode(data, mainPositions[i], 4, 0x00f5c3, 0.5));
-            });
-            skillsData.nodes.filter(n => n.type === 'skill').forEach(data => {
-                const parent = nodes.find(n => n.userData.id === data.parent);
-                const pos = parent.position.clone().add(new THREE.Vector3().randomDirection().multiplyScalar(22));
-                const node = createNode(data, pos, 2, 0xe6f1ff, 0.1);
-                nodes.push(node);
-                createLine(parent.position, node.position);
-                labels.push(createLabelSprite(data.name, node));
-            });
+        // Responsiveness
+        const setupParticleCount = () => {
+            if (window.innerWidth < 768) return 150;
+            if (window.innerWidth < 1024) return 300;
+            return 500;
         };
-        
-        const createNode = (data, position, size, color, emissiveIntensity) => {
-            const material = new THREE.MeshPhongMaterial({ color, emissive: color, emissiveIntensity, shininess: 80 });
-            const node = new THREE.Mesh(new THREE.SphereGeometry(size, 32, 16), material);
-            node.position.copy(position);
-            node.userData = data;
-            group.add(node);
-            if (data.type === 'main') {
-                node.add(new THREE.PointLight(color, 0.8, 30));
-                labels.push(createLabelSprite(data.name, node, true)); // Create main labels
+
+        // A simple Particle class
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = 0;
+                this.vy = 0;
+                this.radius = Math.random() * 1.5 + 0.5;
+                this.target = null;
+                this.color = `rgba(0, 245, 195, ${Math.random() * 0.5 + 0.3})`;
             }
-            return node;
-        };
 
-        const createLine = (start, end) => group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([start, end]), new THREE.LineBasicMaterial({ color: 0x232a55, transparent: true, opacity: 0.3 })));
-        
-        const createLabelSprite = (text, parentNode, isMain = false) => {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            const font = isMain ? "Bold 48px Space Grotesk" : "Bold 36px Lexend";
-            context.font = font;
-            const width = context.measureText(text).width;
-            canvas.width = width + 20; canvas.height = isMain ? 60 : 50;
-            context.font = font;
-            context.fillStyle = isMain ? "#00f5c3" : "#c869ff";
-            context.fillText(text, 10, isMain ? 45 : 38);
+            update() {
+                if (this.target) {
+                    const dx = this.target.x - this.x;
+                    const dy = this.target.y - this.y;
+                    this.vx += dx * PARTICLE_CONFIG.ease;
+                    this.vy += dy * PARTICLE_CONFIG.ease;
+                }
+                this.vx *= PARTICLE_CONFIG.friction;
+                this.vy *= PARTICLE_CONFIG.friction;
+                this.x += this.vx;
+                this.y += this.vy;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        // Function to sample pixel coordinates from text
+        const getTextPoints = (text, fontSize) => {
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            const font = `bold ${fontSize}px "Space Grotesk"`;
+            tempCtx.font = font;
             
-            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), depthTest: false, transparent: true, opacity: 1 }));
-            const scaleFactor = isMain ? 10 : 12;
-            sprite.scale.set(canvas.width / scaleFactor, canvas.height / scaleFactor, 1.0);
-            const yOffset = isMain ? -7 : 5;
-            sprite.position.copy(parentNode.position.clone().add(new THREE.Vector3(0, yOffset, 0)));
-            group.add(sprite);
-            return sprite;
-        };
-        
-        const addLights = () => { scene.add(new THREE.AmbientLight(0xffffff, 0.4)); camera.add(new THREE.PointLight(0xffffff, 0.6)); scene.add(camera); };
-        
-        const setupEventListeners = () => {
-            expertiseContainer.addEventListener('mousedown', e => { isMouseDown = true; lastMousePos = { x: e.clientX, y: e.clientY }; });
-            expertiseContainer.addEventListener('mousemove', e => { if (isMouseDown) { const dX = e.clientX - lastMousePos.x, dY = e.clientY - lastMousePos.y; targetRotation.y += dX * 0.005; targetRotation.x = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, targetRotation.x + dY * 0.005)); lastMousePos = { x: e.clientX, y: e.clientY }; }});
-            const onMouseUp = () => isMouseDown = false;
-            expertiseContainer.addEventListener('mouseup', onMouseUp);
-            expertiseContainer.addEventListener('mouseleave', onMouseUp);
-            window.addEventListener('resize', onWindowResize);
-        };
-        
-        const onWindowResize = () => { camera.aspect = expertiseContainer.clientWidth / expertiseContainer.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(expertiseContainer.clientWidth, expertiseContainer.clientHeight); };
+            const textWidth = tempCtx.measureText(text).width;
+            const canvasWidth = textWidth + 40;
+            const canvasHeight = fontSize * 1.5;
 
-        const animateExpertise = () => {
-            requestAnimationFrame(animateExpertise);
-            const time = Date.now() * 0.0001;
-            if (!isMouseDown) targetRotation.y = time * 0.2;
-            group.rotation.y += (targetRotation.y - group.rotation.y) * 0.05;
-            group.rotation.x += (targetRotation.x - group.rotation.x) * 0.05;
-            camera.lookAt(scene.position);
-            renderer.render(scene, camera);
+            tempCanvas.width = canvasWidth;
+            tempCanvas.height = canvasHeight;
+            
+            tempCtx.font = font;
+            tempCtx.fillStyle = '#fff';
+            tempCtx.textAlign = 'center';
+            tempCtx.textBaseline = 'middle';
+            tempCtx.fillText(text, canvasWidth / 2, canvasHeight / 2);
+
+            const imageData = tempCtx.getImageData(0, 0, canvasWidth, canvasHeight);
+            const points = [];
+            const density = 4; // Sample every 4th pixel
+
+            for (let y = 0; y < imageData.height; y += density) {
+                for (let x = 0; x < imageData.width; x += density) {
+                    const alpha = imageData.data[(y * imageData.width + x) * 4 + 3];
+                    if (alpha > 128) {
+                        points.push({ 
+                            x: x + (canvas.width - canvasWidth) / 2, 
+                            y: y + (canvas.height - canvasHeight) / 2 
+                        });
+                    }
+                }
+            }
+            return points;
+        };
+
+        const init = () => {
+            // Cancel any previous animation frame
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            
+            // Setup canvas
+            canvas.width = skillRevealContainer.offsetWidth;
+            canvas.height = skillRevealContainer.offsetHeight;
+
+            // Pre-calculate text points for all skills
+            const fontSize = Math.min(canvas.width / 10, 80);
+            skills.forEach(skill => {
+                if (!textPoints[skill]) {
+                    textPoints[skill] = getTextPoints(skill, fontSize);
+                }
+            });
+
+            // Create particle pool
+            particlePool = [];
+            const numParticles = setupParticleCount();
+            for (let i = 0; i < numParticles; i++) {
+                particlePool.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height));
+            }
+            
+            // Start the animation loop
+            animate();
+        };
+
+        const animate = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particlePool.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            animationFrameId = requestAnimationFrame(animate);
         };
         
-        initExpertise();
+        const createSkillAnimation = (skill, index) => {
+            const points = textPoints[skill];
+            if (!points || points.length === 0) return;
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: skillRevealContainer,
+                    start: `top-=${index * 150} center`, // Stagger the start based on index
+                    toggleActions: "play none none none",
+                    once: true, // Only play once
+                }
+            });
+
+            // Assign targets
+            particlePool.forEach((p, i) => {
+                const targetPoint = points[i % points.length];
+                p.target = {
+                    x: targetPoint.x + (canvas.width / 2 - (ctx.measureText(skill).width + 40) / 2),
+                    y: targetPoint.y + (canvas.height / 2 - (ctx.measureText(skill).font.match(/\d+/)[0] * 1.5) / 2)
+                };
+            });
+
+            tl.to({}, { // Dummy tween to trigger particle movement
+                duration: 1.2,
+                ease: "power3.inOut"
+            })
+            .add(() => {
+                // Scatter after forming text
+                particlePool.forEach(p => {
+                    p.target = {
+                        x: Math.random() * canvas.width,
+                        y: canvas.height + 50 // Scatter downwards off-screen
+                    };
+                });
+            }, "+=0.3")
+            .to({}, {
+                duration: 0.8,
+                ease: "power2.in"
+            });
+        };
+        
+        // Initial setup and ScrollTrigger creation
+        ScrollTrigger.create({
+            trigger: skillRevealContainer,
+            start: "top bottom",
+            end: "bottom top",
+            onEnter: () => {
+                init();
+                skills.forEach((skill, index) => {
+                    createSkillAnimation(skill, index);
+                });
+            },
+            onLeave: () => {
+                cancelAnimationFrame(animationFrameId);
+            },
+            onEnterBack: () => {
+                init();
+                skills.forEach((skill, index) => {
+                    createSkillAnimation(skill, index);
+                });
+            },
+            onLeaveBack: () => {
+                cancelAnimationFrame(animationFrameId);
+            }
+        });
+
+        // Re-initialize on window resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                // We need to kill old ScrollTriggers and timelines to avoid conflicts
+                ScrollTrigger.getAll().forEach(st => {
+                    if (st.trigger === skillRevealContainer) st.kill();
+                });
+                // Re-initialize everything
+                init();
+                skills.forEach((skill, index) => {
+                    createSkillAnimation(skill, index);
+                });
+            }, 250);
+        });
     }
+});
     
     // --- VISION SCROLL-DRIVEN SECTION ---
     const visionSection = document.querySelector('.vision-scroll-section');
