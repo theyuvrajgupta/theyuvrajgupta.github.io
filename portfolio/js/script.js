@@ -29,23 +29,57 @@ document.addEventListener('DOMContentLoaded', () => {
     const bgCanvas = document.getElementById('background-canvas');
     if (bgCanvas) {
         const ctx = bgCanvas.getContext('2d');
-        let particles = [], stars = [];
+        let particles = [],
+            stars = [];
         const numStars = 50;
-        
-        const resizeBgCanvas = () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; };
-        const initBg = () => {
-            resizeBgCanvas(); particles = []; stars = [];
-            let numParticles = (bgCanvas.width * bgCanvas.height) / 12000;
-            for (let i = 0; i < numParticles; i++) particles.push({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, directionX: (Math.random() * .4) - .2, directionY: (Math.random() * .4) - .2, size: Math.random() * 2 + 1 });
-            for (let i = 0; i < numStars; i++) stars.push({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, radius: Math.random() * 0.8, alpha: Math.random() * 0.3 + 0.1 });
+
+        const resizeBgCanvas = () => {
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
         };
+
+        const initBg = () => {
+            resizeBgCanvas();
+            particles = [];
+            stars = [];
+            let numberOfParticles = (bgCanvas.width * bgCanvas.height) / 12000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                particles.push({
+                    x: Math.random() * innerWidth,
+                    y: Math.random() * innerHeight,
+                    directionX: (Math.random() * .4) - .2,
+                    directionY: (Math.random() * .4) - .2,
+                    size: Math.random() * 2 + 1
+                });
+            }
+            for (let i = 0; i < numStars; i++) {
+                stars.push({
+                    x: Math.random() * innerWidth,
+                    y: Math.random() * innerHeight,
+                    radius: Math.random() * 0.8,
+                    alpha: Math.random() * 0.3 + 0.1
+                });
+            }
+        };
+
         const animateBg = () => {
             requestAnimationFrame(animateBg);
             ctx.clearRect(0, 0, innerWidth, innerHeight);
-            stars.forEach(star => { ctx.beginPath(); ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2); ctx.fillStyle = `rgba(230, 241, 255, ${star.alpha})`; ctx.fill(); });
-            particles.forEach(p => { p.x += p.directionX; p.y += p.directionY; if (p.x > innerWidth || p.x < 0) p.directionX *= -1; if (p.y > innerHeight || p.y < 0) p.directionY *= -1; });
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(230, 241, 255, ${star.alpha})`;
+                ctx.fill();
+            });
+            particles.forEach(p => {
+                p.x += p.directionX;
+                p.y += p.directionY;
+                if (p.x > innerWidth || p.x < 0) p.directionX *= -1;
+                if (p.y > innerHeight || p.y < 0) p.directionY *= -1;
+            });
             connect();
         };
+
         const connect = () => {
             let opacityValue = 1;
             for (let a = 0; a < particles.length; a++) {
@@ -67,8 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
         initBg();
         animateBg();
     }
-    
+
     // --- GENERAL UI ---
+    // General UI code for navbar, timeline, modals etc.
     gsap.from(".animate-on-load", { duration: 0.8, y: 30, opacity: 0, stagger: 0.2, ease: "power3.out", delay: 0.2 });
     const navbar = document.querySelector('.navbar');
     window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 50));
@@ -83,10 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.modal-close-btn').forEach(btn => btn.addEventListener('click', closeAllModals));
     document.querySelector('.modal-backdrop').addEventListener('click', closeAllModals);
 
-    // --- EXPERTISE/CORE COMPETENCIES: PARTICLE-TO-TEXT REVEAL ---
+
+    // --- EXPERTISE: PARTICLE-TO-TEXT REVEAL ---
     const skillRevealContainer = document.getElementById('skill-reveal-container');
 
-    if (skillRevealContainer && typeof gsap !== 'undefined') {
+    if (skillRevealContainer && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         skillRevealContainer.appendChild(canvas);
@@ -98,20 +134,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const skillElements = document.querySelectorAll('[data-skill-text]');
         const skills = Array.from(skillElements).map(el => el.textContent);
 
-        // Particle configuration
-        const PARTICLE_CONFIG = {
-            friction: 0.96,
-            ease: 0.1
-        };
-
-        // Responsiveness
+        const PARTICLE_CONFIG = { friction: 0.96, ease: 0.1 };
         const setupParticleCount = () => {
             if (window.innerWidth < 768) return 150;
             if (window.innerWidth < 1024) return 300;
             return 500;
         };
 
-        // A simple Particle class
         class Particle {
             constructor(x, y) {
                 this.x = x;
@@ -122,7 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.target = null;
                 this.color = `rgba(0, 245, 195, ${Math.random() * 0.5 + 0.3})`;
             }
-
             update() {
                 if (this.target) {
                     const dx = this.target.x - this.x;
@@ -135,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.x += this.vx;
                 this.y += this.vy;
             }
-
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -144,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Function to sample pixel coordinates from text
         const getTextPoints = (text, fontSize) => {
             const tempCanvas = document.createElement('canvas');
             const tempCtx = tempCanvas.getContext('2d');
@@ -166,16 +192,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const imageData = tempCtx.getImageData(0, 0, canvasWidth, canvasHeight);
             const points = [];
-            const density = 4; // Sample every 4th pixel
+            const density = 4;
 
             for (let y = 0; y < imageData.height; y += density) {
                 for (let x = 0; x < imageData.width; x += density) {
-                    const alpha = imageData.data[(y * imageData.width + x) * 4 + 3];
-                    if (alpha > 128) {
-                        points.push({ 
-                            x: x + (canvas.width - canvasWidth) / 2, 
-                            y: y + (canvas.height - canvasHeight) / 2 
-                        });
+                    if (imageData.data[(y * imageData.width + x) * 4 + 3] > 128) {
+                        points.push({ x, y });
                     }
                 }
             }
@@ -183,128 +205,112 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const init = () => {
-            // Cancel any previous animation frame
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             
-            // Setup canvas
             canvas.width = skillRevealContainer.offsetWidth;
             canvas.height = skillRevealContainer.offsetHeight;
 
-            // Pre-calculate text points for all skills
             const fontSize = Math.min(canvas.width / 10, 80);
             skills.forEach(skill => {
-                if (!textPoints[skill]) {
-                    textPoints[skill] = getTextPoints(skill, fontSize);
+                if (!textPoints[skill] || textPoints[skill].fontSize !== fontSize) {
+                     textPoints[skill] = getTextPoints(skill, fontSize);
+                     textPoints[skill].fontSize = fontSize; // Store the font size used
                 }
             });
 
-            // Create particle pool
             particlePool = [];
             const numParticles = setupParticleCount();
             for (let i = 0; i < numParticles; i++) {
                 particlePool.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height));
             }
             
-            // Start the animation loop
             animate();
         };
 
         const animate = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particlePool.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            particlePool.forEach(p => { p.update(); p.draw(); });
             animationFrameId = requestAnimationFrame(animate);
         };
         
         const createSkillAnimation = (skill, index) => {
-            const points = textPoints[skill];
-            if (!points || points.length === 0) return;
-
+            const pointsData = textPoints[skill];
+            if (!pointsData || pointsData.length === 0) return;
+            const points = pointsData;
+            
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: skillRevealContainer,
-                    start: `top-=${index * 150} center`, // Stagger the start based on index
+                    start: `top-=${index * 200} center`,
                     toggleActions: "play none none none",
-                    once: true, // Only play once
+                    once: true,
                 }
             });
 
-            // Assign targets
+            // *** CRITICAL FIX APPLIED HERE ***
+            const fontSize = pointsData.fontSize;
+            const tempCtx = document.createElement('canvas').getContext('2d');
+            tempCtx.font = `bold ${fontSize}px "Space Grotesk"`;
+            const textWidth = tempCtx.measureText(skill).width;
+            const textBlockHeight = fontSize * 1.5;
+            
+            const offsetX = (canvas.width / 2) - ((textWidth + 40) / 2);
+            const offsetY = (canvas.height / 2) - (textBlockHeight / 2);
+
             particlePool.forEach((p, i) => {
                 const targetPoint = points[i % points.length];
-                p.target = {
-                    x: targetPoint.x + (canvas.width / 2 - (ctx.measureText(skill).width + 40) / 2),
-                    y: targetPoint.y + (canvas.height / 2 - (ctx.measureText(skill).font.match(/\d+/)[0] * 1.5) / 2)
-                };
+                if(targetPoint){
+                    p.target = {
+                        x: targetPoint.x + offsetX,
+                        y: targetPoint.y + offsetY
+                    };
+                }
             });
 
-            tl.to({}, { // Dummy tween to trigger particle movement
-                duration: 1.2,
-                ease: "power3.inOut"
-            })
+            tl.to({}, { duration: 1.2, ease: "power3.inOut" })
             .add(() => {
-                // Scatter after forming text
                 particlePool.forEach(p => {
                     p.target = {
                         x: Math.random() * canvas.width,
-                        y: canvas.height + 50 // Scatter downwards off-screen
+                        y: canvas.height + 50
                     };
                 });
             }, "+=0.3")
-            .to({}, {
-                duration: 0.8,
-                ease: "power2.in"
-            });
+            .to({}, { duration: 0.8, ease: "power2.in" });
         };
         
-        // Initial setup and ScrollTrigger creation
         ScrollTrigger.create({
             trigger: skillRevealContainer,
-            start: "top bottom",
-            end: "bottom top",
+            start: "top 80%",
+            end: "bottom 20%",
             onEnter: () => {
                 init();
-                skills.forEach((skill, index) => {
-                    createSkillAnimation(skill, index);
-                });
+                skills.forEach((skill, index) => createSkillAnimation(skill, index));
             },
-            onLeave: () => {
-                cancelAnimationFrame(animationFrameId);
-            },
+            onLeave: () => cancelAnimationFrame(animationFrameId),
             onEnterBack: () => {
                 init();
-                skills.forEach((skill, index) => {
-                    createSkillAnimation(skill, index);
-                });
+                skills.forEach((skill, index) => createSkillAnimation(skill, index));
             },
-            onLeaveBack: () => {
-                cancelAnimationFrame(animationFrameId);
-            }
+            onLeaveBack: () => cancelAnimationFrame(animationFrameId)
         });
 
-        // Re-initialize on window resize
         let resizeTimer;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
-                // We need to kill old ScrollTriggers and timelines to avoid conflicts
                 ScrollTrigger.getAll().forEach(st => {
                     if (st.trigger === skillRevealContainer) st.kill();
                 });
-                // Re-initialize everything
+                textPoints = {}; // Clear cached points to recalculate with new font size
                 init();
-                skills.forEach((skill, index) => {
-                    createSkillAnimation(skill, index);
-                });
+                skills.forEach((skill, index) => createSkillAnimation(skill, index));
             }, 250);
         });
     }
-    
     // --- VISION SCROLL-DRIVEN SECTION ---
     const visionSection = document.querySelector('.vision-scroll-section');
-    if (visionSection && typeof gsap !== 'undefined') {
+    if (visionSection && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
         gsap.registerPlugin(ScrollTrigger);
         const slides = gsap.utils.toArray(".vision-slide");
         const images = gsap.utils.toArray(".vision-bg-image");
@@ -330,4 +336,5 @@ document.addEventListener('DOMContentLoaded', () => {
             gsap.to(images[index], { autoAlpha: 0.2, scale: 1, duration: 1 });
         };
     }
+});
 });
