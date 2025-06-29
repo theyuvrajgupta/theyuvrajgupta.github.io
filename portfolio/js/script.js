@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.modal-backdrop').addEventListener('click', closeAllModals);
 
 
-    // --- EXPERTISE: PARTICLE-TO-TEXT REVEAL ---
+    // --- EXPERTISE: PARTICLE-TO-TEXT REVEAL (STABLE & RE-ARCHITECTED) ---
     const skillRevealContainer = document.getElementById('skill-reveal-container');
 
     if (skillRevealContainer && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
@@ -133,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const skillElements = document.querySelectorAll('[data-skill-text]');
         const skills = Array.from(skillElements).map(el => el.textContent);
 
-        const PARTICLE_CONFIG = { friction: 0.96, ease: 0.1 };
         const setupParticleCount = () => {
             if (window.innerWidth < 768) return 200;
             if (window.innerWidth < 1024) return 350;
@@ -146,25 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.y = y;
                 this.originX = x;
                 this.originY = y;
-                this.vx = 0;
-                this.vy = 0;
                 this.radius = Math.random() * 1.5 + 0.5;
-                this.target = null;
                 this.color = `rgba(0, 245, 195, ${Math.random() * 0.5 + 0.5})`;
-            }
-
-            update() {
-                if (this.target) {
-                    this.vx += (this.target.x - this.x) * PARTICLE_CONFIG.ease;
-                    this.vy += (this.target.y - this.y) * PARTICLE_CONFIG.ease;
-                } else {
-                    this.vx += (this.originX - this.x) * 0.01;
-                    this.vy += (this.originY - this.y) * 0.01;
-                }
-                this.vx *= PARTICLE_CONFIG.friction;
-                this.vy *= PARTICLE_CONFIG.friction;
-                this.x += this.vx;
-                this.y += this.vy;
             }
 
             draw() {
@@ -229,79 +211,84 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const animate = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particlePool.forEach(p => { p.update(); p.draw(); });
+            particlePool.forEach(p => p.draw());
             animationFrameId = requestAnimationFrame(animate);
         };
         
-        const createSkillAnimation = (skill, index, totalSkills) => {
-            const fontSize = Math.min(canvas.width / 12, 60);
-            const pointsData = getTextPoints(skill, fontSize);
-            if (!pointsData || pointsData.points.length === 0) return;
-
-            const tl = gsap.timeline({
+        const createMasterTimeline = () => {
+            const masterTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: skillRevealContainer,
-                    start: `top-=${index * 150} center`,
-                    toggleActions: "play none none none",
-                    once: true,
+                    start: "top center",
+                    end: "bottom center",
+                    scrub: 1,
                 }
             });
-            
-            const offsetX = (canvas.width - pointsData.width) / 2;
-            const offsetY = (canvas.height - pointsData.height) / 2;
 
-            tl.add(() => {
-                particlePool.forEach((p, i) => {
-                    const targetPoint = pointsData.points[i % pointsData.points.length];
-                    if(targetPoint){
-                        p.target = {
-                            x: targetPoint.x + offsetX,
-                            y: targetPoint.y + offsetY
-                        };
-                    }
+            skills.forEach((skill, index) => {
+                const fontSize = Math.min(canvas.width / 12, 60);
+                const pointsData = getTextPoints(skill, fontSize);
+                if (!pointsData || pointsData.points.length === 0) return;
+
+                const offsetX = (canvas.width - pointsData.width) / 2;
+                const offsetY = (canvas.height - pointsData.height) / 2;
+                
+                // Form text
+                masterTl.to(particlePool, {
+                    x: (i) => pointsData.points[i % pointsData.points.length].x + offsetX,
+                    y: (i) => pointsData.points[i % pointsData.points.length].y + offsetY,
+                    stagger: {
+                        each: 0.005,
+                        from: "random"
+                    },
+                    duration: 1.2,
+                    ease: "power2.inOut"
                 });
-            })
-            .to({}, { duration: 1.2, ease: "power3.inOut" })
-            .add(() => {
-                particlePool.forEach(p => {
-                    // Make particles return to random positions instead of falling
-                    p.target = {
-                         x: Math.random() * canvas.width,
-                         y: Math.random() * canvas.height
-                    };
-                });
-            }, "+=0.8") // Hold the text form a bit longer
-            .to({}, { duration: 1.5, ease: "power2.inOut" });
+
+                // Hold text
+                masterTl.to({}, { duration: 1 });
+
+                // Scatter back to origin if it's not the last skill
+                if (index < skills.length - 1) {
+                     masterTl.to(particlePool, {
+                        x: (i) => particlePool[i].originX,
+                        y: (i) => particlePool[i].originY,
+                         stagger: {
+                            each: 0.005,
+                            from: "random"
+                        },
+                        duration: 1.2,
+                        ease: "power2.inOut"
+                    });
+                }
+            });
         };
         
-        const masterTimeline = ScrollTrigger.create({
+        // Initial setup and ScrollTrigger creation
+        ScrollTrigger.create({
             trigger: skillRevealContainer,
             start: "top 80%",
             end: "bottom 20%",
             onEnter: () => {
                 init();
-                skills.forEach((skill, index) => createSkillAnimation(skill, index, skills.length));
+                createMasterTimeline();
             },
-            onLeave: () => {
-                cancelAnimationFrame(animationFrameId);
-            },
+            onLeave: () => { cancelAnimationFrame(animationFrameId); },
             onEnterBack: () => {
                 init();
-                skills.forEach((skill, index) => createSkillAnimation(skill, index, skills.length));
+                createMasterTimeline();
             },
-            onLeaveBack: () => {
-                cancelAnimationFrame(animationFrameId);
-            }
+            onLeaveBack: () => { cancelAnimationFrame(animationFrameId); }
         });
 
         let resizeTimer;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
-                masterTimeline.kill();
+                ScrollTrigger.getAll().forEach(st => st.kill());
                 textPointsCache = {}; 
                 init();
-                skills.forEach((skill, index) => createSkillAnimation(skill, index, skills.length));
+                createMasterTimeline();
             }, 250);
         });
     }
