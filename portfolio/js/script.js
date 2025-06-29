@@ -301,7 +301,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 250);
         });
     }
-});
     
     // --- VISION SCROLL-DRIVEN SECTION ---
     const visionSection = document.querySelector('.vision-scroll-section');
