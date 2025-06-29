@@ -121,13 +121,44 @@ p.animate-on-load { animation-delay: 0.4s; }
 /* ======== EXPERTISE SECTION ======== */
 .expertise-section { background-color: var(--background-color); position: relative; }
 .expertise-container { position: relative; z-index: 2; text-align: center;}
-#expertise-visual { width: 100%; height: 600px; position: relative; margin-top: 2rem; cursor: grab; }
-#expertise-visual:active { cursor: grabbing; }
-#expertise-visual canvas { display: block; }
-#synapse-breadcrumb { position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 10; padding: 0.5rem 1rem; background: rgba(18, 24, 60, 0.5); border-radius: 8px; transition: opacity 0.5s ease; font-family: var(--font-heading); color: var(--text-muted-color); }
-#synapse-breadcrumb.hidden { opacity: 0; pointer-events: none; }
-#synapse-breadcrumb a { color: var(--primary-accent); text-decoration: none; cursor: pointer; }
-#synapse-breadcrumb span { margin: 0 0.5rem; }
+.expertise-section .section-subtitle {
+    display: none; /* Hide old subtitle */
+}
+
+#skill-reveal-container {
+    position: relative;
+    width: 100%;
+    height: 300px; /* Adjust height as needed */
+    margin-top: -2rem; /* Pull up to compensate for subtitle removal */
+}
+
+#skill-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Accessibility: Hide canvas and show text if user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    #skill-canvas {
+        display: none;
+    }
+    #skill-reveal-container::after {
+        content: 'HealthTech Strategy • AI & ML Innovation • Cloud & Scalability • Product Leadership';
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        height: 100%;
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        color: var(--text-muted-color);
+        opacity: 1;
+        transition: none;
+    }
+}
 
 /* ======== VISION SCROLL SECTION ======== */
 #vision { padding: 0; }
