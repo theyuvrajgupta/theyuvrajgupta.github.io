@@ -4,157 +4,134 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yuvraj Gupta | Health-Tech Leader & AI Innovator</title>
-    <!-- Custom Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%2312183c'/><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='60' font-family='Space Grotesk, sans-serif' fill='%2300f5c3'>YG</text></svg>">
-    <link rel="stylesheet" href="portfolio/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%2310182c'/><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='60' font-family='Space Grotesk, sans-serif' fill='%2300f5c3'>YG</text></svg>">
+    <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Lexend:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <canvas id="background-canvas"></canvas>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
 
-    <!-- ======== NAVIGATION BAR ======== -->
     <nav class="navbar">
         <div class="container">
-            <a href="#home" class="nav-logo">Yuvraj Gupta</a>
+            <a href="#home" class="nav-logo">YG</a>
             <ul class="nav-menu">
-                <li><a href="#philosophy">Philosophy</a></li>
-                <li><a href="#about">Journey</a></li>
-                <li><a href="#projects">Work</a></li>
+                <li><a href="#about">About</a></li>
                 <li><a href="#expertise">Expertise</a></li>
-                <li><a href="#vision">Vision</a></li>
+                <li><a href="#projects">Work</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- ======== Main Content Wrapper (for scroll animations) ======== -->
-    <div id="main-content">
-
-        <!-- ======== HOME SECTION ======== -->
+    <main id="main-content">
         <section id="home" class="home-section">
-            <div class="container home-container">
-                <div class="home-text">
-                    <h1 class="animate-on-load">Strategist. Innovator.<br>Health-Tech Leader.</h1>
-                    <p class="subtitle animate-on-load">Leveraging a decade of technical expertise to build the future of AI-driven healthcare. Poised to drive product strategy and innovation post-MBA.</p>
-                    <div class="home-buttons animate-on-load">
-                        <a href="portfolio/assets/resume.pdf" class="btn btn-primary" download><i class="fa-solid fa-download"></i> Download Resume</a>
-                        <a href="#projects" class="btn btn-secondary">View My Work</a>
-                    </div>
-                </div>
-                <div class="home-image animate-on-load"><img src="portfolio/assets/profile-pic.jpg" alt="Yuvraj Gupta" onerror="this.onerror=null;this.src='https://placehold.co/400x400/1a1a2e/e0e0e0?text=Yuvraj';"></div>
-            </div>
-        </section>
-
-        <!-- ======== CORE PHILOSOPHIES SECTION ======== -->
-        <section id="philosophy" class="philosophy-section">
             <div class="container">
-                <h2 class="section-title">Core Philosophies</h2>
-                <div class="philosophy-grid">
-                    <div class="philosophy-card"><div class="philosophy-icon"><i class="fa-solid fa-heart-pulse"></i></div><h3>Empathy-Driven Innovation</h3><p>I build solutions with the end-user at the core, driven by a personal mission to create technology that serves and empowers people in moments of need.</p></div>
-                    <div class="philosophy-card"><div class="philosophy-icon"><i class="fa-solid fa-users-gear"></i></div><h3>Accountable Leadership</h3><p>I lead by example, fostering environments of psychological safety and accountability where teams can overcome challenges and deliver results with confidence.</p></div>
-                    <div class="philosophy-card"><div class="philosophy-icon"><i class="fa-solid fa-lightbulb"></i></div><h3>Strategic Growth Mindset</h3><p>I bridge the gap between deep technical knowledge and strategic business frameworks, constantly learning and applying new skills to drive sustainable growth.</p></div>
+                <h1 class="main-headline">
+                    <span>Strategist.</span>
+                    <span>Innovator.</span>
+                    <span>Health-Tech Leader.</span>
+                </h1>
+                <p class="subtitle">Leveraging a decade of technical expertise to build the future of AI-driven healthcare. Poised to drive product strategy and innovation post-MBA.</p>
+                <div class="home-buttons">
+                    <a href="./assets/resume.pdf" class="btn btn-primary magnetic" download><i class="fa-solid fa-download"></i> Download Resume</a>
                 </div>
             </div>
         </section>
 
-        <!-- ======== ABOUT / MY JOURNEY SECTION ======== -->
         <section id="about" class="about-section">
             <div class="container">
-                <h2 class="section-title">My Journey</h2>
-                <div class="timeline-container">
-                    <div class="timeline-line"></div>
-                    <div class="timeline-item"><div class="timeline-icon"><i class="fa-solid fa-seedling"></i></div><div class="timeline-content"><h3>A Personal Mission</h3><p>My journey into HealthTech wasn't just a career choice; it was a calling, born from witnessing my mother's battle with cancer. This experience ignited my focus on oncology at Siemens Healthineers, where I immersed myself in the workflows of radiologists to build tools that truly mattered.</p></div></div>
-                    <div class="timeline-item"><div class="timeline-icon"><i class="fa-solid fa-brain"></i></div><div class="timeline-content"><h3>Pioneering AI in Oncology</h3><p>I led the creation of Siemens' first AI-driven tool in molecular imaging, conceptualizing it from a whiteboard sketch to a market-ready MVP. This tool, boasting 90% accuracy, transformed tumor identification in PET-CT scans and became a showstopper at global healthcare events like RSNA.</p></div></div>
-                    <div class="timeline-item"><div class="timeline-icon"><i class="fa-solid fa-people-group"></i></div><div class="timeline-content"><h3>Leadership Through Adversity</h3><p>Thrust into a senior role at IMO following the departure of experienced team members, I embraced the challenge. I stabilized the project, managed client expectations, and mentored new hires, fostering a culture of resilience and accountability that allowed us to deliver critical new features ahead of schedule.</p></div></div>
-                    <div class="timeline-item"><div class="timeline-icon"><i class="fa-solid fa-graduation-cap"></i></div><div class="timeline-content"><h3>The Next Chapter: MBA</h3><p>With a decade of deep technical experience, I am pursuing an MBA at Nanyang to build upon my foundation with world-class strategic, marketing, and operational frameworks, preparing to lead at the intersection of technology and business.</p></div></div>
+                <div class="about-grid">
+                    <div class="about-image">
+                        <img src="./assets/profile-pic.jpg" alt="Yuvraj Gupta" onerror="this.onerror=null;this.src='https://placehold.co/600x800/10182c/e0e0e0?text=Yuvraj';">
+                    </div>
+                    <div class="about-text">
+                        <h2 class="section-title">A Mission-Driven Journey</h2>
+                        <p>My path into HealthTech wasn't just a career choice; it was a calling, born from a personal mission to create technology that serves and empowers people. This drive led me to pioneer AI solutions in oncology at Siemens Healthineers, conceptualizing tools from whiteboard sketches to market-ready MVPs.</p>
+                        <p>Thrust into leadership roles, I learned to guide teams through adversity, fostering a culture of resilience and accountability that turned potential crises into growth opportunities. Now, with a decade of deep technical experience, I am pursuing an MBA at Nanyang to build upon this foundation, preparing to lead at the intersection of technology and business strategy.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- ======== PROJECTS SECTION ======== -->
-        <section id="projects" class="projects-section">
-            <div class="container"><h2 class="section-title">Signature Projects</h2>
-                <div class="projects-grid">
-                    <div class="project-card" data-modal-target="project1"><img src="https://placehold.co/600x400/0a0f2c/00f5c3?text=AI+Imaging" alt="AI in Medical Imaging"><div class="project-info"><h3>AI-Driven PET-CT Analysis</h3><p>Led the development of a pioneering AI tool that automates tumor detection and classification in PET-CT scans.</p><div class="project-tags"><span>AI/ML</span><span>HealthTech</span><span>Product Innovation</span></div><span class="project-link">Explore Project <i class="fa-solid fa-arrow-right"></i></span></div></div>
-                    <div class="project-card" data-modal-target="project2"><img src="https://placehold.co/600x400/0a0f2c/00f5c3?text=Cloud+Automation" alt="Cloud Automation"><div class="project-info"><h3>Serverless QA Automation Pipeline</h3><p>Architected and deployed a fully automated QA pipeline on AWS, transforming the software development lifecycle.</p><div class="project-tags"><span>AWS</span><span>Cloud</span><span>Process Optimization</span></div><span class="project-link">Explore Project <i class="fa-solid fa-arrow-right"></i></span></div></div>
-                    <div class="project-card" data-modal-target="project3"><img src="https://placehold.co/600x400/0a0f2c/00f5c3?text=Agile+Leadership" alt="Agile Leadership"><div class="project-info"><h3>Agile Team Leadership & Turnaround</h3><p>Stepped up as technical lead and Scrum Master to guide a team through a critical transition period, ensuring project continuity and morale.</p><div class="project-tags"><span>Agile</span><span>Leadership</span><span>Mentorship</span></div><span class="project-link">Explore Project <i class="fa-solid fa-arrow-right"></i></span></div></div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- ======== EXPERTISE SECTION ======== -->
         <section id="expertise" class="expertise-section">
-            <div class="container expertise-container">
+            <div class="container">
                 <h2 class="section-title">Core Competencies</h2>
-                <!-- This is the container for the new particle animation -->
-                <div id="skill-reveal-container">
-                    <!-- The canvas will be dynamically inserted here by the script -->
-                </div>
-                <!-- These text elements are hidden but used by the script to generate particle targets -->
-                <div id="skill-text-targets" style="display: none;">
-                    <h2 data-skill-text>HealthTech Strategy</h2>
-                    <h2 data-skill-text>AI & ML Innovation</h2>
-                    <h2 data-skill-text>Cloud & Scalability</h2>
-                    <h2 data-skill-text>Product Leadership</h2>
+                <div class="expertise-interactive-map">
+                    <div class="competency-node" data-competency="ai">
+                        <div class="node-pulse"></div>
+                        <span>AI & ML Innovation</span>
+                    </div>
+                    <div class="competency-node" data-competency="healthtech">
+                        <div class="node-pulse"></div>
+                        <span>HealthTech Strategy</span>
+                    </div>
+                    <div class="competency-node" data-competency="cloud">
+                        <div class="node-pulse"></div>
+                        <span>Cloud & Scalability</span>
+                    </div>
+                    <div class="competency-node" data-competency="leadership">
+                        <div class="node-pulse"></div>
+                        <span>Product Leadership</span>
+                    </div>
+
+                    <div class="competency-details-panel">
+                        <h3 id="competency-title">Hover over a competency</h3>
+                        <ul id="competency-skills">
+                            <li>Select a node to see related skills.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>
-    </div><!-- End of Main Content Wrapper -->
-    
-    <!-- ======== NEW SCROLL-DRIVEN VISION SECTION ======== -->
-    <section id="vision" class="vision-scroll-section">
-        <div class="vision-sticky-container">
-            <div class="vision-content-container">
-                <div class="vision-slide" data-slide="0">
-                    <h2>My Vision</h2>
-                    <p>To build a future where healthcare is proactive, intelligent, and universally accessible.</p>
-                </div>
-                <div class="vision-slide" data-slide="1"><h3>AI-Powered Venture</h3><p>Lead a venture that puts artificial intelligence at the heart of diagnostics and patient care.</p></div>
-                <div class="vision-slide" data-slide="2"><h3>Democratized Detection</h3><p>Create tools that make early disease detection affordable and available to everyone, everywhere.</p></div>
-                <div class="vision-slide" data-slide="3"><h3>Unified Platform</h3><p>Architect a seamless ecosystem connecting patients, doctors, and insurers for efficient, data-driven care.</p></div>
-            </div>
-            <div class="vision-image-container">
-                <img src="https://placehold.co/1200x800/0a0f2c/00f5c3?text=Future+of+Health" alt="Vision Image" class="vision-bg-image" data-slide-img="0">
-                <img src="https://placehold.co/1200x800/0a0f2c/00f5c3?text=AI+Venture" alt="Vision Image" class="vision-bg-image" data-slide-img="1">
-                <img src="https://placehold.co/1200x800/0a0f2c/00f5c3?text=Detection+for+All" alt="Vision Image" class="vision-bg-image" data-slide-img="2">
-                <img src="https://placehold.co/1200x800/0a0f2c/00f5c3?text=Integrated+Care" alt="Vision Image" class="vision-bg-image" data-slide-img="3">
-            </div>
-        </div>
-    </section>
 
-    <div id="main-content-after-vision">
-        <!-- ======== PROFESSIONAL ENDORSEMENTS SECTION ======== -->
-        <section id="endorsements" class="endorsements-section">
-            <div class="container"><h2 class="section-title">Professional Endorsements</h2><div class="endorsements-grid">
-                <div class="endorsement-card"><p>"I rarely come across real talents who stand out like Yuvraj. I had the pleasure of working with Yuvraj for three years at the National Institute Of Engineering, during our college days collaborating on several projects. Yuvraj’s ability to handle multiple things was unlike any I’ve seen before and made a dramatic increase in the productivity level of our projects. No matter how tense a scenario, Yuvraj made sure everything was smooth. As a team member or a leader, Yuvraj earns my highest recommendation."</p><div class="endorsement-author"><h4>Rajneesh Kumar Dubey</h4><span>Staff Software Engineer V at Walmart Global Tech</span></div></div>
-                <div class="endorsement-card"><p>"Yuvraj is a visionary technical leader who drove real impact at Siemens Healthineers. He tackled the toughest challenges—integrating AI-powered solutions, streamlining complex workflows and mentoring cross-functional teams—while always keeping the big picture in mind. His blend of strategic thinking, adaptability and collaborative spirit makes him an invaluable asset to any fast-paced, innovation-driven organization."</p><div class="endorsement-author"><h4>Anjali Sheel</h4><span>Software Engineer II at Microsoft</span></div></div>
-                <div class="endorsement-card"><p>"Working with Yuvraj has been a great experience. He consistently delivers high-quality work and brings a positive energy to every interaction. His ability to adapt quickly and solve problems efficiently sets him apart."</p><div class="endorsement-author"><h4>Goutham Bharadwaj Ramesh</h4><span>Functional Specialist at BMW Group</span></div></div></div></div>
+        <section id="projects" class="projects-section">
+            <div class="container">
+                <h2 class="section-title">Signature Projects</h2>
+                <div class="projects-grid">
+                    <a href="#" class="project-card magnetic" data-modal-target="project1"><h3>AI-Driven PET-CT Analysis</h3><p>Led the development of a pioneering AI tool that automates tumor detection.</p><div class="project-tags"><span>AI/ML</span><span>HealthTech</span></div><span class="project-link">Explore Project <i class="fa-solid fa-arrow-right"></i></span></a>
+                    <a href="#" class="project-card magnetic" data-modal-target="project2"><h3>Serverless QA Pipeline</h3><p>Architected a fully automated QA pipeline on AWS, cutting test times by 95%.</p><div class="project-tags"><span>AWS</span><span>Cloud</span></div><span class="project-link">Explore Project <i class="fa-solid fa-arrow-right"></i></span></a>
+                    <a href="#" class="project-card magnetic" data-modal-target="project3"><h3>Agile Team Turnaround</h3><p>Stepped up as Scrum Master to guide a team through a critical transition.</p><div class="project-tags"><span>Agile</span><span>Leadership</span></div><span class="project-link">Explore Project <i class="fa-solid fa-arrow-right"></i></span></a>
+                </div>
+            </div>
         </section>
 
-        <!-- ======== CONTACT SECTION ======== -->
         <section id="contact" class="contact-section">
-            <div class="container"><h2 class="section-title">Let's Connect</h2><p class="section-subtitle">I'm actively seeking internship and full-time opportunities for 2025/26 and am always open to discussing new projects, creative ideas, or ways to innovate in Health-Tech.</p><div class="contact-wrapper"><div class="contact-info"><div class="info-item"><i class="fa-solid fa-envelope"></i><p>theyuvrajgupta@gmail.com</p></div><div class="info-item"><i class="fa-solid fa-map-marker-alt"></i><p>Singapore | Bangalore</p></div><div class="social-links"><a href="https://www.linkedin.com/in/theyuvrajgupta/" target="_blank"><i class="fa-brands fa-linkedin"></i></a><a href="https://github.com/theyuvrajgupta" target="_blank"><i class="fa-brands fa-github"></i></a></div></div></div></div>
+            <div class="container">
+                <h2 class="section-title">Let's Connect</h2>
+                <p class="subtitle">I'm actively seeking internship and full-time opportunities for 2026/27. I'm always open to discussing new projects, creative ideas, or ways to innovate in Health-Tech.</p>
+                <div class="contact-info">
+                    <a href="mailto:theyuvrajgupta@gmail.com" class="contact-link magnetic">mail.yuvrajgupta@gmail.com</a>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/theyuvrajgupta/" target="_blank" class="magnetic"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="https://github.com/theyuvrajgupta" target="_blank" class="magnetic"><i class="fa-brands fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <footer class="footer"><div class="container"><p>&copy; 2025 Yuvraj Gupta. Designed and coded with a focus on strategic innovation.</p></div></footer>
-    </div><!-- End of After Vision Content -->
+        <footer class="footer"><p>&copy; 2025 Yuvraj Gupta. Designed with a focus on strategic innovation.</p></footer>
+    </main>
 
-
-    <!-- ======== PROJECT MODALS CONTAINER ======== -->
+    <!-- Project Modals (Remain the same) -->
     <div id="modal-container" class="hidden">
         <div class="modal-backdrop"></div>
-        <div id="project1" class="modal-content"><button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button><img src="https://placehold.co/800x400/0a0f2c/00f5c3?text=AI+Diagnostic+Interface" alt="AI Diagnostic Interface" class="modal-img"><h2>AI-Driven PET-CT Analysis</h2><div class="modal-body"><div><h3>The Challenge</h3><p>Radiologists spend significant time manually identifying and classifying tumors in PET-CT scans, a process that is both time-consuming and prone to variability. The goal was to accelerate this process and improve diagnostic consistency.</p></div><div><h3>My Contribution</h3><p>I led the end-to-end development of Siemens' first AI tool for molecular imaging. My role spanned from initial whiteboarding and architectural design to leading a team in building and deploying the MVP. I was responsible for defining the product vision and ensuring it met clinical needs.</p></div><div><h3>Tech Stack</h3><p>TensorFlow, Python, C++, CNNs, Medical Imaging Protocols (DICOM).</p></div><div><h3>Impact & Business Value</h3><p>The tool achieved <strong data-number="90">0</strong>% accuracy in identifying malignant tumors, leading to a <strong data-number="40">0</strong>% reduction in radiologist effort. This innovation drove a <strong data-number="30">0</strong>% revenue boost for the product line and was featured as a showstopper at premier industry events like RSNA.</p></div></div></div>
-        <div id="project2" class="modal-content"><button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button><img src="https://placehold.co/800x400/0a0f2c/00f5c3?text=Automated+Cloud+Pipeline" alt="Automated Cloud Pipeline" class="modal-img"><h2>Serverless QA Automation Pipeline</h2><div class="modal-body"><div><h3>The Challenge</h3><p>The existing integration testing process for our clinical tools was manual and took over 4 hours, creating a significant bottleneck in the development cycle and delaying feature releases.</p></div><div><h3>My Contribution</h3><p>I architected and led the implementation of a fully serverless, event-driven QA pipeline on AWS. This involved designing the microservices architecture, selecting the appropriate AWS services, and managing the development process to ensure a scalable and cost-effective solution.</p></div><div><h3>Tech Stack</h3><p>AWS Lambda, S3, SQS, Step Functions, Python, Docker, Terraform.</p></div><div><h3>Impact & Business Value</h3><p>The new pipeline reduced integration testing time from 4 hours to just 10 minutes (a <strong data-number="95">0</strong>% reduction). This dramatically accelerated the feedback loop for developers, improved product quality, and enabled faster, more predictable release cycles.</p></div></div></div>
-        <div id="project3" class="modal-content"><button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button><img src="https://placehold.co/800x400/0a0f2c/00f5c3?text=Team+Collaboration" alt="Team Collaboration" class="modal-img"><h2>Agile Team Leadership & Turnaround</h2><div class="modal-body"><div><h3>The Challenge</h3><p>Following the unexpected departure of several senior members, the project faced a critical knowledge gap and a decline in morale, risking client deliverables and team cohesion.</p></div><div><h3>My Contribution</h3><p>Drawing on my principles of accountability and empathy, I stepped into the technical lead and Scrum Master roles. I established a structured onboarding and mentorship program, pairing new hires with experienced members. I instituted open communication channels and managed client expectations transparently, rebuilding trust and stability.</p></div><div><h3>Tech Stack</h3><p>Jira, Confluence, Agile Methodologies, Scrum Framework.</p></div><div><h3>Impact & Business Value</h3><p>My leadership stabilized the team, preventing project delays and maintaining client satisfaction. We successfully revamped the entire organizational delivery mechanism. This experience solidified my ability to lead and mentor in high-pressure situations, turning a potential crisis into a growth opportunity for the entire team.</p></div></div></div>
+        <div id="project1" class="modal-content">
+             <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button><img src="https://placehold.co/800x400/0a0f2c/00f5c3?text=AI+Diagnostic+Interface" alt="AI Diagnostic Interface" class="modal-img"><h2>AI-Driven PET-CT Analysis</h2><div class="modal-body"><div><h3>The Challenge</h3><p>Radiologists spend significant time manually identifying and classifying tumors in PET-CT scans, a process that is both time-consuming and prone to variability. The goal was to accelerate this process and improve diagnostic consistency.</p></div><div><h3>My Contribution</h3><p>I led the end-to-end development of Siemens' first AI tool for molecular imaging. My role spanned from initial whiteboarding and architectural design to leading a team in building and deploying the MVP. I was responsible for defining the product vision and ensuring it met clinical needs.</p></div><div><h3>Tech Stack</h3><p>TensorFlow, Python, C++, CNNs, Medical Imaging Protocols (DICOM).</p></div><div><h3>Impact & Business Value</h3><p>The tool achieved <strong data-number="90">0</strong>% accuracy in identifying malignant tumors, leading to a <strong data-number="40">0</strong>% reduction in radiologist effort. This innovation drove a <strong data-number="30">0</strong>% revenue boost for the product line and was featured as a showstopper at premier industry events like RSNA.</p></div></div>
+        </div>
+        <div id="project2" class="modal-content">
+            <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button><img src="https://placehold.co/800x400/0a0f2c/00f5c3?text=Automated+Cloud+Pipeline" alt="Automated Cloud Pipeline" class="modal-img"><h2>Serverless QA Automation Pipeline</h2><div class="modal-body"><div><h3>The Challenge</h3><p>The existing integration testing process for our clinical tools was manual and took over 4 hours, creating a significant bottleneck in the development cycle and delaying feature releases.</p></div><div><h3>My Contribution</h3><p>I architected and led the implementation of a fully serverless, event-driven QA pipeline on AWS. This involved designing the microservices architecture, selecting the appropriate AWS services, and managing the development process to ensure a scalable and cost-effective solution.</p></div><div><h3>Tech Stack</h3><p>AWS Lambda, S3, SQS, Step Functions, Python, Docker, Terraform.</p></div><div><h3>Impact & Business Value</h3><p>The new pipeline reduced integration testing time from 4 hours to just 10 minutes (a <strong data-number="95">0</strong>% reduction). This dramatically accelerated the feedback loop for developers, improved product quality, and enabled faster, more predictable release cycles.</p></div></div>
+        </div>
+        <div id="project3" class="modal-content">
+            <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button><img src="https://placehold.co/800x400/0a0f2c/00f5c3?text=Team+Collaboration" alt="Team Collaboration" class="modal-img"><h2>Agile Team Leadership & Turnaround</h2><div class="modal-body"><div><h3>The Challenge</h3><p>Following the unexpected departure of several senior members, the project faced a critical knowledge gap and a decline in morale, risking client deliverables and team cohesion.</p></div><div><h3>My Contribution</h3><p>Drawing on my principles of accountability and empathy, I stepped into the technical lead and Scrum Master roles. I established a structured onboarding and mentorship program, pairing new hires with experienced members. I instituted open communication channels and managed client expectations transparently, rebuilding trust and stability.</p></div><div><h3>Tech Stack</h3><p>Jira, Confluence, Agile Methodologies, Scrum Framework.</p></div><div><h3>Impact & Business Value</h3><p>My leadership stabilized the team, preventing project delays and maintaining client satisfaction. We successfully revamped the entire organizational delivery mechanism. This experience solidified my ability to lead and mentor in high-pressure situations, turning a potential crisis into a growth opportunity for the entire team.</p></div></div>
+        </div>
     </div>
     
-    <!-- JavaScript Libraries -->
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
-    <script defer src="portfolio/js/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <script src="./js/script.js"></script>
 </body>
 </html>
