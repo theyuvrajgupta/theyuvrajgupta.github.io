@@ -10,8 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
         leadership: { title: "Product Leadership", skills: ["Agile & Scrum Mastery", "Product Thinking", "Team Mentorship", "Stakeholder Management"] }
     };
 
-    // --- SMOOTH SCROLLING (NATIVE) ---
-
     // --- CUSTOM CURSOR & MAGNETIC ELEMENTS ---
     const cursor = document.querySelector('.cursor');
     const cursorFollower = document.querySelector('.cursor-follower');
@@ -117,10 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const getTextPoints = (text1, text2 = null) => {
-            // *** BUG FIX: Using a more conservative font size to prevent clipping ***
-            const fontSize = Math.min(headlineCanvas.width / 9, 55);
+            // *** BUG FIX 1: Font size and alignment correction ***
+            const fontSize = Math.min(headlineCanvas.width / 8, 70); // Adjusted font size for safety
             const font = `bold ${fontSize}px "Satoshi"`;
             ctx.font = font;
+            
             const textMetrics1 = ctx.measureText(text1);
             let textWidth = textMetrics1.width;
             let textHeight = fontSize;
@@ -129,19 +128,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 textWidth = Math.max(textWidth, textMetrics2.width);
                 textHeight *= 2.2;
             }
+
             const tempCanvas = document.createElement('canvas');
             const tempCtx = tempCanvas.getContext('2d');
-            tempCanvas.width = textWidth; tempCanvas.height = textHeight;
-            tempCtx.font = font; tempCtx.fillStyle = '#fff'; tempCtx.textAlign = 'right';
-            tempCtx.fillText(text1, textWidth, fontSize * 0.8);
-            if (text2) tempCtx.fillText(text2, textWidth, fontSize * 1.8);
+            tempCanvas.width = textWidth; 
+            tempCanvas.height = textHeight;
+            tempCtx.font = font; 
+            tempCtx.fillStyle = '#fff'; 
+            // Align text to the left of the temporary canvas
+            tempCtx.textAlign = 'left'; 
+            tempCtx.fillText(text1, 0, fontSize * 0.8);
+            if (text2) tempCtx.fillText(text2, 0, fontSize * 1.8);
 
             const imageData = tempCtx.getImageData(0, 0, textWidth, textHeight);
-            const points = []; const density = 4;
+            const points = []; 
+            const density = 4;
             for (let y = 0; y < imageData.height; y += density) {
                 for (let x = 0; x < imageData.width; x += density) {
                     if (imageData.data[(y * imageData.width + x) * 4 + 3] > 128) {
-                        points.push({ x: x + (headlineCanvas.width - textWidth), y: y + (headlineCanvas.height - textHeight) / 2 });
+                        // Position points on the main canvas, starting from the left
+                        points.push({ x: x, y: y + (headlineCanvas.height - textHeight) / 2 });
                     }
                 }
             }
@@ -160,8 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 animationState = 'forming';
                 particles.forEach((p, i) => {
-                    const target = textPoints[i % textPoints.length];
-                    p.targetX = target.x; p.targetY = target.y;
+                    if (textPoints.length > 0) {
+                        const target = textPoints[i % textPoints.length];
+                        p.targetX = target.x; p.targetY = target.y;
+                    }
                 });
                 setTimeout(cycleHeadlines, 3500);
             }, 1000);
