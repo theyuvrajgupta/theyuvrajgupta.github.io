@@ -1,4 +1,4 @@
-/* ======== GLOBAL STYLES & THEME V7.0 ======== */
+/* ======== GLOBAL STYLES & THEME V8.0 ======== */
 :root {
     --background-color: #0a0f2c;
     --surface-color: #10182c;
@@ -21,8 +21,9 @@ body {
     overflow-x: hidden;
     cursor: none;
 }
+/* This class is still used by the JS to track state, but the overflow rule is removed to fix the bug */
 body.modal-open {
-    overflow: hidden; /* Prevent body scroll when modal is open */
+    /* overflow: hidden; <-- REMOVED THIS LINE */
 }
 body, a {
     -webkit-font-smoothing: antialiased;
