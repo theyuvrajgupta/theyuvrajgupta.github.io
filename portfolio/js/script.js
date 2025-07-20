@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- SMOOTH SCROLLING (NATIVE) ---
-    // Removed Lenis to ensure performance. GSAP will work with native scroll.
 
     // --- CUSTOM CURSOR & MAGNETIC ELEMENTS ---
     const cursor = document.querySelector('.cursor');
@@ -78,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollTrigger: { scrub: true }
     });
 
-    // --- FIXED: HEADLINE ANIMATION ---
+    // --- HEADLINE ANIMATION ---
     const headlineCanvas = document.getElementById('headline-canvas');
     if (headlineCanvas) {
         const ctx = headlineCanvas.getContext('2d');
@@ -118,7 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const getTextPoints = (text1, text2 = null) => {
-            const fontSize = Math.min(headlineCanvas.width / 7, 70);
+            // *** BUG FIX: Using a more conservative font size to prevent clipping ***
+            const fontSize = Math.min(headlineCanvas.width / 9, 55);
             const font = `bold ${fontSize}px "Satoshi"`;
             ctx.font = font;
             const textMetrics1 = ctx.measureText(text1);
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     gsap.to([".subtitle", ".home-buttons"], { opacity: 1, duration: 0.8, delay: 1.5 });
 
-    // --- FIXED: JOURNEY SECTION ANIMATION ---
+    // --- JOURNEY SECTION ANIMATION ---
     const timelineItems = document.querySelectorAll('.timeline-item');
     if(timelineItems.length > 0) {
         const journeyObserver = new IntersectionObserver((entries) => {
