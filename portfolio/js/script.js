@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         leadership: { title: "Product Leadership", skills: ["Agile & Scrum Mastery", "Product Thinking", "Team Mentorship", "Stakeholder Management"] }
     };
 
-    // --- SMOOTH SCROLLING (LENIS) - INTEGRATION WITH GSAP ---
+    // --- SMOOTH SCROLLING (LENIS) - CORRECT INTEGRATION WITH GSAP ---
     let lenis;
     if (typeof Lenis !== 'undefined') {
         lenis = new Lenis();
@@ -49,7 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const resize = () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; };
         const createParticles = () => {
             particles = [];
-            const count = window.innerWidth < 768 ? 50 : 150;
+            // Increased particle count for a denser feel
+            const count = window.innerWidth < 768 ? 80 : 250; 
             for (let i = 0; i < count; i++) {
                 particles.push({
                     x: Math.random() * bgCanvas.width,
@@ -91,22 +92,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Headline animation
     gsap.to(".main-headline span", { y: 0, opacity: 1, stagger: 0.2, duration: 1, ease: "power3.out", delay: 0.5 });
     
-    // REMOVED: Old parallax animation that was causing errors.
-    // The new "About" section has its own animation below.
+    // --- FIXED: JOURNEY SECTION ANIMATION ---
+    // Using Intersection Observer for robust, performant fade-in animations.
+    const journeyItems = document.querySelectorAll('.timeline-item');
+    if(journeyItems.length > 0) {
+        const journeyObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.2 });
+        journeyItems.forEach(item => journeyObserver.observe(item));
+    }
 
-    // Animate narrative cards
-    gsap.from(".narrative-card", {
-        scrollTrigger: {
-            trigger: ".about-narrative-grid",
-            start: "top 80%",
-            toggleActions: "play none none none"
-        },
-        opacity: 0,
-        y: 50,
-        stagger: 0.2,
-        duration: 0.8,
-        ease: "power3.out"
-    });
 
     // --- INTERACTIVE COMPETENCIES MAP ---
     const competencyNodes = document.querySelectorAll('.competency-node');
