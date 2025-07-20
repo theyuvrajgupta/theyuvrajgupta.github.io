@@ -115,43 +115,51 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const getTextPoints = (text1, text2 = null) => {
-            // *** FINAL BUG FIX: More robust font sizing and positioning ***
-            const fontSize = Math.min(headlineCanvas.width / 10, 60); // Conservative font size
+            // *** DEFINITIVE BUG FIX: Using 'top' baseline and generous padding ***
+            const fontSize = Math.min(headlineCanvas.width / 10, 60);
             const font = `bold ${fontSize}px "Satoshi"`;
             ctx.font = font;
-            
+
             const textMetrics1 = ctx.measureText(text1);
             let textWidth = textMetrics1.width;
-            let textHeight = fontSize * 1.2; // Generous single-line height
+            let textHeight;
+            const lineGap = fontSize * 1.1; // The space between the top of line 1 and top of line 2
+
             if (text2) {
                 const textMetrics2 = ctx.measureText(text2);
                 textWidth = Math.max(textWidth, textMetrics2.width);
-                textHeight = fontSize * 2.4; // Generous two-line height
+                // Total height is top of line 2 + font size + extra padding for descenders
+                textHeight = lineGap + fontSize + (fontSize * 0.2); 
+            } else {
+                // Total height for one line is font size + extra padding
+                textHeight = fontSize + (fontSize * 0.2); 
             }
 
             const tempCanvas = document.createElement('canvas');
             const tempCtx = tempCanvas.getContext('2d');
-            tempCanvas.width = textWidth; 
-            tempCanvas.height = textHeight;
-            tempCtx.font = font; 
-            tempCtx.fillStyle = '#fff'; 
-            tempCtx.textAlign = 'left'; 
-            
-            // Adjust baselines to provide more vertical space
-            const firstLineY = fontSize;
-            tempCtx.fillText(text1, 0, firstLineY);
+            tempCanvas.width = textWidth || 1; // Ensure canvas is at least 1px wide
+            tempCanvas.height = textHeight || 1;
+
+            tempCtx.font = font;
+            tempCtx.fillStyle = '#fff';
+            tempCtx.textAlign = 'left';
+            // This is the crucial change: It makes positioning predictable from the top edge.
+            tempCtx.textBaseline = 'top'; 
+
+            // Draw text at the very top of the temporary canvas
+            tempCtx.fillText(text1, 0, 0);
             if (text2) {
-                const secondLineY = fontSize * 2.1;
-                tempCtx.fillText(text2, 0, secondLineY);
+                tempCtx.fillText(text2, 0, lineGap);
             }
 
-            const imageData = tempCtx.getImageData(0, 0, textWidth, textHeight);
-            const points = []; 
-            const density = 4;
+            const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const points = [];
+            const density = 4; // Scan every 4th pixel
             for (let y = 0; y < imageData.height; y += density) {
                 for (let x = 0; x < imageData.width; x += density) {
+                    // Check if the pixel is not transparent
                     if (imageData.data[(y * imageData.width + x) * 4 + 3] > 128) {
-                        // Center the entire text block vertically in the main canvas
+                        // Calculate the final Y position, centering the entire text block
                         const finalY = y + (headlineCanvas.height - textHeight) / 2;
                         points.push({ x: x, y: finalY });
                     }
