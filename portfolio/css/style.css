@@ -12,11 +12,6 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
-html.lenis { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto; }
-.lenis.lenis-stopped { overflow: hidden; }
-
 html { scroll-behavior: smooth; }
 body {
     font-family: var(--font-body);
@@ -58,8 +53,10 @@ section { padding: 8rem 0; position: relative; }
 /* ======== HOME SECTION ======== */
 .home-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
 .main-headline { font-size: clamp(3rem, 8vw, 7rem); line-height: 1.1; margin-bottom: 2rem; }
-.main-headline span { display: block; opacity: 0; transform: translateY(50px); }
-.home-section .subtitle { margin-bottom: 3rem; }
+.headline-line { overflow: hidden; }
+.main-headline span { display: block; transform: translateY(110%); }
+.home-section .subtitle { margin-bottom: 3rem; opacity: 0; }
+.home-buttons { opacity: 0; }
 .btn { display: inline-block; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 500; font-family: var(--font-heading); transition: all 0.3s ease; border: 1px solid var(--primary-accent); cursor: none; }
 .btn-primary { background: var(--primary-accent); color: var(--background-color); }
 .btn-primary:hover { background: transparent; color: var(--primary-accent); }
@@ -107,16 +104,16 @@ section { padding: 8rem 0; position: relative; }
 .vision-orb { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; background: radial-gradient(circle, var(--primary-accent) 0%, var(--surface-color) 70%); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 50px var(--primary-accent); animation: orb-pulse 4s infinite ease-in-out; }
 @keyframes orb-pulse { 50% { transform: translate(-50%, -50%) scale(1.1); } }
 .vision-pillar { position: absolute; top: 50%; left: 50%; transform-origin: 0 0; }
-.vision-pillar span { display: block; background: var(--surface-color); padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid var(--border-color); white-space: nowrap; }
+.vision-pillar span { display: block; background: var(--surface-color); padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid var(--border-color); white-space: nowrap; transition: transform 0.3s ease; }
 .vision-pillar::before { content: ''; position: absolute; top: 50%; left: 0; height: 1px; background: linear-gradient(to left, var(--primary-accent), transparent); animation: pillar-line 3s infinite; }
 @keyframes pillar-line { 50% { opacity: 0.3; } }
-#pillar-1 { transform: rotate(45deg) translateX(120px); } #pillar-1::before { width: 100px; transform: translate(-100%, -50%); }
-#pillar-2 { transform: rotate(-45deg) translateX(120px); } #pillar-2::before { width: 100px; transform: translate(-100%, -50%); }
-#pillar-3 { transform: rotate(135deg) translateX(120px); } #pillar-3::before { width: 100px; transform: translate(-100%, -50%); }
-#pillar-4 { transform: rotate(-135deg) translateX(120px); } #pillar-4::before { width: 100px; transform: translate(-100%, -50%); }
+#pillar-1 { transform: rotate(45deg) translateX(120px); } #pillar-1 span { transform: rotate(-45deg); }
+#pillar-2 { transform: rotate(-45deg) translateX(120px); } #pillar-2 span { transform: rotate(45deg); }
+#pillar-3 { transform: rotate(135deg) translateX(120px); } #pillar-3 span { transform: rotate(-135deg); }
+#pillar-4 { transform: rotate(-135deg) translateX(120px); } #pillar-4 span { transform: rotate(135deg); }
 .vision-text p { font-size: 1.2rem; color: var(--text-muted-color); max-width: 45ch; }
 
-/* ======== FOOTER (Replaced Contact Section) ======== */
+/* ======== FOOTER ======== */
 .footer { padding: 6rem 2rem 2rem; background-color: var(--surface-color); text-align: center; }
 .footer-cta { margin-bottom: 4rem; }
 .footer-cta .section-title { margin-bottom: 1.5rem; }
@@ -156,6 +153,5 @@ section { padding: 8rem 0; position: relative; }
     .projects-grid { grid-template-columns: 1fr; }
     .home-section { text-align: center; }
     .home-buttons { justify-content: center; }
-    .about-text .section-title { text-align: center; }
     .about-narrative-grid { grid-template-columns: 1fr; }
 }
