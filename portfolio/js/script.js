@@ -75,136 +75,96 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollTrigger: { scrub: true }
     });
 
-    // --- HEADLINE ANIMATION ---
-    const headlineCanvas = document.getElementById('headline-canvas');
-    if (headlineCanvas) {
-        const ctx = headlineCanvas.getContext('2d');
-        const headlines = ["Strategist.", "Innovator.", "Health-Tech Leader."];
-        let particles = [];
-        let currentHeadlineIndex = 0;
-        let animationState = 'streaming';
-
-        const resizeHeadlineCanvas = () => {
-            const container = document.getElementById('headline-canvas-container');
-            headlineCanvas.width = container.offsetWidth;
-            headlineCanvas.height = container.offsetHeight;
-        };
-
-        class HeadlineParticle {
-            constructor(x, y) {
-                this.x = x; this.y = y; this.vx = 0; this.vy = Math.random() * 2 + 1;
-                this.targetX = null; this.targetY = null;
-                this.radius = Math.random() * 1.5 + 1;
-                this.color = `rgba(0, 245, 195, ${Math.random() * 0.5 + 0.5})`;
+    // --- NEW HEADLINE ANIMATION: TEXT SCRAMBLE EFFECT ---
+    // This entire block replaces the old, buggy canvas animation.
+    class TextScramble {
+        constructor(el) {
+            this.el = el;
+            this.chars = '!<>-_\\/[]{}—=+*^?#________';
+            this.update = this.update.bind(this);
+        }
+        setText(newText) {
+            const oldText = this.el.innerText;
+            const length = Math.max(oldText.length, newText.length);
+            const promise = new Promise((resolve) => this.resolve = resolve);
+            this.queue = [];
+            for (let i = 0; i < length; i++) {
+                const from = oldText[i] || '';
+                const to = newText[i] || '';
+                const start = Math.floor(Math.random() * 40);
+                const end = start + Math.floor(Math.random() * 40);
+                this.queue.push({ from, to, start, end });
             }
-            update() {
-                if (animationState === 'forming' && this.targetX !== null) {
-                    this.vx += (this.targetX - this.x) * 0.03;
-                    this.vy += (this.targetY - this.y) * 0.03;
-                    this.vx *= 0.92; this.vy *= 0.92;
+            cancelAnimationFrame(this.frameRequest);
+            this.frame = 0;
+            this.update();
+            return promise;
+        }
+        update() {
+            let output = '';
+            let complete = 0;
+            for (let i = 0, n = this.queue.length; i < n; i++) {
+                let { from, to, start, end, char } = this.queue[i];
+                if (this.frame >= end) {
+                    complete++;
+                    output += to;
+                } else if (this.frame >= start) {
+                    if (!char || Math.random() < 0.28) {
+                        char = this.randomChar();
+                        this.queue[i].char = char;
+                    }
+                    output += `<span class="dud">${char}</span>`;
                 } else {
-                    this.y += this.vy;
-                    if (this.y > headlineCanvas.height) { this.y = 0; this.x = Math.random() * headlineCanvas.width; }
+                    output += from;
                 }
-                this.x += this.vx; this.y += this.vy;
             }
-            draw() {
-                ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color; ctx.fill();
+            this.el.innerHTML = output;
+            if (complete === this.queue.length) {
+                this.resolve();
+            } else {
+                this.frameRequest = requestAnimationFrame(this.update);
+                this.frame++;
             }
         }
+        randomChar() {
+            return this.chars[Math.floor(Math.random() * this.chars.length)];
+        }
+    }
 
-        const getTextPoints = (text1, text2 = null) => {
-            // *** DEFINITIVE BUG FIX: Using 'top' baseline and generous padding ***
-            const fontSize = Math.min(headlineCanvas.width / 10, 60);
-            const font = `bold ${fontSize}px "Satoshi"`;
-            ctx.font = font;
+    const headlineContainer = document.getElementById('headline-canvas-container');
+    if (headlineContainer) {
+        // Clear the old canvas element to prevent any conflicts.
+        headlineContainer.innerHTML = '';
 
-            const textMetrics1 = ctx.measureText(text1);
-            let textWidth = textMetrics1.width;
-            let textHeight;
-            const lineGap = fontSize * 1.1; // The space between the top of line 1 and top of line 2
+        // Create a new H1 element for the text scramble effect.
+        const headlineEl = document.createElement('h1');
+        headlineContainer.appendChild(headlineEl);
 
-            if (text2) {
-                const textMetrics2 = ctx.measureText(text2);
-                textWidth = Math.max(textWidth, textMetrics2.width);
-                // Total height is top of line 2 + font size + extra padding for descenders
-                textHeight = lineGap + fontSize + (fontSize * 0.2); 
-            } else {
-                // Total height for one line is font size + extra padding
-                textHeight = fontSize + (fontSize * 0.2); 
-            }
+        // Apply styles directly via JS to avoid touching the CSS file.
+        headlineEl.style.fontSize = 'clamp(2.5rem, 7vw, 4.5rem)';
+        headlineEl.style.fontFamily = 'var(--font-heading)';
+        headlineEl.style.color = 'var(--text-color)';
+        headlineEl.style.lineHeight = '1.1';
+        headlineEl.style.textAlign = 'left';
+        headlineEl.style.minHeight = '150px'; // Ensure container has height
+        headlineEl.style.display = 'flex';
+        headlineEl.style.alignItems = 'center';
 
-            const tempCanvas = document.createElement('canvas');
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCanvas.width = textWidth || 1; // Ensure canvas is at least 1px wide
-            tempCanvas.height = textHeight || 1;
 
-            tempCtx.font = font;
-            tempCtx.fillStyle = '#fff';
-            tempCtx.textAlign = 'left';
-            // This is the crucial change: It makes positioning predictable from the top edge.
-            tempCtx.textBaseline = 'top'; 
-
-            // Draw text at the very top of the temporary canvas
-            tempCtx.fillText(text1, 0, 0);
-            if (text2) {
-                tempCtx.fillText(text2, 0, lineGap);
-            }
-
-            const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const points = [];
-            const density = 4; // Scan every 4th pixel
-            for (let y = 0; y < imageData.height; y += density) {
-                for (let x = 0; x < imageData.width; x += density) {
-                    // Check if the pixel is not transparent
-                    if (imageData.data[(y * imageData.width + x) * 4 + 3] > 128) {
-                        // Calculate the final Y position, centering the entire text block
-                        const finalY = y + (headlineCanvas.height - textHeight) / 2;
-                        points.push({ x: x, y: finalY });
-                    }
-                }
-            }
-            return points;
+        const headlines = [
+            'Strategist.',
+            'Innovator.',
+            'Health-Tech Leader.'
+        ];
+        const fx = new TextScramble(headlineEl);
+        let counter = 0;
+        const next = () => {
+            fx.setText(headlines[counter]).then(() => {
+                setTimeout(next, 2500); // Wait 2.5 seconds before scrambling to the next word
+            });
+            counter = (counter + 1) % headlines.length;
         };
-
-        const cycleHeadlines = () => {
-            animationState = 'dissolving';
-            particles.forEach(p => { p.targetX = null; p.targetY = null; p.vy = Math.random() * 2 + 1; });
-            setTimeout(() => {
-                currentHeadlineIndex = (currentHeadlineIndex + 1) % 3; // Cycle through 3 states
-                let textPoints;
-                if (currentHeadlineIndex === 0) textPoints = getTextPoints("Strategist.");
-                else if (currentHeadlineIndex === 1) textPoints = getTextPoints("Innovator.");
-                else textPoints = getTextPoints("Health-Tech", "Leader.");
-                
-                animationState = 'forming';
-                particles.forEach((p, i) => {
-                    if (textPoints.length > 0) {
-                        const target = textPoints[i % textPoints.length];
-                        p.targetX = target.x; p.targetY = target.y;
-                    }
-                });
-                setTimeout(cycleHeadlines, 3500);
-            }, 1000);
-        };
-
-        const initHeadline = () => {
-            resizeHeadlineCanvas();
-            particles = [];
-            const count = window.innerWidth < 768 ? 200 : 400;
-            for (let i = 0; i < count; i++) particles.push(new HeadlineParticle(Math.random() * headlineCanvas.width, Math.random() * headlineCanvas.height));
-            animateHeadline();
-            setTimeout(cycleHeadlines, 500);
-        };
-
-        const animateHeadline = () => {
-            ctx.clearRect(0, 0, headlineCanvas.width, headlineCanvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animateHeadline);
-        };
-        window.addEventListener('resize', initHeadline);
-        initHeadline();
+        next(); // Start the animation
     }
     
     gsap.to([".subtitle", ".home-buttons"], { opacity: 1, duration: 0.8, delay: 1.5 });
