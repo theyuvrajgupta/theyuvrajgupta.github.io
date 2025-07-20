@@ -111,13 +111,37 @@ section { padding: 8rem 0; position: relative; }
 .vision-lines line { stroke: var(--border-color); stroke-width: 1; }
 .vision-orb { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; background: radial-gradient(circle, var(--primary-accent) 0%, var(--surface-color) 70%); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 50px var(--primary-accent); animation: orb-pulse 4s infinite ease-in-out; }
 @keyframes orb-pulse { 50% { transform: translate(-50%, -50%) scale(1.1); } }
-.vision-pillar { position: absolute; top: 50%; left: 50%; transform-origin: 0 0; }
-.vision-pillar span { display: block; background: var(--surface-color); padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid var(--border-color); white-space: nowrap; transition: transform 0.3s ease; }
-#pillar-1 { transform: translate(-50%, -50%) rotate(45deg) translateX(120px); } #pillar-1 span { transform: rotate(-45deg); }
-#pillar-2 { transform: translate(-50%, -50%) rotate(-45deg) translateX(120px); } #pillar-2 span { transform: rotate(45deg); }
-#pillar-3 { transform: translate(-50%, -50%) rotate(135deg) translateX(120px); } #pillar-3 span { transform: rotate(-135deg); }
-#pillar-4 { transform: translate(-50%, -50%) rotate(-135deg) translateX(120px); } #pillar-4 span { transform: rotate(135deg); }
+
+/* --- BUG FIX STARTS HERE --- */
+.vision-pillar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+.vision-pillar span {
+    display: block;
+    background: var(--surface-color);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    white-space: nowrap;
+    transition: transform 0.3s ease;
+}
+#pillar-1 { transform: rotate(45deg) translateX(140px) translate(-50%, -50%); } 
+#pillar-1 span { transform: rotate(-45deg); }
+
+#pillar-2 { transform: rotate(-45deg) translateX(140px) translate(-50%, -50%); } 
+#pillar-2 span { transform: rotate(45deg); }
+
+#pillar-3 { transform: rotate(135deg) translateX(140px) translate(-50%, -50%); } 
+#pillar-3 span { transform: rotate(-135deg); }
+
+#pillar-4 { transform: rotate(-135deg) translateX(140px) translate(-50%, -50%); } 
+#pillar-4 span { transform: rotate(135deg); }
+/* --- BUG FIX ENDS HERE --- */
+
 .vision-text p { font-size: 1.2rem; color: var(--text-muted-color); max-width: 45ch; }
+
 
 /* ======== FOOTER ======== */
 .footer { padding: 6rem 2rem 2rem; background-color: var(--surface-color); text-align: center; }
