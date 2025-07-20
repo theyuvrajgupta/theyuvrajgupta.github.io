@@ -1,3 +1,5 @@
+/* global Lenis, gsap, ScrollTrigger */
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- DATA FOR COMPETENCIES ---
