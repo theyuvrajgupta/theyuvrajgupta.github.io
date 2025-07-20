@@ -112,11 +112,12 @@ section { padding: 8rem 0; position: relative; }
 .vision-orb { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; background: radial-gradient(circle, var(--primary-accent) 0%, var(--surface-color) 70%); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 50px var(--primary-accent); animation: orb-pulse 4s infinite ease-in-out; }
 @keyframes orb-pulse { 50% { transform: translate(-50%, -50%) scale(1.1); } }
 
-/* --- BUG FIX STARTS HERE --- */
+/* --- BUG FIX 2: Vision Pillar Alignment --- */
 .vision-pillar {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    /* This transform will center the pillar div on the specified top/left coordinates */
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s ease;
 }
 .vision-pillar span {
     display: block;
@@ -125,23 +126,21 @@ section { padding: 8rem 0; position: relative; }
     border-radius: 20px;
     border: 1px solid var(--border-color);
     white-space: nowrap;
-    transition: transform 0.3s ease;
 }
-#pillar-1 { transform: rotate(45deg) translateX(140px) translate(-50%, -50%); } 
-#pillar-1 span { transform: rotate(-45deg); }
+.vision-pillar:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
 
-#pillar-2 { transform: rotate(-45deg) translateX(140px) translate(-50%, -50%); } 
-#pillar-2 span { transform: rotate(45deg); }
-
-#pillar-3 { transform: rotate(135deg) translateX(140px) translate(-50%, -50%); } 
-#pillar-3 span { transform: rotate(-135deg); }
-
-#pillar-4 { transform: rotate(-135deg) translateX(140px) translate(-50%, -50%); } 
-#pillar-4 span { transform: rotate(135deg); }
-/* --- BUG FIX ENDS HERE --- */
+/* The SVG lines go from center (200,200) to corners (e.g., 295,105). 
+   We use percentages to place the pillars at those exact endpoints.
+   e.g., 105 / 400 = 26.25%, 295 / 400 = 73.75% */
+#pillar-1 { top: 26.25%; left: 73.75%; }
+#pillar-2 { top: 26.25%; left: 26.25%; }
+#pillar-3 { top: 73.75%; left: 26.25%; }
+#pillar-4 { top: 73.75%; left: 73.75%; }
+/* --- END OF BUG FIX 2 --- */
 
 .vision-text p { font-size: 1.2rem; color: var(--text-muted-color); max-width: 45ch; }
-
 
 /* ======== FOOTER ======== */
 .footer { padding: 6rem 2rem 2rem; background-color: var(--surface-color); text-align: center; }
