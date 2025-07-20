@@ -1,4 +1,5 @@
 /* global Lenis, gsap, ScrollTrigger */
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- DATA FOR COMPETENCIES ---
@@ -49,8 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const resize = () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; };
         const createParticles = () => {
             particles = [];
-            // Increased particle count for a denser feel
-            const count = window.innerWidth < 768 ? 80 : 250; 
+            const count = window.innerWidth < 768 ? 80 : 250;
             for (let i = 0; i < count; i++) {
                 particles.push({
                     x: Math.random() * bgCanvas.width,
@@ -89,23 +89,158 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollTrigger: { scrub: true }
     });
 
-    // Headline animation
-    gsap.to(".main-headline span", { y: 0, opacity: 1, stagger: 0.2, duration: 1, ease: "power3.out", delay: 0.5 });
-    
-    // --- FIXED: JOURNEY SECTION ANIMATION ---
-    // Using Intersection Observer for robust, performant fade-in animations.
-    const journeyItems = document.querySelectorAll('.timeline-item');
-    if(journeyItems.length > 0) {
-        const journeyObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                }
-            });
-        }, { threshold: 0.2 });
-        journeyItems.forEach(item => journeyObserver.observe(item));
-    }
+    // --- NEW HEADLINE ANIMATION: DATA STREAM REVEAL ---
+    const headlineCanvas = document.getElementById('headline-canvas');
+    if (headlineCanvas) {
+        const ctx = headlineCanvas.getContext('2d');
+        const headlines = ["Strategist.", "Innovator.", "Health-Tech Leader."];
+        let particles = [];
+        let textPoints = null;
+        let currentHeadlineIndex = 0;
+        let animationState = 'streaming'; // streaming, forming, holding, dissolving
 
+        const resizeHeadlineCanvas = () => {
+            const container = document.getElementById('headline-canvas-container');
+            headlineCanvas.width = container.offsetWidth;
+            headlineCanvas.height = container.offsetHeight;
+        };
+
+        class HeadlineParticle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = 0;
+                this.vy = Math.random() * 2 + 1;
+                this.targetX = null;
+                this.targetY = null;
+                this.radius = Math.random() * 1.5 + 1;
+                this.color = `rgba(0, 245, 195, ${Math.random() * 0.5 + 0.5})`;
+            }
+            update() {
+                if (animationState === 'forming' && this.targetX !== null) {
+                    this.vx += (this.targetX - this.x) * 0.03;
+                    this.vy += (this.targetY - this.y) * 0.03;
+                    this.vx *= 0.92;
+                    this.vy *= 0.92;
+                } else {
+                    // Default streaming behavior
+                    this.y += this.vy;
+                    if (this.y > headlineCanvas.height) {
+                        this.y = 0;
+                        this.x = Math.random() * headlineCanvas.width;
+                    }
+                }
+                this.x += this.vx;
+                this.y += this.vy;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        const getTextPoints = (text) => {
+            const fontSize = Math.min(headlineCanvas.width / 8, 80);
+            const font = `bold ${fontSize}px "Satoshi"`;
+            ctx.font = font;
+            const textMetrics = ctx.measureText(text);
+            const textWidth = textMetrics.width;
+            const textHeight = fontSize;
+            
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = textWidth;
+            tempCanvas.height = textHeight;
+            tempCtx.font = font;
+            tempCtx.fillStyle = '#fff';
+            tempCtx.fillText(text, 0, textHeight * 0.8);
+
+            const imageData = tempCtx.getImageData(0, 0, textWidth, textHeight);
+            const points = [];
+            const density = 4;
+            for (let y = 0; y < imageData.height; y += density) {
+                for (let x = 0; x < imageData.width; x += density) {
+                    if (imageData.data[(y * imageData.width + x) * 4 + 3] > 128) {
+                        points.push({ x: x + (headlineCanvas.width - textWidth) / 2, y: y + (headlineCanvas.height - textHeight) / 2 });
+                    }
+                }
+            }
+            return points;
+        };
+
+        const cycleHeadlines = () => {
+            // 1. DISSOLVE
+            animationState = 'dissolving';
+            particles.forEach(p => {
+                p.targetX = null;
+                p.targetY = null;
+                p.vy = Math.random() * 2 + 1; // Start streaming down again
+            });
+
+            setTimeout(() => {
+                // 2. FORM NEXT HEADLINE
+                currentHeadlineIndex = (currentHeadlineIndex + 1) % headlines.length;
+                textPoints = getTextPoints(headlines[currentHeadlineIndex]);
+                
+                animationState = 'forming';
+                particles.forEach((p, i) => {
+                    const target = textPoints[i % textPoints.length];
+                    p.targetX = target.x;
+                    p.targetY = target.y;
+                });
+
+                // 3. HOLD & REPEAT
+                setTimeout(cycleHeadlines, 4000); // Hold for 4s then repeat cycle
+
+            }, 1500); // Time for particles to dissolve
+        };
+
+        const initHeadline = () => {
+            resizeHeadlineCanvas();
+            particles = [];
+            const count = window.innerWidth < 768 ? 200 : 400;
+            for (let i = 0; i < count; i++) {
+                particles.push(new HeadlineParticle(Math.random() * headlineCanvas.width, Math.random() * headlineCanvas.height));
+            }
+            animateHeadline();
+            setTimeout(cycleHeadlines, 1000); // Start the first cycle
+        };
+
+        const animateHeadline = () => {
+            ctx.clearRect(0, 0, headlineCanvas.width, headlineCanvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateHeadline);
+        };
+
+        window.addEventListener('resize', initHeadline);
+        initHeadline();
+    }
+    
+    // Animate subtitle and buttons after headline animation starts
+    gsap.to([".subtitle", ".home-buttons"], {
+        opacity: 1,
+        duration: 0.8,
+        delay: 1.5 // Delay to allow first headline to form
+    });
+
+    // Animate narrative cards
+    gsap.from(".narrative-card", {
+        scrollTrigger: {
+            trigger: ".about-narrative-grid",
+            start: "top 80%",
+            toggleActions: "play none none none"
+        },
+        opacity: 0,
+        y: 50,
+        stagger: 0.2,
+        duration: 0.8,
+        ease: "power3.out"
+    });
 
     // --- INTERACTIVE COMPETENCIES MAP ---
     const competencyNodes = document.querySelectorAll('.competency-node');
@@ -186,3 +321,4 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.modal-backdrop').addEventListener('click', closeAllModals);
     }
 });
+
