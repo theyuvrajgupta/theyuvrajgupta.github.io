@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yuvraj Gupta | Health-Tech Leader & AI Innovator</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%2310182c'/><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='60' font-family='Satoshi, sans-serif' fill='%2300f5c3'>YG</text></svg>">
-    <link rel="stylesheet" href="./portfolio/css/style.css">
+    <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,14 +32,15 @@
 
     <main id="main-content">
         <section id="home" class="home-section">
-            <div class="container">
-                <!-- Headline Structure -->
+            <div class="container home-grid">
                 <div id="headline-canvas-container">
                     <canvas id="headline-canvas"></canvas>
                 </div>
-                <p class="subtitle">Leveraging a decade of technical expertise to build the future of AI-driven healthcare. Poised to drive product strategy and innovation post-MBA.</p>
-                <div class="home-buttons">
-                    <a href="./portfolio/assets/resume.pdf" class="btn btn-primary magnetic" download><i class="fa-solid fa-download"></i> Download Resume</a>
+                <div class="home-intro-text">
+                    <p class="subtitle">Leveraging a decade of technical expertise to build the future of AI-driven healthcare. Poised to drive product strategy and innovation post-MBA.</p>
+                    <div class="home-buttons">
+                        <a href="./portfolio/assets/resume.pdf" class="btn btn-primary magnetic" download><i class="fa-solid fa-download"></i> Download Resume</a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -56,12 +57,13 @@
                     <div class="narrative-card">
                         <div class="narrative-icon"><i class="fa-solid fa-brain"></i></div>
                         <h3>The "How": Pioneering AI</h3>
-                        <p>I led teams to build AI solutions from the ground up, turning whiteboard concepts into market-ready products that demonstrably improved clinical outcomes and efficiency.</p>
+                        <p>I led teams to build AI and cloud solutions from the ground up, turning whiteboard concepts into market-ready products that demonstrably improved clinical outcomes and efficiency.</p>
                     </div>
                     <div class="narrative-card">
                         <div class="narrative-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
                         <h3>The "What's Next": Strategic Leadership</h3>
-                        <p>I am now focused on bridging deep tech expertise with strategic business frameworks to lead at the intersection of technology and global healthcare innovation.</p>
+                        <p>I am now focused on bridging deep tech expertise with strategic business frameworks to lead at the intersection of technology and global healthcare innovation
+                            with an MBA and Singapore's best MBA program at Nanyand Business School.</p>
                     </div>
                 </div>
             </div>
@@ -72,18 +74,8 @@
                 <h2 class="section-title">Core Competencies</h2>
                 <div class="expertise-interactive-map">
                     <svg class="competency-lines" width="100%" height="100%" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet">
-                        <defs>
-                            <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style="stop-color:var(--secondary-accent);stop-opacity:0.8" />
-                                <stop offset="100%" style="stop-color:var(--primary-accent);stop-opacity:0.8" />
-                            </linearGradient>
-                        </defs>
-                        <line x1="25%" y1="25%" x2="75%" y2="25%" stroke="url(#line-gradient)" />
-                        <line x1="75%" y1="25%" x2="75%" y2="75%" stroke="url(#line-gradient)" />
-                        <line x1="75%" y1="75%" x2="25%" y2="75%" stroke="url(#line-gradient)" />
-                        <line x1="25%" y1="75%" x2="25%" y2="25%" stroke="url(#line-gradient)" />
-                        <line x1="25%" y1="25%" x2="75%" y2="75%" stroke="url(#line-gradient)" />
-                        <line x1="75%" y1="25%" x2="25%" y2="75%" stroke="url(#line-gradient)" />
+                        <defs><linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:var(--secondary-accent);stop-opacity:0.8" /><stop offset="100%" style="stop-color:var(--primary-accent);stop-opacity:0.8" /></linearGradient></defs>
+                        <line x1="25%" y1="25%" x2="75%" y2="25%" stroke="url(#line-gradient)" /><line x1="75%" y1="25%" x2="75%" y2="75%" stroke="url(#line-gradient)" /><line x1="75%" y1="75%" x2="25%" y2="75%" stroke="url(#line-gradient)" /><line x1="25%" y1="75%" x2="25%" y2="25%" stroke="url(#line-gradient)" /><line x1="25%" y1="25%" x2="75%" y2="75%" stroke="url(#line-gradient)" /><line x1="75%" y1="25%" x2="25%" y2="75%" stroke="url(#line-gradient)" />
                     </svg>
                     <div class="competency-node" data-competency="ai"><div class="node-pulse"></div><span>AI & ML Innovation</span></div>
                     <div class="competency-node" data-competency="healthtech"><div class="node-pulse"></div><span>HealthTech Strategy</span></div>
@@ -147,20 +139,13 @@
     <!-- Project Modals -->
     <div id="modal-container" class="hidden">
         <div class="modal-backdrop"></div>
-        <div id="project1" class="modal-content">
-             <button class="modal-close-btn magnetic"><i class="fa-solid fa-xmark"></i></button><img src="https://placehold.co/800x400/0a0f2c/00f5c3?text=AI+Diagnostic+Interface" alt="AI Diagnostic Interface" class="modal-img"><h2>AI-Driven PET-CT Analysis</h2><div class="modal-body"><div><h3>The Challenge</h3><p>Radiologists spend significant time manually identifying and classifying tumors in PET-CT scans, a process that is both time-consuming and prone to variability. The goal was to accelerate this process and improve diagnostic consistency.</p></div><div><h3>My Contribution</h3><p>I led the end-to-end development of Siemens' first AI tool for molecular imaging. My role spanned from initial whiteboarding and architectural design to leading a team in building and deploying the MVP. I was responsible for defining the product vision and ensuring it met clinical needs.</p></div><div><h3>Tech Stack</h3><p>TensorFlow, Python, C++, CNNs, Medical Imaging Protocols (DICOM).</p></div><div><h3>Impact & Business Value</h3><p>The tool achieved <strong data-number="90">0</strong>% accuracy in identifying malignant tumors, leading to a <strong data-number="40">0</strong>% reduction in radiologist effort. This innovation drove a <strong data-number="30">0</strong>% revenue boost for the product line and was featured as a showstopper at premier industry events like RSNA.</p></div></div>
-        </div>
-        <div id="project2" class="modal-content">
-            <button class="modal-close-btn magnetic"><i class="fa-solid fa-xmark"></i></button><img src="https://placehold.co/800x400/0a0f2c/00f5c3?text=Automated+Cloud+Pipeline" alt="Automated Cloud Pipeline" class="modal-img"><h2>Serverless QA Automation Pipeline</h2><div class="modal-body"><div><h3>The Challenge</h3><p>The existing integration testing process for our clinical tools was manual and took over 4 hours, creating a significant bottleneck in the development cycle and delaying feature releases.</p></div><div><h3>My Contribution</h3><p>I architected and led the implementation of a fully serverless, event-driven QA pipeline on AWS. This involved designing the microservices architecture, selecting the appropriate AWS services, and managing the development process to ensure a scalable and cost-effective solution.</p></div><div><h3>Tech Stack</h3><p>AWS Lambda, S3, SQS, Step Functions, Python, Docker, Terraform.</p></div><div><h3>Impact & Business Value</h3><p>The new pipeline reduced integration testing time from 4 hours to just 10 minutes (a <strong data-number="95">0</strong>% reduction). This dramatically accelerated the feedback loop for developers, improved product quality, and enabled faster, more predictable release cycles.</p></div></div>
-        </div>
-        <div id="project3" class="modal-content">
-            <button class="modal-close-btn magnetic"><i class="fa-solid fa-xmark"></i></button><img src="https://placehold.co/800x400/0a0f2c/00f5c3?text=Team+Collaboration" alt="Team Collaboration" class="modal-img"><h2>Agile Team Leadership & Turnaround</h2><div class="modal-body"><div><h3>The Challenge</h3><p>Following the unexpected departure of several senior members, the project faced a critical knowledge gap and a decline in morale, risking client deliverables and team cohesion.</p></div><div><h3>My Contribution</h3><p>Drawing on my principles of accountability and empathy, I stepped into the technical lead and Scrum Master roles. I established a structured onboarding and mentorship program, pairing new hires with experienced members. I instituted open communication channels and managed client expectations transparently, rebuilding trust and stability.</p></div><div><h3>Tech Stack</h3><p>Jira, Confluence, Agile Methodologies, Scrum Framework.</p></div><div><h3>Impact & Business Value</h3><p>My leadership stabilized the team, preventing project delays and maintaining client satisfaction. We successfully revamped the entire organizational delivery mechanism. This experience solidified my ability to lead and mentor in high-pressure situations, turning a potential crisis into a growth opportunity for the entire team.</p></div></div>
-        </div>
+        <div id="project1" class="modal-content"><button class="modal-close-btn magnetic"><i class="fa-solid fa-xmark"></i></button><img src="https://placehold.co/800x400/0a0f2c/00f5c3?text=AI+Diagnostic+Interface" alt="AI Diagnostic Interface" class="modal-img"><h2>AI-Driven PET-CT Analysis</h2><div class="modal-body"><div><h3>The Challenge</h3><p>Radiologists spend significant time manually identifying and classifying tumors in PET-CT scans, a process that is both time-consuming and prone to variability. The goal was to accelerate this process and improve diagnostic consistency.</p></div><div><h3>My Contribution</h3><p>I led the end-to-end development of Siemens' first AI tool for molecular imaging. My role spanned from initial whiteboarding and architectural design to leading a team in building and deploying the MVP. I was responsible for defining the product vision and ensuring it met clinical needs.</p></div><div><h3>Tech Stack</h3><p>TensorFlow, Python, C++, CNNs, Medical Imaging Protocols (DICOM).</p></div><div><h3>Impact & Business Value</h3><p>The tool achieved <strong data-number="90">0</strong>% accuracy in identifying malignant tumors, leading to a <strong data-number="40">0</strong>% reduction in radiologist effort. This innovation drove a <strong data-number="30">0</strong>% revenue boost for the product line and was featured as a showstopper at premier industry events like RSNA.</p></div></div></div>
+        <div id="project2" class="modal-content"><button class="modal-close-btn magnetic"><i class="fa-solid fa-xmark"></i></button><img src="https://placehold.co/800x400/0a0f2c/00f5c3?text=Automated+Cloud+Pipeline" alt="Automated Cloud Pipeline" class="modal-img"><h2>Serverless QA Automation Pipeline</h2><div class="modal-body"><div><h3>The Challenge</h3><p>The existing integration testing process for our clinical tools was manual and took over 4 hours, creating a significant bottleneck in the development cycle and delaying feature releases.</p></div><div><h3>My Contribution</h3><p>I architected and led the implementation of a fully serverless, event-driven QA pipeline on AWS. This involved designing the microservices architecture, selecting the appropriate AWS services, and managing the development process to ensure a scalable and cost-effective solution.</p></div><div><h3>Tech Stack</h3><p>AWS Lambda, S3, SQS, Step Functions, Python, Docker, Terraform.</p></div><div><h3>Impact & Business Value</h3><p>The new pipeline reduced integration testing time from 4 hours to just 10 minutes (a <strong data-number="95">0</strong>% reduction). This dramatically accelerated the feedback loop for developers, improved product quality, and enabled faster, more predictable release cycles.</p></div></div></div>
+        <div id="project3" class="modal-content"><button class="modal-close-btn magnetic"><i class="fa-solid fa-xmark"></i></button><img src="https://placehold.co/800x400/0a0f2c/00f5c3?text=Team+Collaboration" alt="Team Collaboration" class="modal-img"><h2>Agile Team Leadership & Turnaround</h2><div class="modal-body"><div><h3>The Challenge</h3><p>Following the unexpected departure of several senior members, the project faced a critical knowledge gap and a decline in morale, risking client deliverables and team cohesion.</p></div><div><h3>My Contribution</h3><p>Drawing on my principles of accountability and empathy, I stepped into the technical lead and Scrum Master roles. I established a structured onboarding and mentorship program, pairing new hires with experienced members. I instituted open communication channels and managed client expectations transparently, rebuilding trust and stability.</p></div><div><h3>Tech Stack</h3><p>Jira, Confluence, Agile Methodologies, Scrum Framework.</p></div><div><h3>Impact & Business Value</h3><p>My leadership stabilized the team, preventing project delays and maintaining client satisfaction. We successfully revamped the entire organizational delivery mechanism. This experience solidified my ability to lead and mentor in high-pressure situations, turning a potential crisis into a growth opportunity for the entire team.</p></div></div></div>
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lenis@1.0.45/dist/lenis.min.js"></script>
     <script src="./portfolio/js/script.js"></script>
 </body>
 </html>
