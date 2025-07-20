@@ -1,3 +1,5 @@
+/* global Lenis, gsap, ScrollTrigger */
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- DATA FOR COMPETENCIES ---
@@ -9,7 +11,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- SMOOTH SCROLLING ---
-    const lenis = new Lenis();
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion)').matches;
+    let lenis;
+
+    if (!prefersReduced) {
+      lenis = new Lenis({
+        lerp: 0.1,
+        smooth: true,
+        wheelMultiplier: 1,
+        smoothTouch: false,
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      lenis.on('scroll', () => ScrollTrigger.update());
+    }
     function raf(time) {
         lenis.raf(time);
         requestAnimationFrame(raf);
