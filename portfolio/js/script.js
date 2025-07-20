@@ -10,19 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
         leadership: { title: "Product Leadership", skills: ["Agile & Scrum Mastery", "Product Thinking", "Team Mentorship", "Stakeholder Management"] }
     };
 
-    // --- SMOOTH SCROLLING (LENIS) - CORRECT INTEGRATION WITH GSAP ---
-    let lenis;
-    if (typeof Lenis !== 'undefined') {
-        lenis = new Lenis();
-
-        lenis.on('scroll', ScrollTrigger.update);
-
-        gsap.ticker.add((time) => {
-            lenis.raf(time * 1000);
-        });
-
-        gsap.ticker.lagSmoothing(0);
-    }
+    // --- SMOOTH SCROLLING (NATIVE) ---
+    // Removed Lenis to ensure performance. GSAP will work with native scroll.
 
     // --- CUSTOM CURSOR & MAGNETIC ELEMENTS ---
     const cursor = document.querySelector('.cursor');
@@ -50,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const resize = () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; };
         const createParticles = () => {
             particles = [];
-            const count = window.innerWidth < 768 ? 80 : 250;
+            const count = window.innerWidth < 768 ? 80 : 250; 
             for (let i = 0; i < count; i++) {
                 particles.push({
                     x: Math.random() * bgCanvas.width,
@@ -89,15 +78,14 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollTrigger: { scrub: true }
     });
 
-    // --- NEW HEADLINE ANIMATION: DATA STREAM REVEAL ---
+    // --- FIXED: HEADLINE ANIMATION ---
     const headlineCanvas = document.getElementById('headline-canvas');
     if (headlineCanvas) {
         const ctx = headlineCanvas.getContext('2d');
         const headlines = ["Strategist.", "Innovator.", "Health-Tech Leader."];
         let particles = [];
-        let textPoints = null;
         let currentHeadlineIndex = 0;
-        let animationState = 'streaming'; // streaming, forming, holding, dissolving
+        let animationState = 'streaming';
 
         const resizeHeadlineCanvas = () => {
             const container = document.getElementById('headline-canvas-container');
@@ -107,12 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         class HeadlineParticle {
             constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.vx = 0;
-                this.vy = Math.random() * 2 + 1;
-                this.targetX = null;
-                this.targetY = null;
+                this.x = x; this.y = y; this.vx = 0; this.vy = Math.random() * 2 + 1;
+                this.targetX = null; this.targetY = null;
                 this.radius = Math.random() * 1.5 + 1;
                 this.color = `rgba(0, 245, 195, ${Math.random() * 0.5 + 0.5})`;
             }
@@ -120,50 +104,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (animationState === 'forming' && this.targetX !== null) {
                     this.vx += (this.targetX - this.x) * 0.03;
                     this.vy += (this.targetY - this.y) * 0.03;
-                    this.vx *= 0.92;
-                    this.vy *= 0.92;
+                    this.vx *= 0.92; this.vy *= 0.92;
                 } else {
-                    // Default streaming behavior
                     this.y += this.vy;
-                    if (this.y > headlineCanvas.height) {
-                        this.y = 0;
-                        this.x = Math.random() * headlineCanvas.width;
-                    }
+                    if (this.y > headlineCanvas.height) { this.y = 0; this.x = Math.random() * headlineCanvas.width; }
                 }
-                this.x += this.vx;
-                this.y += this.vy;
+                this.x += this.vx; this.y += this.vy;
             }
             draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color; ctx.fill();
             }
         }
 
-        const getTextPoints = (text) => {
-            const fontSize = Math.min(headlineCanvas.width / 8, 80);
+        const getTextPoints = (text1, text2 = null) => {
+            const fontSize = Math.min(headlineCanvas.width / 7, 70);
             const font = `bold ${fontSize}px "Satoshi"`;
             ctx.font = font;
-            const textMetrics = ctx.measureText(text);
-            const textWidth = textMetrics.width;
-            const textHeight = fontSize;
-            
+            const textMetrics1 = ctx.measureText(text1);
+            let textWidth = textMetrics1.width;
+            let textHeight = fontSize;
+            if (text2) {
+                const textMetrics2 = ctx.measureText(text2);
+                textWidth = Math.max(textWidth, textMetrics2.width);
+                textHeight *= 2.2;
+            }
             const tempCanvas = document.createElement('canvas');
             const tempCtx = tempCanvas.getContext('2d');
-            tempCanvas.width = textWidth;
-            tempCanvas.height = textHeight;
-            tempCtx.font = font;
-            tempCtx.fillStyle = '#fff';
-            tempCtx.fillText(text, 0, textHeight * 0.8);
+            tempCanvas.width = textWidth; tempCanvas.height = textHeight;
+            tempCtx.font = font; tempCtx.fillStyle = '#fff'; tempCtx.textAlign = 'right';
+            tempCtx.fillText(text1, textWidth, fontSize * 0.8);
+            if (text2) tempCtx.fillText(text2, textWidth, fontSize * 1.8);
 
             const imageData = tempCtx.getImageData(0, 0, textWidth, textHeight);
-            const points = [];
-            const density = 4;
+            const points = []; const density = 4;
             for (let y = 0; y < imageData.height; y += density) {
                 for (let x = 0; x < imageData.width; x += density) {
                     if (imageData.data[(y * imageData.width + x) * 4 + 3] > 128) {
-                        points.push({ x: x + (headlineCanvas.width - textWidth) / 2, y: y + (headlineCanvas.height - textHeight) / 2 });
+                        points.push({ x: x + (headlineCanvas.width - textWidth), y: y + (headlineCanvas.height - textHeight) / 2 });
                     }
                 }
             }
@@ -171,76 +149,56 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const cycleHeadlines = () => {
-            // 1. DISSOLVE
             animationState = 'dissolving';
-            particles.forEach(p => {
-                p.targetX = null;
-                p.targetY = null;
-                p.vy = Math.random() * 2 + 1; // Start streaming down again
-            });
-
+            particles.forEach(p => { p.targetX = null; p.targetY = null; p.vy = Math.random() * 2 + 1; });
             setTimeout(() => {
-                // 2. FORM NEXT HEADLINE
-                currentHeadlineIndex = (currentHeadlineIndex + 1) % headlines.length;
-                textPoints = getTextPoints(headlines[currentHeadlineIndex]);
+                currentHeadlineIndex = (currentHeadlineIndex + 1) % 3; // Cycle through 3 states
+                let textPoints;
+                if (currentHeadlineIndex === 0) textPoints = getTextPoints("Strategist.");
+                else if (currentHeadlineIndex === 1) textPoints = getTextPoints("Innovator.");
+                else textPoints = getTextPoints("Health-Tech", "Leader.");
                 
                 animationState = 'forming';
                 particles.forEach((p, i) => {
                     const target = textPoints[i % textPoints.length];
-                    p.targetX = target.x;
-                    p.targetY = target.y;
+                    p.targetX = target.x; p.targetY = target.y;
                 });
-
-                // 3. HOLD & REPEAT
-                setTimeout(cycleHeadlines, 4000); // Hold for 4s then repeat cycle
-
-            }, 1500); // Time for particles to dissolve
+                setTimeout(cycleHeadlines, 3500);
+            }, 1000);
         };
 
         const initHeadline = () => {
             resizeHeadlineCanvas();
             particles = [];
             const count = window.innerWidth < 768 ? 200 : 400;
-            for (let i = 0; i < count; i++) {
-                particles.push(new HeadlineParticle(Math.random() * headlineCanvas.width, Math.random() * headlineCanvas.height));
-            }
+            for (let i = 0; i < count; i++) particles.push(new HeadlineParticle(Math.random() * headlineCanvas.width, Math.random() * headlineCanvas.height));
             animateHeadline();
-            setTimeout(cycleHeadlines, 1000); // Start the first cycle
+            setTimeout(cycleHeadlines, 500);
         };
 
         const animateHeadline = () => {
             ctx.clearRect(0, 0, headlineCanvas.width, headlineCanvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animateHeadline);
         };
-
         window.addEventListener('resize', initHeadline);
         initHeadline();
     }
     
-    // Animate subtitle and buttons after headline animation starts
-    gsap.to([".subtitle", ".home-buttons"], {
-        opacity: 1,
-        duration: 0.8,
-        delay: 1.5 // Delay to allow first headline to form
-    });
+    gsap.to([".subtitle", ".home-buttons"], { opacity: 1, duration: 0.8, delay: 1.5 });
 
-    // Animate narrative cards
-    gsap.from(".narrative-card", {
-        scrollTrigger: {
-            trigger: ".about-narrative-grid",
-            start: "top 80%",
-            toggleActions: "play none none none"
-        },
-        opacity: 0,
-        y: 50,
-        stagger: 0.2,
-        duration: 0.8,
-        ease: "power3.out"
-    });
+    // --- FIXED: JOURNEY SECTION ANIMATION ---
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    if(timelineItems.length > 0) {
+        const journeyObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.2 });
+        timelineItems.forEach(item => journeyObserver.observe(item));
+    }
 
     // --- INTERACTIVE COMPETENCIES MAP ---
     const competencyNodes = document.querySelectorAll('.competency-node');
@@ -270,13 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { left, top, width, height } = card.getBoundingClientRect();
             const x = (e.clientX - left) / width - 0.5;
             const y = (e.clientY - top) / height - 0.5;
-            gsap.to(card, {
-                duration: 0.5,
-                rotationY: x * 15,
-                rotationX: -y * 15,
-                transformPerspective: 1000,
-                ease: "power2.out"
-            });
+            gsap.to(card, { duration: 0.5, rotationY: x * 15, rotationX: -y * 15, transformPerspective: 1000, ease: "power2.out" });
         });
         card.addEventListener('mouseleave', () => {
             gsap.to(card, { duration: 0.8, rotationY: 0, rotationX: 0, ease: "elastic.out(1, 0.3)" });
@@ -291,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
         projectCards.forEach(card => {
             card.addEventListener('click', (e) => {
                 e.preventDefault();
-                if (lenis) lenis.stop(); // Stop Lenis scroll
                 document.body.classList.add('modal-open');
                 const targetModalId = card.getAttribute('data-modal-target');
                 const targetModal = document.getElementById(targetModalId);
@@ -312,7 +263,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function closeAllModals() {
-            if (lenis) lenis.start(); // Start Lenis scroll
             document.body.classList.remove('modal-open');
             modalContainer.classList.add('hidden');
             document.querySelectorAll('.modal-content.active').forEach(modal => modal.classList.remove('active'));
@@ -321,4 +271,3 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.modal-backdrop').addEventListener('click', closeAllModals);
     }
 });
-
