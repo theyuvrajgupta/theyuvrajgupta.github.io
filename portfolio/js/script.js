@@ -115,18 +115,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const getTextPoints = (text1, text2 = null) => {
-            // *** BUG FIX 1: Font size and alignment correction ***
-            const fontSize = Math.min(headlineCanvas.width / 8, 70); // Adjusted font size for safety
+            // *** FINAL BUG FIX: More robust font sizing and positioning ***
+            const fontSize = Math.min(headlineCanvas.width / 10, 60); // Conservative font size
             const font = `bold ${fontSize}px "Satoshi"`;
             ctx.font = font;
             
             const textMetrics1 = ctx.measureText(text1);
             let textWidth = textMetrics1.width;
-            let textHeight = fontSize;
+            let textHeight = fontSize * 1.2; // Generous single-line height
             if (text2) {
                 const textMetrics2 = ctx.measureText(text2);
                 textWidth = Math.max(textWidth, textMetrics2.width);
-                textHeight *= 2.2;
+                textHeight = fontSize * 2.4; // Generous two-line height
             }
 
             const tempCanvas = document.createElement('canvas');
@@ -135,10 +135,15 @@ document.addEventListener('DOMContentLoaded', () => {
             tempCanvas.height = textHeight;
             tempCtx.font = font; 
             tempCtx.fillStyle = '#fff'; 
-            // Align text to the left of the temporary canvas
             tempCtx.textAlign = 'left'; 
-            tempCtx.fillText(text1, 0, fontSize * 0.8);
-            if (text2) tempCtx.fillText(text2, 0, fontSize * 1.8);
+            
+            // Adjust baselines to provide more vertical space
+            const firstLineY = fontSize;
+            tempCtx.fillText(text1, 0, firstLineY);
+            if (text2) {
+                const secondLineY = fontSize * 2.1;
+                tempCtx.fillText(text2, 0, secondLineY);
+            }
 
             const imageData = tempCtx.getImageData(0, 0, textWidth, textHeight);
             const points = []; 
@@ -146,8 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let y = 0; y < imageData.height; y += density) {
                 for (let x = 0; x < imageData.width; x += density) {
                     if (imageData.data[(y * imageData.width + x) * 4 + 3] > 128) {
-                        // Position points on the main canvas, starting from the left
-                        points.push({ x: x, y: y + (headlineCanvas.height - textHeight) / 2 });
+                        // Center the entire text block vertically in the main canvas
+                        const finalY = y + (headlineCanvas.height - textHeight) / 2;
+                        points.push({ x: x, y: finalY });
                     }
                 }
             }
