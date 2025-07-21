@@ -75,8 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollTrigger: { scrub: true }
     });
 
-    // --- NEW HEADLINE ANIMATION: TEXT SCRAMBLE EFFECT ---
-    // This entire block replaces the old, buggy canvas animation.
+    // --- FINAL HEADLINE ANIMATION: TEXT SCRAMBLE EFFECT ---
     class TextScramble {
         constructor(el) {
             this.el = el;
@@ -133,23 +132,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const headlineContainer = document.getElementById('headline-canvas-container');
     if (headlineContainer) {
-        // Clear the old canvas element to prevent any conflicts.
-        headlineContainer.innerHTML = '';
-
-        // Create a new H1 element for the text scramble effect.
+        headlineContainer.innerHTML = ''; // Clear the old canvas
         const headlineEl = document.createElement('h1');
         headlineContainer.appendChild(headlineEl);
 
-        // Apply styles directly via JS to avoid touching the CSS file.
+        // ** BUG FIX: Stabilize container height to prevent layout jumps **
         headlineEl.style.fontSize = 'clamp(2.5rem, 7vw, 4.5rem)';
         headlineEl.style.fontFamily = 'var(--font-heading)';
         headlineEl.style.color = 'var(--text-color)';
         headlineEl.style.lineHeight = '1.1';
         headlineEl.style.textAlign = 'left';
-        headlineEl.style.minHeight = '150px'; // Ensure container has height
+        // This is the key fix: Reserve space for the tallest possible text (2 lines)
+        headlineEl.style.minHeight = 'calc(2 * 1.1 * clamp(2.5rem, 7vw, 4.5rem))';
         headlineEl.style.display = 'flex';
         headlineEl.style.alignItems = 'center';
-
+        headlineEl.style.padding = '1rem 0'; // Add some vertical padding
 
         const headlines = [
             'Strategist.',
@@ -158,12 +155,17 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
         const fx = new TextScramble(headlineEl);
         let counter = 0;
+        let timeoutId; // ** BUG FIX: To manage the timer **
+
         const next = () => {
+            // ** BUG FIX: Clear any previous timer to prevent glitches **
+            clearTimeout(timeoutId); 
             fx.setText(headlines[counter]).then(() => {
-                setTimeout(next, 2500); // Wait 2.5 seconds before scrambling to the next word
+                timeoutId = setTimeout(next, 2800); // Wait 2.8 seconds
             });
             counter = (counter + 1) % headlines.length;
         };
+        
         next(); // Start the animation
     }
     
