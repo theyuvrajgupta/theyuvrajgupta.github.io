@@ -53,7 +53,7 @@ section { padding: 8rem 0; position: relative; }
 /* ======== HOME SECTION (REDESIGNED) ======== */
 .home-section { min-height: 100vh; display: flex; align-items: center; }
 .home-grid { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem; }
-#headline-canvas-container { width: 100%; height: auto; } /* Let the h1 inside determine height */
+#headline-canvas-container { width: 100%; height: auto; }
 .home-intro-text { text-align: right; }
 .home-intro-text .subtitle { margin-left: auto; margin-bottom: 2rem; opacity: 0; }
 .home-buttons { opacity: 0; }
@@ -80,7 +80,7 @@ section { padding: 8rem 0; position: relative; }
 .competency-lines { position: absolute; top: 0; left: 0; pointer-events: none; }
 .competency-lines line { stroke-width: 1; opacity: 0.1; transition: opacity 0.3s ease; }
 .expertise-interactive-map:hover .competency-lines line { opacity: 0.3; }
-.competency-node { position: relative; display: flex; align-items: center; justify-content: center; width: 150px; height: 150px; border-radius: 50%; border: 1px solid var(--border-color); cursor: none; transition: all 0.3s ease; }
+.competency-node { position: relative; display: flex; align-items: center; justify-content: center; width: 150px; height: 150px; border-radius: 50%; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.3s ease; }
 .competency-node:hover { background-color: var(--surface-color); transform: scale(1.1); }
 .competency-node span { font-family: var(--font-heading); font-weight: 500; text-align: center; }
 .node-pulse { position: absolute; width: 100%; height: 100%; border-radius: 50%; background-color: var(--primary-accent); opacity: 0; animation: pulse 2s infinite; }
@@ -157,24 +157,45 @@ section { padding: 8rem 0; position: relative; }
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 2rem;
-        height: auto; /* Override fixed height */
+        gap: 1.5rem;
+        height: auto;
+    }
+    .competency-node {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        padding: 1rem;
     }
     .competency-lines {
-        display: none; /* Hide confusing lines on mobile */
+        display: none !important;
     }
     .competency-details-panel {
-        position: static; /* Make it part of the normal flow */
+        position: static;
         transform: none;
         width: 100%;
-        margin-top: 2rem;
+        margin-top: 1rem;
         text-align: center;
+        pointer-events: auto; /* Allow interaction */
     }
     /* ** END OF FIX ** */
 
-    .vision-grid { grid-template-columns: 1fr; }
-    .vision-orb-container { margin-bottom: 4rem; }
+    /* ** FINAL BUG FIX: Vision Section Mobile Layout ** */
+    .vision-grid { 
+        grid-template-columns: 1fr; 
+        gap: 3rem;
+    }
+    .vision-orb-container {
+        display: none;
+    }
+    .vision-text {
+        text-align: center;
+    }
+    .vision-text p {
+        margin: 0 auto;
+    }
+    /* ** END OF FIX ** */
 }
+
 @media (max-width: 768px) {
     body { cursor: auto; }
     .cursor, .cursor-follower { display: none; }
