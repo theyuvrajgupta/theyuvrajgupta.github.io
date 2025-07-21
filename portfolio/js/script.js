@@ -136,17 +136,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const headlineEl = document.createElement('h1');
         headlineContainer.appendChild(headlineEl);
 
-        // ** BUG FIX: Stabilize container height to prevent layout jumps **
+        // ** FINAL BUG FIX: Stabilize container height to prevent layout jumps **
         headlineEl.style.fontSize = 'clamp(2.5rem, 7vw, 4.5rem)';
         headlineEl.style.fontFamily = 'var(--font-heading)';
         headlineEl.style.color = 'var(--text-color)';
         headlineEl.style.lineHeight = '1.1';
         headlineEl.style.textAlign = 'left';
-        // This is the key fix: Reserve space for the tallest possible text (2 lines)
-        headlineEl.style.minHeight = 'calc(2 * 1.1 * clamp(2.5rem, 7vw, 4.5rem))';
+        // This is the key fix: Reserve a generous, fixed space for the text.
+        headlineEl.style.minHeight = '10rem'; 
         headlineEl.style.display = 'flex';
         headlineEl.style.alignItems = 'center';
-        headlineEl.style.padding = '1rem 0'; // Add some vertical padding
+        headlineEl.style.padding = '1rem 0';
 
         const headlines = [
             'Strategist.',
@@ -155,11 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
         const fx = new TextScramble(headlineEl);
         let counter = 0;
-        let timeoutId; // ** BUG FIX: To manage the timer **
+        let timeoutId; // To manage the timer
 
         const next = () => {
-            // ** BUG FIX: Clear any previous timer to prevent glitches **
-            clearTimeout(timeoutId); 
+            clearTimeout(timeoutId); // Clear any previous timer to prevent glitches
             fx.setText(headlines[counter]).then(() => {
                 timeoutId = setTimeout(next, 2800); // Wait 2.8 seconds
             });
