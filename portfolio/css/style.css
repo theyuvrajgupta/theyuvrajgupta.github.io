@@ -185,14 +185,14 @@ section { padding: 8rem 0; position: relative; }
         gap: 3rem;
     }
     .vision-orb-container {
-        display: block; /* Restore the container */
+        display: block;
         position: relative;
         padding-top: 0;
         width: 100%;
-        max-width: 350px; /* Constrain width */
+        max-width: 350px;
         margin: 0 auto;
     }
-    .vision-orb-container::before { /* This creates the vertical line */
+    .vision-orb-container::before {
         content: '';
         position: absolute;
         left: 50%;
@@ -206,19 +206,19 @@ section { padding: 8rem 0; position: relative; }
         display: none;
     }
     .vision-pillar {
-        position: relative; /* Changed from static */
+        position: relative;
         left: 50%;
         transform: translateX(-50%);
         width: 80%;
-        margin-bottom: 2rem; /* Space between pillars */
+        margin-bottom: 2rem;
         text-align: center;
         opacity: 0;
         animation: fadeInPillar 0.5s ease-out forwards;
     }
-    .vision-pillar::before { /* This creates the dot on the line */
+    .vision-pillar::before {
         content: '';
         position: absolute;
-        left: -40px; /* Position relative to the pillar */
+        left: -40px;
         top: 50%;
         width: 15px;
         height: 15px;
@@ -226,12 +226,10 @@ section { padding: 8rem 0; position: relative; }
         border-radius: 50%;
         transform: translateY(-50%);
     }
-    /* Alternate dot positions for visual balance */
     .vision-pillar:nth-child(even)::before {
         left: auto;
         right: -40px;
     }
-    /* Staggered animation for pillars */
     #pillar-1 { animation-delay: 0.1s; }
     #pillar-2 { animation-delay: 0.2s; }
     #pillar-3 { animation-delay: 0.3s; }
@@ -241,7 +239,9 @@ section { padding: 8rem 0; position: relative; }
         from { opacity: 0; transform: translateX(-50%) translateY(20px); }
         to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
-
+    .vision-pillar:active {
+        transform: translateX(-50%) scale(1.05); /* Subtle pop effect on tap */
+    }
     .vision-text {
         text-align: center;
     }
@@ -262,10 +262,6 @@ section { padding: 8rem 0; position: relative; }
 /* Apply hover effects only on devices that can hover */
 @media (hover: hover) {
     .vision-pillar:hover {
-        /* Keep the desktop hover but ensure mobile doesn't run away */
-        transform: translateX(-50%) scale(1.1) !important;
-    }
-    .vision-pillar:nth-child(even):hover {
-        transform: translateX(-50%) scale(1.1) !important;
+        transform: translateX(-50%) scale(1.1);
     }
 }
