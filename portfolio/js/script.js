@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.update = this.update.bind(this);
         }
         setText(newText) {
-            const oldText = this.el.innerText;
+            const oldText = this.el.innerHTML.replace(/<br>/g, '\n'); // Handle line breaks
             const length = Math.max(oldText.length, newText.length);
             const promise = new Promise((resolve) => this.resolve = resolve);
             this.queue = [];
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     output += from;
                 }
             }
-            this.el.innerHTML = output;
+            this.el.innerHTML = output.replace(/\n/g, '<br>'); // Restore line breaks
             if (complete === this.queue.length) {
                 this.resolve();
             } else {
@@ -132,17 +132,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const headlineContainer = document.getElementById('headline-canvas-container');
     if (headlineContainer) {
-        headlineContainer.innerHTML = ''; // Clear the old canvas
+        headlineContainer.innerHTML = '';
         const headlineEl = document.createElement('h1');
         headlineContainer.appendChild(headlineEl);
 
-        // ** FINAL BUG FIX: Stabilize container height to prevent layout jumps **
         headlineEl.style.fontSize = 'clamp(2.5rem, 7vw, 4.5rem)';
         headlineEl.style.fontFamily = 'var(--font-heading)';
         headlineEl.style.color = 'var(--text-color)';
         headlineEl.style.lineHeight = '1.1';
         headlineEl.style.textAlign = 'left';
-        // This is the key fix: Reserve a generous, fixed space for the text.
         headlineEl.style.minHeight = '10rem'; 
         headlineEl.style.display = 'flex';
         headlineEl.style.alignItems = 'center';
@@ -151,21 +149,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const headlines = [
             'Strategist.',
             'Innovator.',
-            'Health-Tech Leader.'
+            'Health-Tech\nLeader.' // Use newline character for explicit line break
         ];
         const fx = new TextScramble(headlineEl);
         let counter = 0;
-        let timeoutId; // To manage the timer
+        let timeoutId;
 
         const next = () => {
-            clearTimeout(timeoutId); // Clear any previous timer to prevent glitches
+            clearTimeout(timeoutId);
             fx.setText(headlines[counter]).then(() => {
-                timeoutId = setTimeout(next, 2800); // Wait 2.8 seconds
+                timeoutId = setTimeout(next, 2800);
             });
             counter = (counter + 1) % headlines.length;
         };
         
-        next(); // Start the animation
+        next();
     }
     
     gsap.to([".subtitle", ".home-buttons"], { opacity: 1, duration: 0.8, delay: 1.5 });
@@ -187,18 +185,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const competencyNodes = document.querySelectorAll('.competency-node');
     const competencyTitle = document.getElementById('competency-title');
     const competencySkills = document.getElementById('competency-skills');
+    const competencyDetailsPanel = document.querySelector('.competency-details-panel');
 
     if (competencyNodes.length > 0 && competencyTitle && competencySkills) {
         competencyNodes.forEach(node => {
-            node.addEventListener('mouseenter', () => {
+            node.addEventListener('click', () => { // Changed to 'click' for better mobile interaction
                 const competencyKey = node.dataset.competency;
                 const data = competencies[competencyKey];
                 competencyTitle.textContent = data.title;
+                
                 gsap.to("#competency-skills li", {
                     opacity: 0, y: -10, stagger: 0.05, duration: 0.2,
                     onComplete: () => {
                         competencySkills.innerHTML = data.skills.map(skill => `<li>${skill}</li>`).join('');
                         gsap.fromTo("#competency-skills li", { opacity: 0, y: 10 }, { opacity: 1, y: 0, stagger: 0.1, duration: 0.3, delay: 0.1 });
+                        
+                        // ** FINAL BUG FIX: Scroll to details panel on mobile **
+                        if (window.innerWidth <= 992 && competencyDetailsPanel) {
+                            competencyDetailsPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
                     }
                 });
             });
