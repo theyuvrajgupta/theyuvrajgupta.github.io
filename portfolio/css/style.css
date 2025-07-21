@@ -53,8 +53,7 @@ section { padding: 8rem 0; position: relative; }
 /* ======== HOME SECTION (REDESIGNED) ======== */
 .home-section { min-height: 100vh; display: flex; align-items: center; }
 .home-grid { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem; }
-#headline-canvas-container { width: 100%; height: 300px; }
-#headline-canvas { width: 100%; height: 100%; }
+#headline-canvas-container { width: 100%; height: auto; } /* Let the h1 inside determine height */
 .home-intro-text { text-align: right; }
 .home-intro-text .subtitle { margin-left: auto; margin-bottom: 2rem; opacity: 0; }
 .home-buttons { opacity: 0; }
@@ -111,35 +110,13 @@ section { padding: 8rem 0; position: relative; }
 .vision-lines line { stroke: var(--border-color); stroke-width: 1; }
 .vision-orb { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; background: radial-gradient(circle, var(--primary-accent) 0%, var(--surface-color) 70%); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 50px var(--primary-accent); animation: orb-pulse 4s infinite ease-in-out; }
 @keyframes orb-pulse { 50% { transform: translate(-50%, -50%) scale(1.1); } }
-
-/* --- BUG FIX 2: Vision Pillar Alignment --- */
-.vision-pillar {
-    position: absolute;
-    /* This transform will center the pillar div on the specified top/left coordinates */
-    transform: translate(-50%, -50%);
-    transition: transform 0.3s ease;
-}
-.vision-pillar span {
-    display: block;
-    background: var(--surface-color);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
-    white-space: nowrap;
-}
-.vision-pillar:hover {
-    transform: translate(-50%, -50%) scale(1.1);
-}
-
-/* The SVG lines go from center (200,200) to corners (e.g., 295,105). 
-   We use percentages to place the pillars at those exact endpoints.
-   e.g., 105 / 400 = 26.25%, 295 / 400 = 73.75% */
+.vision-pillar { position: absolute; transform: translate(-50%, -50%); transition: transform 0.3s ease; }
+.vision-pillar span { display: block; background: var(--surface-color); padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid var(--border-color); white-space: nowrap; }
+.vision-pillar:hover { transform: translate(-50%, -50%) scale(1.1); }
 #pillar-1 { top: 26.25%; left: 73.75%; }
 #pillar-2 { top: 26.25%; left: 26.25%; }
 #pillar-3 { top: 73.75%; left: 26.25%; }
 #pillar-4 { top: 73.75%; left: 73.75%; }
-/* --- END OF BUG FIX 2 --- */
-
 .vision-text p { font-size: 1.2rem; color: var(--text-muted-color); max-width: 45ch; }
 
 /* ======== FOOTER ======== */
@@ -172,10 +149,29 @@ section { padding: 8rem 0; position: relative; }
     .home-grid { grid-template-columns: 1fr; text-align: center; }
     .home-intro-text { text-align: center; }
     .home-intro-text .subtitle { margin: 0 auto 2rem auto; }
-    #headline-canvas-container { height: 250px; margin-bottom: 1rem; }
+    #headline-canvas-container { margin-bottom: 1rem; }
     .projects-grid { grid-template-columns: 1fr 1fr; }
-    .expertise-interactive-map { grid-template-columns: 1fr; grid-template-rows: repeat(4, 1fr); height: auto; gap: 2rem; }
-    .competency-details-panel { position: static; transform: none; width: 100%; margin-top: 2rem; }
+
+    /* ** FINAL BUG FIX: Competencies Mobile Layout ** */
+    .expertise-interactive-map {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+        height: auto; /* Override fixed height */
+    }
+    .competency-lines {
+        display: none; /* Hide confusing lines on mobile */
+    }
+    .competency-details-panel {
+        position: static; /* Make it part of the normal flow */
+        transform: none;
+        width: 100%;
+        margin-top: 2rem;
+        text-align: center;
+    }
+    /* ** END OF FIX ** */
+
     .vision-grid { grid-template-columns: 1fr; }
     .vision-orb-container { margin-bottom: 4rem; }
 }
