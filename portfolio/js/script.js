@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.update = this.update.bind(this);
         }
         setText(newText) {
-            const oldText = this.el.innerHTML.replace(/<br>/g, '\n'); // Handle line breaks
+            const oldText = this.el.innerHTML.replace(/<br>/g, '\n');
             const length = Math.max(oldText.length, newText.length);
             const promise = new Promise((resolve) => this.resolve = resolve);
             this.queue = [];
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     output += from;
                 }
             }
-            this.el.innerHTML = output.replace(/\n/g, '<br>'); // Restore line breaks
+            this.el.innerHTML = output.replace(/\n/g, '<br>');
             if (complete === this.queue.length) {
                 this.resolve();
             } else {
@@ -146,10 +146,11 @@ document.addEventListener('DOMContentLoaded', () => {
         headlineEl.style.alignItems = 'center';
         headlineEl.style.padding = '1rem 0';
 
+        // ** FINAL BUG FIX: Shortened text to prevent layout jump **
         const headlines = [
             'Strategist.',
             'Innovator.',
-            'Health-Tech\nLeader.' // Use newline character for explicit line break
+            'Tech Leader.' 
         ];
         const fx = new TextScramble(headlineEl);
         let counter = 0;
@@ -189,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (competencyNodes.length > 0 && competencyTitle && competencySkills) {
         competencyNodes.forEach(node => {
-            node.addEventListener('click', () => { // Changed to 'click' for better mobile interaction
+            node.addEventListener('click', () => {
                 const competencyKey = node.dataset.competency;
                 const data = competencies[competencyKey];
                 competencyTitle.textContent = data.title;
@@ -200,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         competencySkills.innerHTML = data.skills.map(skill => `<li>${skill}</li>`).join('');
                         gsap.fromTo("#competency-skills li", { opacity: 0, y: 10 }, { opacity: 1, y: 0, stagger: 0.1, duration: 0.3, delay: 0.1 });
                         
-                        // ** FINAL BUG FIX: Scroll to details panel on mobile **
                         if (window.innerWidth <= 992 && competencyDetailsPanel) {
                             competencyDetailsPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
