@@ -30,8 +30,7 @@ body, a {
 }
 
 #background-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-/* ** FINAL BUG FIX: Ensure progress bar is always on top ** */
-#scroll-progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--primary-accent); width: 0%; z-index: 9999; }
+#scroll-progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--primary-accent); width: 0%; z-index: 9999; transform: translateZ(0); }
 .cursor, .cursor-follower { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; border-radius: 50%; }
 .cursor { width: 8px; height: 8px; background-color: var(--primary-accent); }
 .cursor-follower { width: 30px; height: 30px; background-color: rgba(0, 245, 195, 0.2); transition: transform 0.1s ease-out, background-color 0.2s, width 0.2s, height 0.2s; }
@@ -186,22 +185,63 @@ section { padding: 8rem 0; position: relative; }
         gap: 3rem;
     }
     .vision-orb-container {
-        display: flex; /* Changed from none */
+        display: block; /* Restore the container */
+        position: relative;
         padding-top: 0;
-        flex-direction: column;
-        align-items: center;
-        gap: 1.5rem;
+        width: 100%;
+        max-width: 350px; /* Constrain width */
+        margin: 0 auto;
+    }
+    .vision-orb-container::before { /* This creates the vertical line */
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: var(--border-color);
+        transform: translateX(-50%);
     }
     .vision-lines, .vision-orb {
         display: none;
     }
     .vision-pillar {
-        position: static;
-        transform: none;
-        width: 100%;
-        max-width: 300px;
+        position: relative; /* Changed from static */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        margin-bottom: 2rem; /* Space between pillars */
         text-align: center;
+        opacity: 0;
+        animation: fadeInPillar 0.5s ease-out forwards;
     }
+    .vision-pillar::before { /* This creates the dot on the line */
+        content: '';
+        position: absolute;
+        left: -40px; /* Position relative to the pillar */
+        top: 50%;
+        width: 15px;
+        height: 15px;
+        background-color: var(--primary-accent);
+        border-radius: 50%;
+        transform: translateY(-50%);
+    }
+    /* Alternate dot positions for visual balance */
+    .vision-pillar:nth-child(even)::before {
+        left: auto;
+        right: -40px;
+    }
+    /* Staggered animation for pillars */
+    #pillar-1 { animation-delay: 0.1s; }
+    #pillar-2 { animation-delay: 0.2s; }
+    #pillar-3 { animation-delay: 0.3s; }
+    #pillar-4 { animation-delay: 0.4s; }
+
+    @keyframes fadeInPillar {
+        from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
     .vision-text {
         text-align: center;
     }
@@ -217,4 +257,15 @@ section { padding: 8rem 0; position: relative; }
     .nav-menu { display: none; }
     .projects-grid { grid-template-columns: 1fr; }
     .about-narrative-grid { grid-template-columns: 1fr; }
+}
+
+/* Apply hover effects only on devices that can hover */
+@media (hover: hover) {
+    .vision-pillar:hover {
+        /* Keep the desktop hover but ensure mobile doesn't run away */
+        transform: translateX(-50%) scale(1.1) !important;
+    }
+    .vision-pillar:nth-child(even):hover {
+        transform: translateX(-50%) scale(1.1) !important;
+    }
 }
