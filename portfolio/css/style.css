@@ -152,7 +152,6 @@ section { padding: 8rem 0; position: relative; }
     #headline-canvas-container { margin-bottom: 1rem; }
     .projects-grid { grid-template-columns: 1fr 1fr; }
 
-    /* ** FINAL BUG FIX: Competencies Mobile Layout ** */
     .expertise-interactive-map {
         display: flex;
         flex-direction: column;
@@ -177,7 +176,6 @@ section { padding: 8rem 0; position: relative; }
         text-align: center;
         pointer-events: auto;
     }
-    /* ** END OF FIX ** */
 
     /* ** FINAL BUG FIX: Vision Section Mobile Layout ** */
     .vision-grid { 
@@ -210,10 +208,11 @@ section { padding: 8rem 0; position: relative; }
         left: 50%;
         transform: translateX(-50%);
         width: 80%;
-        margin-bottom: 2rem;
+        margin-bottom: 4rem; /* Increased spacing */
         text-align: center;
         opacity: 0;
         animation: fadeInPillar 0.5s ease-out forwards;
+        transition: transform 0.2s ease-out; /* Added for tap effect */
     }
     .vision-pillar::before {
         content: '';
