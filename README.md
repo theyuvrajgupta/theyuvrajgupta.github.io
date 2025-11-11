@@ -64,7 +64,7 @@ portfolio/ ├─ index.html ├─ css/ │   └─ style.css ├─ js/ │  
 
 📧 [mail.yuvrajgupta@gmail.com](mailto:mail.yuvrajgupta@gmail.com)  
 🔗 [LinkedIn – theyuvrajgupta](https://www.linkedin.com/in/theyuvrajgupta/)  
-📍 Bangalore, India  
+📍 Singapore  
 
 ---
 
