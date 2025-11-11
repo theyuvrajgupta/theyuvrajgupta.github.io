@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DATA FOR COMPETENCIES ---
     const competencies = {
         ai: { title: "AI & ML Innovation", skills: ["ML Engineering", "Deep Learning (CNN)", "TensorFlow & Python", "Data-Driven Decisions"] },
-        healthtech: { title: "HealthTech Strategy", skills: ["Clinical Workflows", "Medical Imaging (PET-CT)", "DICOM Standards", "Product Innovation"] },
+        tech: { title: "HealthTech Strategy", skills: ["Clinical Workflows", "Medical Imaging (PET-CT)", "DICOM Standards", "Product Innovation"] },
         cloud: { title: "Cloud & Scalability", skills: ["Serverless Architecture", "AWS (Lambda, SQS, S3)", "Process Optimization", "Infrastructure as Code"] },
         leadership: { title: "Product Leadership", skills: ["Agile & Scrum Mastery", "Product Thinking", "Team Mentorship", "Stakeholder Management"] }
     };
