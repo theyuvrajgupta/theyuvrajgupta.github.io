@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- DATA FOR COMPETENCIES ---
     const competencies = {
-        ai: { title: "AI & ML Innovation", skills: ["ML Engineering", "Deep Learning (CNN)", "TensorFlow & Python", "Data-Driven Decisions"] },
-        tech: { title: "HealthTech Strategy", skills: ["Clinical Workflows", "Medical Imaging (PET-CT)", "DICOM Standards", "Product Innovation"] },
-        cloud: { title: "Cloud & Scalability", skills: ["Serverless Architecture", "AWS (Lambda, SQS, S3)", "Process Optimization", "Infrastructure as Code"] },
-        leadership: { title: "Product Leadership", skills: ["Agile & Scrum Mastery", "Product Thinking", "Team Mentorship", "Stakeholder Management"] }
+        ai: { title: "Strategic AI Innovation", skills: ["Market Analysis", "Product Vision", "Data Strategy", "Ethical AI Implementation"] },
+        tech: { title: "Digital Transformation", skills: ["Legacy Modernization", "Process Automation", "Tech Stack Strategy", "Scalable Architecture"] },
+        cloud: { title: "Cloud & Operations", skills: ["Serverless Architecture", "Cost Optimization", "DevOps Culture", "AWS Ecosystem"] },
+        leadership: { title: "Strategic Leadership", skills: ["Crisis Management", "Cross-Functional Teams", "Stakeholder Mgmt", "Agile Transformation"] }
     };
 
     // --- CUSTOM CURSOR & MAGNETIC ELEMENTS ---
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cursor && cursorFollower) {
         gsap.set(cursor, { xPercent: -50, yPercent: -50 });
         gsap.set(cursorFollower, { xPercent: -50, yPercent: -50 });
-        
+
         window.addEventListener('mousemove', e => {
             gsap.to(cursor, { duration: 0.2, x: e.clientX, y: e.clientY });
             gsap.to(cursorFollower, { duration: 0.6, x: e.clientX, y: e.clientY });
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const resize = () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; };
         const createParticles = () => {
             particles = [];
-            const count = window.innerWidth < 768 ? 80 : 250; 
+            const count = window.innerWidth < 768 ? 80 : 250;
             for (let i = 0; i < count; i++) {
                 particles.push({
                     x: Math.random() * bgCanvas.width,
@@ -136,21 +136,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const headlineEl = document.createElement('h1');
         headlineContainer.appendChild(headlineEl);
 
-        headlineEl.style.fontSize = 'clamp(2.5rem, 7vw, 4.5rem)';
-        headlineEl.style.fontFamily = 'var(--font-heading)';
+        headlineEl.style.fontSize = 'clamp(2.5rem, 6vw, 4.5rem)';
+        headlineEl.style.fontFamily = "'Space Mono', monospace";
         headlineEl.style.color = 'var(--text-color)';
-        headlineEl.style.lineHeight = '1.1';
+        headlineEl.style.lineHeight = '1.2'; /* Increased line height for better spacing */
         headlineEl.style.textAlign = 'left';
-        headlineEl.style.minHeight = '10rem'; 
-        headlineEl.style.display = 'flex';
-        headlineEl.style.alignItems = 'center';
+        headlineEl.style.minHeight = '14rem';
+        headlineEl.style.display = 'block'; /* Changed from flex to block for proper <br> support */
         headlineEl.style.padding = '1rem 0';
+        headlineEl.style.width = '100%';
 
-        // ** FINAL BUG FIX: Shortened text to prevent layout jump **
+        // ** FINAL BUG FIX: Multi-line text to prevent width jitter **
         const headlines = [
-            'Strategist.',
-            'Innovator.',
-            'Tech Leader.' 
+            'Digital<br>Leader.',
+            'Tech<br>Entrepreneur.',
+            'Innovator.'
         ];
         const fx = new TextScramble(headlineEl);
         let counter = 0;
@@ -163,15 +163,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             counter = (counter + 1) % headlines.length;
         };
-        
+
         next();
     }
-    
+
     gsap.to([".subtitle", ".home-buttons"], { opacity: 1, duration: 0.8, delay: 1.5 });
 
     // --- JOURNEY SECTION ANIMATION ---
     const timelineItems = document.querySelectorAll('.timeline-item');
-    if(timelineItems.length > 0) {
+    if (timelineItems.length > 0) {
         const journeyObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -194,13 +194,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const competencyKey = node.dataset.competency;
                 const data = competencies[competencyKey];
                 competencyTitle.textContent = data.title;
-                
+
                 gsap.to("#competency-skills li", {
                     opacity: 0, y: -10, stagger: 0.05, duration: 0.2,
                     onComplete: () => {
                         competencySkills.innerHTML = data.skills.map(skill => `<li>${skill}</li>`).join('');
                         gsap.fromTo("#competency-skills li", { opacity: 0, y: 10 }, { opacity: 1, y: 0, stagger: 0.1, duration: 0.3, delay: 0.1 });
-                        
+
                         if (window.innerWidth <= 992 && competencyDetailsPanel) {
                             competencyDetailsPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- MODAL LOGIC WITH SCROLL LOCK ---
     const projectCards = document.querySelectorAll('.project-card');
     const modalContainer = document.getElementById('modal-container');
-    
+
     if (projectCards.length > 0 && modalContainer) {
         projectCards.forEach(card => {
             card.addEventListener('click', (e) => {
