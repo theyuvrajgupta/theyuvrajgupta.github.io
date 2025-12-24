@@ -11,21 +11,30 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- CUSTOM CURSOR & MAGNETIC ELEMENTS ---
-    const cursor = document.querySelector('.cursor');
-    const cursorFollower = document.querySelector('.cursor-follower');
-    if (cursor && cursorFollower) {
-        gsap.set(cursor, { xPercent: -50, yPercent: -50 });
-        gsap.set(cursorFollower, { xPercent: -50, yPercent: -50 });
+    // Only enable custom cursor on devices with fine pointer (mouse/trackpad)
+    if (window.matchMedia('(pointer: fine)').matches) {
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+        if (cursor && cursorFollower) {
+            gsap.set(cursor, { xPercent: -50, yPercent: -50 });
+            gsap.set(cursorFollower, { xPercent: -50, yPercent: -50 });
 
-        window.addEventListener('mousemove', e => {
-            gsap.to(cursor, { duration: 0.2, x: e.clientX, y: e.clientY });
-            gsap.to(cursorFollower, { duration: 0.6, x: e.clientX, y: e.clientY });
-        });
+            window.addEventListener('mousemove', e => {
+                gsap.to(cursor, { duration: 0.2, x: e.clientX, y: e.clientY });
+                gsap.to(cursorFollower, { duration: 0.6, x: e.clientX, y: e.clientY });
+            });
 
-        document.querySelectorAll('.magnetic').forEach(el => {
-            el.addEventListener('mouseenter', () => gsap.to(cursorFollower, { scale: 2, background: 'rgba(0, 245, 195, 0.4)' }));
-            el.addEventListener('mouseleave', () => gsap.to(cursorFollower, { scale: 1, background: 'rgba(0, 245, 195, 0.2)' }));
-        });
+            document.querySelectorAll('.magnetic').forEach(el => {
+                el.addEventListener('mouseenter', () => gsap.to(cursorFollower, { scale: 2, background: 'rgba(0, 245, 195, 0.4)' }));
+                el.addEventListener('mouseleave', () => gsap.to(cursorFollower, { scale: 1, background: 'rgba(0, 245, 195, 0.2)' }));
+            });
+        }
+    } else {
+        // Hide cursor elements on touch devices to prevent ghost touches or visual clutter
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+        if (cursor) cursor.style.display = 'none';
+        if (cursorFollower) cursorFollower.style.display = 'none';
     }
 
     // --- DYNAMIC "NEURAL DUST" BACKGROUND ---
@@ -33,10 +42,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (bgCanvas) {
         const ctx = bgCanvas.getContext('2d');
         let particles = [];
-        const resize = () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; };
+        let w = window.innerWidth;
+
+        const resize = () => {
+            // Only resize if width changes noticeably (address bar toggle affects height, not width)
+            if (window.innerWidth !== w) {
+                w = window.innerWidth;
+                bgCanvas.width = window.innerWidth;
+                bgCanvas.height = window.innerHeight;
+                createParticles();
+            } else {
+                // Always update height to catch address bar changes without resetting particles completely
+                bgCanvas.height = window.innerHeight;
+            }
+        };
+
         const createParticles = () => {
+            bgCanvas.width = window.innerWidth; // Ensure width is set initially
+            bgCanvas.height = window.innerHeight;
             particles = [];
-            const count = window.innerWidth < 768 ? 80 : 250;
+            const count = window.innerWidth < 768 ? 40 : 150; // Reduce count for mobile performance
             for (let i = 0; i < count; i++) {
                 particles.push({
                     x: Math.random() * bgCanvas.width,
@@ -61,8 +86,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             requestAnimationFrame(animateBg);
         };
-        window.addEventListener('resize', () => { resize(); createParticles(); });
-        resize(); createParticles(); animateBg();
+
+        // Initial setup
+        createParticles();
+        animateBg();
+
+        // Optimized resize listener
+        window.addEventListener('resize', resize);
     }
 
     // --- GSAP ANIMATIONS ---
