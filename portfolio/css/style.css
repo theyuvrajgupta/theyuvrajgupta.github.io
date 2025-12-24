@@ -806,6 +806,11 @@ section {
     .project-link {
         font-size: 0.9rem;
         flex-wrap: wrap;
+        white-space: normal;
+        height: auto;
+        display: inline-block;
+        line-height: 1.4;
+        margin-top: 0.5rem;
     }
 
     .expertise-interactive-map {
@@ -839,16 +844,21 @@ section {
     /* Vision Section Mobile Fixes */
     .vision-grid {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 4rem;
+        /* Increased gap to prevent overlap */
     }
 
     .vision-orb-container {
-        height: 400px;
-        /* Ensure space for pillars */
+        height: 450px;
+        /* Increased height for pillars */
+        margin-bottom: 2rem;
     }
 
     .vision-text {
         text-align: center;
+        margin-top: 2rem;
+        /* Ensure text clears the graphic */
+        padding: 0 1rem;
     }
 
     .vision-text p {
@@ -859,25 +869,14 @@ section {
     .vision-pillar span {
         font-size: 0.8rem;
         padding: 0.4rem 0.8rem;
-        background: rgba(16, 24, 44, 0.9);
-        /* increased opacity for readibility */
+        background: rgba(16, 24, 44, 0.95);
+        /* High contrast background */
+        border: 1px solid var(--primary-accent);
+        /* Make it pop */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     }
 
     /* Bring pillars closer to center on small screens */
-    #pillar-1 {
-        top: 15%;
-        left: 50%;
-    }
-
-    #pillar-2 {
-        top: 50%;
-        left: 15%;
-    }
-
-    #pillar-3 {
-        top: 85%;
-        left: 50%;
-    }
 
     #pillar-4 {
         top: 50%;
