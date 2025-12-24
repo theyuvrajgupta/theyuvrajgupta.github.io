@@ -46,14 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const resize = () => {
             // Only resize if width changes noticeably (address bar toggle affects height, not width)
+            // This prevents canvas reset/glitch when scrolling on mobile
             if (window.innerWidth !== w) {
                 w = window.innerWidth;
                 bgCanvas.width = window.innerWidth;
                 bgCanvas.height = window.innerHeight;
                 createParticles();
-            } else {
-                // Always update height to catch address bar changes without resetting particles completely
-                bgCanvas.height = window.innerHeight;
             }
         };
 
