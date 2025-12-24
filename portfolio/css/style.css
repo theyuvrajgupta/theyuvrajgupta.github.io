@@ -520,6 +520,13 @@ section {
     transform: translateX(5px);
 }
 
+.project-link {
+    justify-content: flex-end;
+    /* Align View Impact to the right */
+    margin-right: 1.5rem;
+    /* Explicitly keep the margin if needed, or rely on cascade */
+}
+
 /* ======== VISION SECTION ======== */
 #vision {
     background-color: var(--background-color);
@@ -1000,6 +1007,37 @@ section {
     }
 
     /* ** END OF FIX ** */
+}
+
+@media (max-width: 992px) {
+    .vision-text {
+        text-align: center;
+    }
+
+    .vision-text p {
+        margin: 0 auto 3rem;
+        /* Add spacing below text */
+    }
+
+    /* Reset pillar positioning for vertical stack */
+    #pillar-1,
+    #pillar-2,
+    #pillar-3,
+    #pillar-4 {
+        top: auto !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    /* Ensure pillars are visible and stacked */
+    .vision-pillar {
+        display: block;
+        width: 80%;
+        max-width: 300px;
+    }
 }
 
 @media (max-width: 768px) {
