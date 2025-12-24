@@ -2,7 +2,7 @@
 
 🌐 **Personal Portfolio Website of Yuvraj Gupta**
 
-## ❓ Frequently Asked Questions (FAQ)
+## ❓ Frequently Asked Questions (FAQs)
 
 ### **Q: What is this project?**
 This is my animated, scroll-driven portfolio showcasing my professional journey across **Digital Transformation**, **AI Innovation**, and **Product Leadership**. It is designed for Software Engineers, MBA applicants, recruiters, and collaborators to see the bridge between complex technology and scalable business value.

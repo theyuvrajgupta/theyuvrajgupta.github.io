@@ -100,8 +100,44 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.to("#scroll-progress-bar", {
         width: "100%",
         ease: "none",
+        width: "100%",
+        ease: "none",
         scrollTrigger: { scrub: true }
     });
+
+    // --- SCROLLSPY NAVIGATION ---
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-menu a');
+
+    const scrollSpyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute('id');
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${id}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }, { threshold: 0.5 }); // Trigger when 50% visible
+
+    sections.forEach(section => {
+        scrollSpyObserver.observe(section);
+    });
+
+    // --- SVG "LIVING" ANIMATION ---
+    const animatedSvgs = document.querySelectorAll('.vision-lines, .competency-lines');
+    const svgObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('draw-active');
+            }
+        });
+    }, { threshold: 0.2 });
+
+    animatedSvgs.forEach(svg => svgObserver.observe(svg));
 
     // --- FINAL HEADLINE ANIMATION: TEXT SCRAMBLE EFFECT ---
     class TextScramble {
@@ -206,7 +242,17 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(headlineContainer);
     }
 
-    gsap.to([".subtitle", ".home-buttons"], { opacity: 1, duration: 0.8, delay: 1.5 });
+    gsap.to([".subtitle", ".home-buttons", ".scroll-indicator"], { opacity: 1, duration: 0.8, delay: 1.5 });
+
+    // Hide Scroll Indicator on Scroll
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 100) {
+            gsap.to(".scroll-indicator", { opacity: 0, duration: 0.5, pointerEvents: "none" });
+        } else {
+            // Optional: Bring it back if they scroll to top
+            // gsap.to(".scroll-indicator", { opacity: 1, duration: 0.5, pointerEvents: "all" });
+        }
+    });
 
     // --- JOURNEY SECTION ANIMATION ---
     const timelineItems = document.querySelectorAll('.timeline-item');
@@ -246,6 +292,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
             });
+        });
+
+
+        // Reset expertise on click outside
+        document.addEventListener('click', (e) => {
+            const isClickInsideMap = e.target.closest('.expertise-interactive-map');
+            if (!isClickInsideMap && competencyTitle.textContent !== 'Click any competency bubble to know more') {
+                competencyTitle.textContent = 'Click any competency bubble to know more';
+                gsap.to("#competency-skills li", {
+                    opacity: 0, y: -10, stagger: 0.05, duration: 0.2,
+                    onComplete: () => {
+                        competencySkills.innerHTML = '<li>Select a node to see related skills.</li>';
+                        gsap.to("#competency-skills li", { opacity: 1, y: 0, duration: 0.3 });
+                    }
+                });
+            }
         });
     }
 
