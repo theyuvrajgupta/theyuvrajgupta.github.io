@@ -810,14 +810,23 @@ section {
     }
 
     /* Prevent text bleeding */
+    /* Prevent text bleeding & align right */
     .project-link {
         font-size: 0.9rem;
         flex-wrap: wrap;
         white-space: normal;
         height: auto;
-        display: inline-block;
+        display: flex;
+        /* Restore flex */
+        justify-content: flex-end;
+        /* Align right */
+        text-align: right;
         line-height: 1.4;
         margin-top: 0.5rem;
+        width: auto;
+        /* Allow it to take necessary width */
+        margin-right: 0;
+        /* Align flush with padding */
     }
 
     .expertise-interactive-map {
@@ -1043,6 +1052,12 @@ section {
 @media (max-width: 768px) {
     body {
         cursor: auto;
+    }
+
+    /* Unstick navbar on mobile to reduce clutter */
+    .navbar {
+        position: absolute;
+        width: 100%;
     }
 
     .cursor,
