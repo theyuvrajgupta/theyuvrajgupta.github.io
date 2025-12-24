@@ -194,7 +194,18 @@ document.addEventListener('DOMContentLoaded', () => {
             counter = (counter + 1) % headlines.length;
         };
 
-        next();
+        // Pause animation when out of view to prevent scroll glitching
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    next();
+                } else {
+                    clearTimeout(timeoutId);
+                }
+            });
+        }, { rootMargin: "0px 0px 200px 0px" }); // Start slightly before it enters viewport
+
+        observer.observe(headlineContainer);
     }
 
     gsap.to([".subtitle", ".home-buttons"], { opacity: 1, duration: 0.8, delay: 1.5 });
