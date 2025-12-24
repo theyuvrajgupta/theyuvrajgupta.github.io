@@ -146,11 +146,11 @@ document.addEventListener('DOMContentLoaded', () => {
         headlineEl.style.padding = '1rem 0';
         headlineEl.style.width = '100%';
 
-        // ** FINAL BUG FIX: Multi-line text to prevent width jitter **
+        // ** Multi-line text to prevent width jitter **
         const headlines = [
             'Digital<br>Leader.',
-            'Tech<br>Entrepreneur.',
-            'Innovator.'
+            'Product<br>Strategist.',
+            'Change<br>Maker.'
         ];
         const fx = new TextScramble(headlineEl);
         let counter = 0;
