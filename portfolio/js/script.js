@@ -100,8 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.to("#scroll-progress-bar", {
         width: "100%",
         ease: "none",
-        width: "100%",
-        ease: "none",
         scrollTrigger: { scrub: true }
     });
 

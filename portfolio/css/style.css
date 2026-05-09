@@ -1256,20 +1256,7 @@ section {
 
     .vision-text {
         text-align: center;
-    }
-
-    .vision-text p {
-        margin: 0 auto;
-    }
-
-    /* ** END OF FIX ** */
-}
-
-@media (max-width: 992px) {
-    .vision-text {
-        text-align: center;
         padding: 2rem !important;
-        /* Override card padding */
     }
 
     .vision-card::before {
