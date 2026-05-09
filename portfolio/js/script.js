@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- DATA FOR COMPETENCIES ---
     const competencies = {
-        ai: { title: "Strategic AI Innovation", skills: ["Market Analysis", "Product Vision", "Data Strategy", "Ethical AI Implementation"] },
-        tech: { title: "Digital Transformation", skills: ["Legacy Modernization", "Process Automation", "Tech Stack Strategy", "Scalable Architecture"] },
-        cloud: { title: "Cloud & Operations", skills: ["Serverless Architecture", "Cost Optimization", "DevOps Culture", "AWS Ecosystem"] },
-        leadership: { title: "Strategic Leadership", skills: ["Crisis Management", "Cross-Functional Teams", "Stakeholder Mgmt", "Agile Transformation"] }
+        ai: { title: "AI Strategy & Innovation", skills: ["Agentic AI Systems", "Enterprise AI Roadmapping", "Human-AI Decision Design", "Responsible AI Implementation"] },
+        tech: { title: "Enterprise Transformation", skills: ["Platform Modernization", "Go-To-Market Acceleration", "Legacy System Migration", "Stakeholder & Change Management"] },
+        cloud: { title: "Technology Architecture", skills: ["Cloud Native Design", "Serverless Infrastructure", "CI/CD and DevOps", "Systems Thinking"] },
+        leadership: { title: "Commercial Strategy", skills: ["Investment Analysis", "Business Case Development", "ROI Modeling", "Product Roadmapping"] }
     };
 
     // --- CUSTOM CURSOR & MAGNETIC ELEMENTS ---
@@ -212,9 +212,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ** Multi-line text to prevent width jitter **
         const headlines = [
-            'Digital<br>Leader.',
-            'Product<br>Strategist.',
-            'Change<br>Maker.'
+            'AI<br>Strategist.',
+            'Enterprise<br>Transformer.',
+            'Tech-Fluent<br>Leader.'
         ];
         const fx = new TextScramble(headlineEl);
         let counter = 0;
@@ -265,6 +265,22 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }, { threshold: 0.2 });
         timelineItems.forEach(item => journeyObserver.observe(item));
+    }
+
+    // --- RECOGNITION ITEMS ANIMATION ---
+    const recognitionItems = document.querySelectorAll('.recognition-item');
+    if (recognitionItems.length > 0) {
+        const recognitionItemsArr = Array.from(recognitionItems);
+        const recognitionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const idx = recognitionItemsArr.indexOf(entry.target);
+                    setTimeout(() => entry.target.classList.add('is-visible'), idx * 120);
+                    recognitionObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        recognitionItems.forEach(item => recognitionObserver.observe(item));
     }
 
     // --- INTERACTIVE COMPETENCIES MAP ---
