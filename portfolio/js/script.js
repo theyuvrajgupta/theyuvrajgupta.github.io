@@ -106,20 +106,36 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- SCROLLSPY NAVIGATION ---
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('.nav-menu a');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav a');
+    const allNavLinks = [...navLinks, ...mobileNavLinks];
+
+    // Map every section id to the nav href that should be active when in that section.
+    // Sections with no matching link (e.g. #featured-moment, #expertise) fall back to
+    // the nearest preceding linked section so the active state never goes blank.
+    const linkedIds = new Set(Array.from(navLinks).map(l => l.getAttribute('href').slice(1)));
+    const sectionNavMap = {};
+    let lastLinkedId = null;
+    sections.forEach(section => {
+        const id = section.id;
+        if (linkedIds.has(id)) {
+            lastLinkedId = id;
+        }
+        sectionNavMap[id] = lastLinkedId;
+    });
 
     const scrollSpyObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const id = entry.target.getAttribute('id');
-                navLinks.forEach(link => {
+                const targetId = sectionNavMap[entry.target.id];
+                allNavLinks.forEach(link => {
                     link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${id}`) {
+                    if (targetId && link.getAttribute('href') === `#${targetId}`) {
                         link.classList.add('active');
                     }
                 });
             }
         });
-    }, { threshold: 0.5 }); // Trigger when 50% visible
+    }, { threshold: 0.5 });
 
     sections.forEach(section => {
         scrollSpyObserver.observe(section);
@@ -372,5 +388,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         document.querySelectorAll('.modal-close-btn').forEach(btn => btn.addEventListener('click', closeAllModals));
         document.querySelector('.modal-backdrop').addEventListener('click', closeAllModals);
+    }
+
+    // --- HAMBURGER MENU ---
+    const hamburgerBtn = document.querySelector('.hamburger-btn');
+    const mobileNav = document.getElementById('mobile-nav');
+
+    if (hamburgerBtn && mobileNav) {
+        const openMenu = () => {
+            mobileNav.classList.add('open');
+            mobileNav.setAttribute('aria-hidden', 'false');
+            hamburgerBtn.classList.add('active');
+            hamburgerBtn.setAttribute('aria-expanded', 'true');
+        };
+
+        const closeMenu = () => {
+            mobileNav.classList.remove('open');
+            mobileNav.setAttribute('aria-hidden', 'true');
+            hamburgerBtn.classList.remove('active');
+            hamburgerBtn.setAttribute('aria-expanded', 'false');
+        };
+
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobileNav.classList.contains('open') ? closeMenu() : openMenu();
+        });
+
+        // Close on mobile nav link click
+        document.querySelectorAll('.mobile-nav a').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.navbar') && !e.target.closest('.mobile-nav')) {
+                closeMenu();
+            }
+        });
     }
 });
