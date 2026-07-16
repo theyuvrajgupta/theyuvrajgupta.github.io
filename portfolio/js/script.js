@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cursor = document.querySelector('.cursor');
         const cursorFollower = document.querySelector('.cursor-follower');
         if (cursor && cursorFollower) {
+            document.body.classList.add('custom-cursor');
             gsap.set(cursor, { xPercent: -50, yPercent: -50 });
             gsap.set(cursorFollower, { xPercent: -50, yPercent: -50 });
 
@@ -104,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- SCROLLSPY NAVIGATION ---
-    const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('.nav-menu a');
     const mobileNavLinks = document.querySelectorAll('.mobile-nav a');
     const allNavLinks = [...navLinks, ...mobileNavLinks];
@@ -112,10 +112,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Map every section id to the nav href that should be active when in that section.
     // Sections with no matching link (e.g. #featured-moment, #expertise) fall back to
     // the nearest preceding linked section so the active state never goes blank.
+    // The footer (#contact) is included so Contact activates at the bottom of the page.
+    const spyTargets = document.querySelectorAll('main section, main footer');
     const linkedIds = new Set(Array.from(navLinks).map(l => l.getAttribute('href').slice(1)));
     const sectionNavMap = {};
     let lastLinkedId = null;
-    sections.forEach(section => {
+    spyTargets.forEach(section => {
         const id = section.id;
         if (linkedIds.has(id)) {
             lastLinkedId = id;
@@ -123,6 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
         sectionNavMap[id] = lastLinkedId;
     });
 
+    // A thin horizontal band ~40% down the viewport decides the active section.
+    // (A ratio threshold breaks on sections taller than the viewport, which can
+    // never reach it — e.g. Projects on a laptop screen.)
     const scrollSpyObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -135,9 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
-    }, { threshold: 0.5 });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
 
-    sections.forEach(section => {
+    spyTargets.forEach(section => {
         scrollSpyObserver.observe(section);
     });
 
@@ -159,9 +164,13 @@ document.addEventListener('DOMContentLoaded', () => {
             this.el = el;
             this.chars = '!<>-_\\/[]{}—=+*^?#________';
             this.update = this.update.bind(this);
+            // Track plain text ourselves: reading innerHTML mid-animation would
+            // pick up the <span class="dud"> markup and scramble it as content.
+            this.currentText = el.textContent.trim();
         }
         setText(newText) {
-            const oldText = this.el.innerHTML.replace(/<br>/g, '\n');
+            const oldText = this.currentText;
+            this.currentText = newText;
             const length = Math.max(oldText.length, newText.length);
             const promise = new Promise((resolve) => this.resolve = resolve);
             this.queue = [];
@@ -208,55 +217,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const headlineContainer = document.getElementById('headline-canvas-container');
-    if (headlineContainer) {
-        headlineContainer.innerHTML = '';
-        const headlineEl = document.createElement('h1');
-        headlineContainer.appendChild(headlineEl);
-
-        headlineEl.style.fontSize = 'clamp(2.5rem, 6vw, 4.5rem)';
-        headlineEl.style.fontFamily = "'Space Mono', monospace";
-        headlineEl.style.color = 'var(--text-color)';
-        headlineEl.style.lineHeight = '1.2'; /* Increased line height for better spacing */
-        headlineEl.style.textAlign = 'left';
-        headlineEl.style.minHeight = '14rem';
-        headlineEl.style.display = 'block'; /* Changed from flex to block for proper <br> support */
-        headlineEl.style.padding = '1rem 0';
-        headlineEl.style.width = '100%';
-
-        // ** Multi-line text to prevent width jitter **
-        const headlines = [
-            'AI<br>Strategist.',
-            'Enterprise<br>Transformer.',
-            'Tech-Fluent<br>Leader.'
-        ];
+    // The headline lives in the HTML (visible without JS); the scramble runs once
+    // as an entrance effect and settles — no infinite cycling, no identity churn.
+    const headlineEl = document.querySelector('.hero-headline');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (headlineEl && !prefersReducedMotion) {
+        const finalText = headlineEl.innerText.trim(); // innerText keeps <br> as \n and decodes entities
+        headlineEl.textContent = '';
         const fx = new TextScramble(headlineEl);
-        let counter = 0;
-        let timeoutId;
-
-        const next = () => {
-            clearTimeout(timeoutId);
-            fx.setText(headlines[counter]).then(() => {
-                timeoutId = setTimeout(next, 2800);
-            });
-            counter = (counter + 1) % headlines.length;
-        };
-
-        // Pause animation when out of view to prevent scroll glitching
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    next();
-                } else {
-                    clearTimeout(timeoutId);
-                }
-            });
-        }, { rootMargin: "0px 0px 200px 0px" }); // Start slightly before it enters viewport
-
-        observer.observe(headlineContainer);
+        fx.currentText = '';
+        fx.setText(finalText);
     }
 
-    gsap.to([".subtitle", ".home-buttons", ".scroll-indicator"], { opacity: 1, duration: 0.8, delay: 1.5 });
+    gsap.from([".hero-eyebrow", ".hero-status", ".home-intro-text .subtitle", ".home-buttons"],
+        { opacity: 0, y: 14, duration: 0.8, delay: 0.6, stagger: 0.12 });
+    gsap.to(".scroll-indicator", { opacity: 1, duration: 0.8, delay: 1.5 });
 
     // Hide Scroll Indicator on Scroll
     window.addEventListener('scroll', () => {

@@ -77,10 +77,19 @@ Sections without a nav link (`#featured-moment`, `#expertise`) are intentional �
 
 | What to change | Where |
 |---|---|
-| Hero rotating headlines | `headlines` array in `script.js` (~line 212) |
+| Hero headline / name / status line | `.hero-eyebrow`, `.hero-headline`, `.hero-status` in `index.html` — the headline lives in HTML (works without JS); `script.js` scrambles it in once on load and settles (no rotation) |
 | Competency node skills | `competencies` object in `script.js` (~line 6) |
 | Project cards & modals | Paired blocks in `index.html` — each card has `data-modal-target="projectN"` and a matching `id="projectN"` modal |
 | Featured Moment strip | `#featured-moment` section in `index.html` |
 | Recognition items | `.recognition-list` in `index.html` |
 | Vision pillars | `#pillar-1` through `#pillar-4` in `index.html` |
 | Resume file | Replace `portfolio/assets/Resume_YuvrajGupta.pdf` |
+| Profile photo | `portfolio/assets/profile-pic.jpg` (keep it small — it renders at 140px) |
+| OG/social preview image | Edit `portfolio/assets/og-preview.html`, then regenerate `og-preview.png` with headless Chrome at 1200×630 |
+
+## Gotchas
+
+- The scrollspy uses a viewport-band `IntersectionObserver` (`rootMargin: '-40% 0px -55% 0px'`), not a ratio threshold — ratio thresholds break on sections taller than the viewport. It observes `main section, main footer` so `#contact` (a footer) activates too.
+- The custom cursor is enabled by JS adding `body.custom-cursor`; never put `cursor: none` in plain CSS (a CDN/script failure would hide the native cursor).
+- Hero content must remain visible without JS — entrance animations use `gsap.from`, not CSS `opacity: 0` + `gsap.to`.
+- Site copy must stay consistent with `Resume_YuvrajGupta.pdf` (SLA percentages, cycle times, claims) — hiring managers cross-check.
