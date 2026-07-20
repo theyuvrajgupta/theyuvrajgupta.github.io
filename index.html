@@ -28,6 +28,11 @@
 </head>
 
 <body>
+    <div class="page-atmosphere" aria-hidden="true">
+        <span class="atmo atmo-1"></span>
+        <span class="atmo atmo-2"></span>
+        <span class="atmo atmo-3"></span>
+    </div>
     <div id="scroll-progress-bar"></div>
     <div class="cursor" aria-hidden="true"><span></span></div>
 
@@ -66,16 +71,16 @@
             <div class="hero-grid-lines" data-depth="0.015" data-drift="10" aria-hidden="true"></div>
 
             <div class="hero-frags" aria-hidden="true">
-                <div class="frag frag-far f1" data-depth="0.035" data-drift="6"><span class="k">1 of 24</span><span
-                        class="v">speaker, MBA World Summit 2026</span></div>
-                <div class="frag frag-mid f2" data-depth="0.075" data-drift="9"><span class="k">n = 86</span><span
-                        class="v">PRISM primary research, with IBM</span></div>
-                <div class="frag frag-near f3" data-depth="0.130" data-drift="12"><span class="k">$250M</span><span
-                        class="v">Mekong fund, pitched in London</span></div>
-                <div class="frag frag-mid f4" data-depth="0.075" data-drift="10"><span class="k">top 12 of
-                        186</span><span class="v">Kellogg-Morgan Stanley finals</span></div>
+                <div class="frag frag-far f1" data-depth="0.035" data-drift="6"><span class="k">1 of 100
+                        globally</span><span class="v">MBA World Summit 2026</span></div>
+                <div class="frag frag-mid f2" data-depth="0.075" data-drift="9"><span class="k">Built solo</span><span
+                        class="v">Anthropic Life Sciences hackathon</span></div>
+                <div class="frag frag-near f3" data-depth="0.130" data-drift="12"><span class="k">Led 0-to-1 AI
+                        strategy</span><span class="v">team of 5, with IBM</span></div>
+                <div class="frag frag-mid f4" data-depth="0.075" data-drift="10"><span class="k">97% uptime</span><span
+                        class="v">clinical infrastructure SLAs</span></div>
                 <div class="frag frag-near f5" data-depth="0.130" data-drift="14"><span class="k">10 years</span><span
-                        class="v">Siemens Healthineers &amp; CitiusTech</span></div>
+                        class="v">enterprise &amp; healthcare tech</span></div>
             </div>
 
             <div class="hero" data-depth="-0.018" data-drift="4">
@@ -208,7 +213,7 @@
                         <h3>Commercial Strategy</h3>
                         <p>Business cases, ROI modeling, investment analysis, and product roadmaps.</p>
                         <div class="proof-links">
-                            <button class="proof-chip" data-modal-target="project4">Kellogg</button>
+                            <button class="proof-chip" data-modal-target="project4">Mekong Fund</button>
                             <button class="proof-chip" data-modal-target="project1">PRISM</button>
                         </div>
                     </div>
@@ -235,7 +240,8 @@
                                 <span></span>
                             </div>
                         </div>
-                        <h3>PRISM &middot; Agentic AI Strategy with IBM</h3>
+                        <p class="card-kicker">Agentic AI &middot; with IBM</p>
+                        <h3>PRISM</h3>
                         <p>Led a five-person team through a live product strategy engagement with IBM: a 0-to-1
                             agentic AI shopping assistant for APAC consumers. Primary research across 86 respondents,
                             an investor-grade business case, and a phased go-to-market plan. Wrapped May 2026.</p>
@@ -253,7 +259,8 @@
                                 <span></span>
                             </div>
                         </div>
-                        <h3>preCaution &middot; Grounded, Not Generated</h3>
+                        <p class="card-kicker">Built for Anthropic</p>
+                        <h3>preCaution</h3>
                         <p>Built solo for Anthropic's Built with Claude: Life Sciences hackathon. A procedure-aware lab
                             safety tool that reads a free-text protocol and returns a source-linked safety brief.
                             Claude reads and routes; deterministic, sourced logic writes every safety verdict.</p>
@@ -271,7 +278,8 @@
                                 <span></span>
                             </div>
                         </div>
-                        <h3>Agent vs Agent &middot; A Live AI Debate</h3>
+                        <p class="card-kicker">Live demo &middot; NTU PACE</p>
+                        <h3>Agent vs Agent</h3>
                         <p>Built a live two-agent debate where two AI agents take divergent stances and argue in real
                             time, then presented it to a C-suite audience at an NTU PACE executive workshop. The
                             divergence comes from prompt-level stance randomness, not temperature.</p>
@@ -289,7 +297,8 @@
                                 <span></span>
                             </div>
                         </div>
-                        <h3>Kellogg &middot; Mekong Resilience Fund</h3>
+                        <p class="card-kicker">Kellogg&ndash;Morgan Stanley finals</p>
+                        <h3>Mekong Resilience Fund</h3>
                         <p>Reached the global finals of the Kellogg-Morgan Stanley Sustainable Investment Challenge
                             2026, pitching a $250M blended finance vehicle to senior investment stakeholders in
                             London. Top 12 of 186 teams globally, the first NBS team to get there.</p>
@@ -307,7 +316,8 @@
                                 <span></span>
                             </div>
                         </div>
-                        <h3>Foundation &middot; 10 Years Building Enterprise Systems That Had to Work</h3>
+                        <p class="card-kicker">Siemens Healthineers &middot; CitiusTech</p>
+                        <h3>Foundation</h3>
                         <p>A decade of engineering and product leadership at Siemens Healthineers and CitiusTech,
                             designing AI-integrated clinical workflows, modernizing cloud infrastructure, and leading
                             cross-functional teams in high-stakes regulated environments.</p>
@@ -413,7 +423,8 @@
             <div class="card-visual modal-visual">
                 <span class="card-visual-anchor">$0 to 1</span>
             </div>
-            <h2 id="project1-title">PRISM &middot; Agentic AI Strategy with IBM</h2>
+            <h2 id="project1-title">PRISM</h2>
+            <p class="modal-kicker">Agentic AI Strategy &middot; with IBM</p>
             <div class="modal-body">
                 <div>
                     <h3>The Challenge</h3>
@@ -443,7 +454,8 @@
             <div class="card-visual modal-visual">
                 <span class="card-visual-anchor">Solo Build</span>
             </div>
-            <h2 id="project2-title">preCaution &middot; Grounded, Not Generated</h2>
+            <h2 id="project2-title">preCaution</h2>
+            <p class="modal-kicker">Grounded, Not Generated &middot; Built for Anthropic</p>
             <div class="modal-body">
                 <div>
                     <h3>The Build</h3>
@@ -481,7 +493,8 @@
             <div class="card-visual modal-visual">
                 <span class="card-visual-anchor">AI &times; AI</span>
             </div>
-            <h2 id="project3-title">Agent vs Agent &middot; A Live AI Debate</h2>
+            <h2 id="project3-title">Agent vs Agent</h2>
+            <p class="modal-kicker">A Live AI Debate &middot; NTU PACE</p>
             <div class="modal-body">
                 <div>
                     <h3>The Build</h3>
@@ -519,7 +532,8 @@
             <div class="card-visual modal-visual">
                 <span class="card-visual-anchor">$250M</span>
             </div>
-            <h2 id="project4-title">Kellogg &middot; Mekong Resilience Fund</h2>
+            <h2 id="project4-title">Mekong Resilience Fund</h2>
+            <p class="modal-kicker">Kellogg&ndash;Morgan Stanley finals</p>
             <div class="modal-body">
                 <div>
                     <h3>The Challenge</h3>
@@ -549,7 +563,8 @@
             <div class="card-visual modal-visual">
                 <span class="card-visual-anchor">10 Years</span>
             </div>
-            <h2 id="project5-title">Foundation &middot; 10 Years Building Enterprise Systems That Had to Work</h2>
+            <h2 id="project5-title">Foundation</h2>
+            <p class="modal-kicker">Ten years &middot; Siemens Healthineers &amp; CitiusTech</p>
             <div class="modal-body">
                 <div>
                     <h3>The Foundation</h3>

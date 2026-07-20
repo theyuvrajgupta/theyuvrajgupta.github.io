@@ -28,10 +28,50 @@ html {
 
 body {
     font-family: var(--font-body);
-    background-color: var(--background-color);
+    background-color: transparent;
     color: var(--text-color);
     line-height: 1.7;
     overflow-x: hidden;
+}
+
+/* ======== PAGE ATMOSPHERE — persistent aurora behind all content ======== */
+.page-atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.atmo {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    will-change: transform;
+}
+
+.atmo-1 {
+    width: 55vw;
+    height: 55vw;
+    left: -12vw;
+    top: -8vh;
+    background: radial-gradient(circle, rgba(0, 232, 150, 0.16), transparent 65%);
+}
+
+.atmo-2 {
+    width: 52vw;
+    height: 52vw;
+    right: -14vw;
+    top: 28vh;
+    background: radial-gradient(circle, rgba(62, 107, 255, 0.15), transparent 65%);
+}
+
+.atmo-3 {
+    width: 48vw;
+    height: 48vw;
+    left: 22vw;
+    bottom: -14vh;
+    background: radial-gradient(circle, rgba(0, 232, 150, 0.11), transparent 65%);
 }
 
 body.modal-open {
@@ -542,8 +582,18 @@ body.js .frag-mid { animation-name: frag-in-mid; }
     position: relative;
     max-width: 700px;
     margin: 0;
-    border-left: 1px solid var(--border-color);
     padding-left: 0;
+}
+
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--primary-accent) 0%, var(--secondary-accent) 55%, transparent 100%);
+    opacity: 0.55;
 }
 
 .timeline-item {
@@ -561,6 +611,7 @@ body.js .frag-mid { animation-name: frag-in-mid; }
     border-radius: 50%;
     background: var(--background-color);
     border: 2px solid var(--primary-accent);
+    box-shadow: 0 0 12px rgba(0, 232, 150, 0.5);
 }
 
 .timeline-marker {
@@ -694,6 +745,7 @@ body.js .frag-mid { animation-name: frag-in-mid; }
 .competency-block:hover {
     border-color: rgba(0, 232, 150, 0.35);
     transform: translateY(-3px);
+    box-shadow: 0 18px 44px -24px rgba(0, 0, 0, 0.6), 0 0 44px -26px rgba(62, 107, 255, 0.5);
 }
 
 .competency-block h3 {
@@ -881,6 +933,7 @@ body.js .frag-mid { animation-name: frag-in-mid; }
 }
 
 .project-card {
+    position: relative;
     grid-column: span 2;
     display: block;
     background: var(--surface-color);
@@ -893,10 +946,38 @@ body.js .frag-mid { animation-name: frag-in-mid; }
     cursor: pointer;
 }
 
-.project-card:hover {
+.project-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--grad);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: 2;
+}
+
+.project-card:hover,
+.project-card:focus-visible {
     transform: translateY(-6px);
-    border-color: rgba(0, 232, 150, 0.3);
-    box-shadow: 0 24px 50px -18px rgba(0, 0, 0, 0.6);
+    border-color: rgba(0, 232, 150, 0.35);
+    box-shadow: 0 26px 60px -22px rgba(0, 0, 0, 0.7), 0 0 54px -26px rgba(0, 232, 150, 0.35);
+}
+
+.project-card:hover::after,
+.project-card:focus-visible::after {
+    opacity: 1;
+}
+
+.card-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted-color);
+    margin: 1.5rem 1.5rem 0.35rem;
 }
 
 /* Centre the last two cards (4th and 5th) in the second row */
@@ -909,9 +990,10 @@ body.js .frag-mid { animation-name: frag-in-mid; }
 }
 
 .project-card h3 {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     font-weight: 500;
-    margin: 1.5rem 1.5rem 0.5rem;
+    margin: 0 1.5rem 0.5rem;
+    letter-spacing: -0.01em;
 }
 
 .project-card p {
@@ -1162,8 +1244,18 @@ body.js .frag-mid { animation-name: frag-in-mid; }
 
 .modal-content h2 {
     padding: 2rem 2rem 0;
-    font-size: 1.6rem;
+    font-size: 1.7rem;
     font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+.modal-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--primary-accent);
+    padding: 0.55rem 2rem 0;
 }
 
 .modal-body {

@@ -66,10 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(raf);
     }
 
-    // --- SCROLL PROGRESS BAR + NAVBAR STATE + SCROLL INDICATOR ---
+    // --- SCROLL PROGRESS BAR + NAVBAR STATE + SCROLL INDICATOR + ATMOSPHERE ---
     const progressBar = document.getElementById('scroll-progress-bar');
     const navbar = document.querySelector('.navbar');
     const scrollIndicator = document.querySelector('.scroll-indicator');
+    // Ambient aurora drifts slowly against the scroll so the page keeps depth
+    // the whole way down instead of going flat below the hero.
+    const atmos = prefersReducedMotion ? [] : [...document.querySelectorAll('.atmo')];
 
     const onScroll = () => {
         const doc = document.documentElement;
@@ -77,6 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (progressBar) progressBar.style.width = `${max > 0 ? (window.scrollY / max) * 100 : 0}%`;
         if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 40);
         if (scrollIndicator) scrollIndicator.style.opacity = window.scrollY > 100 ? '0' : '1';
+        atmos.forEach((a, i) => {
+            a.style.transform = `translate3d(0, ${window.scrollY * (0.05 + i * 0.035)}px, 0)`;
+        });
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -123,6 +129,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (prefersReducedMotion) {
             revealEls.forEach(el => el.classList.add('is-visible'));
         } else {
+            // Cascade grouped reveals: each item waits a beat longer than the last
+            // within its container, so sections arrive with rhythm instead of a flat fade.
+            revealEls.forEach(el => {
+                const group = [...el.parentElement.children].filter(c => c.classList.contains('reveal'));
+                const idx = group.indexOf(el);
+                if (idx > 0) el.style.transitionDelay = `${Math.min(idx, 6) * 0.08}s`;
+            });
             const revealObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
