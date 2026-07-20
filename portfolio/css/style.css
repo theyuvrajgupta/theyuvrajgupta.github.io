@@ -812,46 +812,79 @@ section {
     background-color: transparent;
 }
 
-.recognition-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
+.recognition-ledger {
+    list-style: none;
     max-width: 900px;
     margin: 0 auto;
+    border-top: 1px solid var(--border-color);
 }
 
 .recognition-item {
-    padding: 1.75rem 2rem;
-    background: rgba(16, 24, 44, 0.6);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    border-left: 3px solid var(--primary-accent);
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 14rem) 1fr;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding: 1.5rem 0.5rem;
+    border-bottom: 1px solid var(--border-color);
     opacity: 0;
-    transform: translateX(-20px);
-    transition: opacity 0.5s ease, transform 0.5s ease, border-left-color 0.3s ease;
+    transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.3s ease;
 }
 
 .recognition-item.is-visible {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
 }
 
 .recognition-item:hover {
-    border-left-color: var(--secondary-accent);
-    transform: translateX(6px);
+    background-color: rgba(0, 245, 195, 0.03);
 }
 
-.recognition-item h3 {
+.ledger-marker {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--primary-accent);
+    opacity: 0.7;
+}
+
+.ledger-title {
+    font-family: var(--font-heading);
+    font-weight: 500;
     font-size: 1.05rem;
     color: var(--text-color);
-    margin-bottom: 0.4rem;
 }
 
-.recognition-item p {
+.ledger-note {
     color: var(--text-muted-color);
-    font-size: 0.95rem;
-    line-height: 1.65;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* ======== MODAL PROOF LINKS ======== */
+.modal-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 0.5rem;
+}
+
+.modal-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--primary-accent);
+    text-decoration: none;
+    padding: 0.6rem 1.1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.modal-link:hover {
+    border-color: var(--primary-accent);
+    background-color: rgba(0, 245, 195, 0.05);
 }
 
 /* ======== VISION SECTION ======== */
