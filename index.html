@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yuvraj Gupta | Product & Platform Leader</title>
     <meta name="description"
-        content="Product and platform leader with 10 years shipping enterprise software at Siemens Healthineers and CitiusTech, now operating at the AI strategy layer. MBA, Nanyang Business School. Based in Singapore." />
+        content="Product and platform leader with 10 years shipping enterprise software at Siemens Healthineers and CitiusTech, now operating at the AI strategy layer. MBA (Dean's List), Nanyang Business School. Based in Singapore." />
     <meta property="og:title" content="Yuvraj Gupta | Product & Platform Leader" />
     <meta property="og:description" content="I lead product and platform teams that ship, and help organizations decide what to build with AI. 10 years of enterprise execution, now operating at the strategy layer." />
     <meta property="og:image" content="https://theyuvrajgupta.github.io/portfolio/assets/og-preview.png" />
@@ -17,30 +17,29 @@
     <meta name="twitter:description" content="I lead product and platform teams that ship, and help organizations decide what to build with AI. 10 years of enterprise execution, now operating at the strategy layer." />
     <meta name="twitter:image" content="https://theyuvrajgupta.github.io/portfolio/assets/og-preview.png" />
     <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%2310182c'/><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='60' font-family='Satoshi, sans-serif' fill='%2300f5c3'>YG</text></svg>">
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230C1218'/><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='60' font-family='sans-serif' fill='%2300E896'>YG</text></svg>">
     <link rel="stylesheet" href="./portfolio/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500&f[]=inter@400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
     <div id="scroll-progress-bar"></div>
-    <div class="cursor"></div>
-    <div class="cursor-follower"></div>
-    <canvas id="background-canvas"></canvas>
+    <div class="cursor" aria-hidden="true"><span></span></div>
 
     <nav class="navbar">
         <div class="container">
-            <a href="#home" class="nav-logo magnetic">YG</a>
+            <a href="#home" class="nav-logo">YG</a>
             <ul class="nav-menu">
-                <li><a href="#about" class="magnetic">About</a></li>
-                <li><a href="#projects" class="magnetic">Work</a></li>
-                <li><a href="#recognition" class="magnetic">Recognition</a></li>
-                <li><a href="#vision" class="magnetic">Vision</a></li>
-                <li><a href="#contact" class="magnetic">Contact</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Work</a></li>
+                <li><a href="#recognition">Recognition</a></li>
+                <li><a href="#vision">Vision</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
             <button class="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false">
                 <span></span>
@@ -63,38 +62,51 @@
 
         <!-- ======== HOME SECTION ======== -->
         <section id="home" class="home-section">
-            <div class="container home-grid">
-                <div class="home-headline-block">
-                    <p class="hero-eyebrow">Yuvraj Gupta</p>
-                    <h1 class="hero-headline">Product &amp;<br>Platform Leader.</h1>
-                    <p class="hero-status">Singapore &middot; MBA (Dean's List), Nanyang Business School &middot; 2026</p>
+            <div class="hero-glow" data-depth="0.030" data-drift="18" aria-hidden="true"></div>
+            <div class="hero-grid-lines" data-depth="0.015" data-drift="10" aria-hidden="true"></div>
+
+            <div class="hero-frags" aria-hidden="true">
+                <div class="frag frag-far f1" data-depth="0.035" data-drift="6"><span class="k">1 of 24</span><span
+                        class="v">speaker, MBA World Summit 2026</span></div>
+                <div class="frag frag-mid f2" data-depth="0.075" data-drift="9"><span class="k">n = 86</span><span
+                        class="v">PRISM primary research, with IBM</span></div>
+                <div class="frag frag-near f3" data-depth="0.130" data-drift="12"><span class="k">$250M</span><span
+                        class="v">Mekong fund, pitched in London</span></div>
+                <div class="frag frag-mid f4" data-depth="0.075" data-drift="10"><span class="k">top 12 of
+                        186</span><span class="v">Kellogg-Morgan Stanley finals</span></div>
+                <div class="frag frag-near f5" data-depth="0.130" data-drift="14"><span class="k">10 years</span><span
+                        class="v">Siemens Healthineers &amp; CitiusTech</span></div>
+            </div>
+
+            <div class="hero" data-depth="-0.018" data-drift="4">
+                <p class="hero-eyebrow">Yuvraj Gupta</p>
+                <h1 class="hero-headline">Product &amp; <span class="grad">Platform</span><br>Leader.</h1>
+                <p class="hero-status">Singapore &middot; MBA (Dean's List), Nanyang Business School &middot; 2026</p>
+                <p class="hero-intro">I lead product and platform teams that ship, and help organizations decide what
+                    to build with AI, then make sure it actually works in the real world.</p>
+                <div class="home-buttons">
+                    <a href="#projects" class="btn btn-primary">View Signature Work</a>
+                    <a href="./portfolio/assets/Resume_YuvrajGupta.pdf" class="btn btn-ghost" download><i
+                            class="fa-solid fa-download"></i> Download Resume</a>
                 </div>
-                <div class="home-intro-text">
-                    <p class="subtitle">I lead product and platform teams that ship, and help organizations decide
-                        what to build with AI, then make sure it actually works in the real world. Ten years of
-                        enterprise execution at Siemens Healthineers and CitiusTech, now operating at the strategy
-                        layer.</p>
-                    <div class="home-buttons">
-                        <a href="#projects" class="btn btn-primary magnetic">View Signature Work</a>
-                        <a href="./portfolio/assets/Resume_YuvrajGupta.pdf" class="btn btn-secondary magnetic"
-                            download><i class="fa-solid fa-download"></i> Download Resume</a>
-                    </div>
-                </div>
-                <div class="scroll-indicator">
-                    <span>Scroll</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </div>
+            </div>
+
+            <div class="scroll-indicator" aria-hidden="true">
+                <span>Scroll</span>
+                <i class="fa-solid fa-chevron-down"></i>
             </div>
         </section>
 
         <!-- ======== ABOUT SECTION ======== -->
         <section id="about" class="about-section">
             <div class="container">
-                <h2 class="section-title">The Story</h2>
+                <header class="section-head reveal">
+                    <p class="section-eyebrow">About &middot; 2016&ndash;2026</p>
+                    <h2 class="section-title">The Story</h2>
+                </header>
                 <div class="timeline-container">
-                    <div class="timeline-line"></div>
-                    <div class="timeline-item">
-                        <div class="timeline-icon"><i class="fa-solid fa-cubes"></i></div>
+                    <div class="timeline-item reveal">
+                        <span class="timeline-marker">01</span>
                         <div class="timeline-content">
                             <h3>The Foundation</h3>
                             <p>Ten years building enterprise systems that had to work under real constraints. Regulated
@@ -103,8 +115,8 @@
                                 around it.</p>
                         </div>
                     </div>
-                    <div class="timeline-item">
-                        <div class="timeline-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div class="timeline-item reveal">
+                        <span class="timeline-marker">02</span>
                         <div class="timeline-content">
                             <h3>The Sharpening</h3>
                             <p>An MBA at Nanyang Business School, completed in 2026, added the commercial and
@@ -113,8 +125,8 @@
                                 built and why.</p>
                         </div>
                     </div>
-                    <div class="timeline-item">
-                        <div class="timeline-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="timeline-item reveal">
+                        <span class="timeline-marker">03</span>
                         <div class="timeline-content">
                             <h3>The Edge</h3>
                             <p>Most strategists cannot go deep on architecture. Most engineers cannot hold a room of
@@ -122,8 +134,8 @@
                                 between technical teams and business decision-makers.</p>
                         </div>
                     </div>
-                    <div class="timeline-item">
-                        <div class="timeline-icon"><i class="fa-solid fa-heart"></i></div>
+                    <div class="timeline-item reveal">
+                        <span class="timeline-marker">04</span>
                         <div class="timeline-content">
                             <h3>Beyond Work</h3>
                             <p>Thought leader on AI, strategy, and leadership on LinkedIn. Avid gamer when not thinking
@@ -138,12 +150,14 @@
         <!-- ======== FEATURED MOMENT SECTION ======== -->
         <section id="featured-moment" class="featured-moment-section">
             <div class="container">
-                <h2 class="section-title">Featured Moment</h2>
-                <div class="featured-moment-strip">
+                <header class="section-head reveal">
+                    <p class="section-eyebrow">Featured &middot; Heilbronn, June 2026</p>
+                </header>
+                <div class="featured-moment-strip reveal">
                     <img src="./portfolio/assets/profile-pic.jpg" alt="Yuvraj Gupta" width="320" height="480"
                         loading="lazy" class="featured-moment-photo">
                     <div class="featured-moment-content">
-                        <span class="featured-moment-label">MBA World Summit 2026 &middot; Heilbronn, Germany</span>
+                        <span class="featured-moment-label">MBA World Summit 2026</span>
                         <h2>Spoke at the MBA World Summit 2026. Selected as 1 of 100 MBA candidates globally from
                             roughly 45,000 considered, then chosen as 1 of 24 session speakers.</h2>
                         <p class="session-line">Led "Last Human Standing: Who Is Really Making the Call?", an
@@ -161,40 +175,42 @@
         <!-- ======== EXPERTISE SECTION ======== -->
         <section id="expertise" class="expertise-section">
             <div class="container">
-                <h2 class="section-title">Core Competencies</h2>
-                <div class="expertise-interactive-map">
-                    <svg class="competency-lines" width="100%" height="100%" viewBox="0 0 1000 500"
-                        preserveAspectRatio="xMidYMid meet">
-                        <defs>
-                            <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style="stop-color:var(--secondary-accent);stop-opacity:0.8" />
-                                <stop offset="100%" style="stop-color:var(--primary-accent);stop-opacity:0.8" />
-                            </linearGradient>
-                        </defs>
-                        <line x1="25%" y1="25%" x2="75%" y2="25%" stroke="url(#line-gradient)" />
-                        <line x1="75%" y1="25%" x2="75%" y2="75%" stroke="url(#line-gradient)" />
-                        <line x1="75%" y1="75%" x2="25%" y2="75%" stroke="url(#line-gradient)" />
-                        <line x1="25%" y1="75%" x2="25%" y2="25%" stroke="url(#line-gradient)" />
-                        <line x1="25%" y1="25%" x2="75%" y2="75%" stroke="url(#line-gradient)" />
-                        <line x1="75%" y1="25%" x2="25%" y2="75%" stroke="url(#line-gradient)" />
-                    </svg>
-                    <div class="competency-node" data-competency="ai">
-                        <div class="node-pulse"></div><span>AI Strategy &amp; Innovation</span>
+                <header class="section-head reveal">
+                    <p class="section-eyebrow">Capabilities &middot; Linked to proof</p>
+                    <h2 class="section-title">Core Competencies</h2>
+                </header>
+                <div class="competency-grid">
+                    <div class="competency-block reveal">
+                        <h3>AI Strategy &amp; Innovation</h3>
+                        <p>Agentic systems, enterprise AI roadmaps, and human-AI decision design.</p>
+                        <div class="proof-links">
+                            <button class="proof-chip" data-modal-target="project1">PRISM</button>
+                            <button class="proof-chip" data-modal-target="project2">preCaution</button>
+                            <button class="proof-chip" data-modal-target="project3">Agent vs Agent</button>
+                        </div>
                     </div>
-                    <div class="competency-node" data-competency="tech">
-                        <div class="node-pulse"></div><span>Enterprise Transformation</span>
+                    <div class="competency-block reveal">
+                        <h3>Enterprise Transformation</h3>
+                        <p>Platform modernization, go-to-market acceleration, and change that sticks.</p>
+                        <div class="proof-links">
+                            <button class="proof-chip" data-modal-target="project5">Foundation</button>
+                        </div>
                     </div>
-                    <div class="competency-node" data-competency="cloud">
-                        <div class="node-pulse"></div><span>Technology Architecture</span>
+                    <div class="competency-block reveal">
+                        <h3>Technology Architecture</h3>
+                        <p>Cloud-native design, serverless infrastructure, and systems thinking.</p>
+                        <div class="proof-links">
+                            <button class="proof-chip" data-modal-target="project5">Foundation</button>
+                            <button class="proof-chip" data-modal-target="project2">preCaution</button>
+                        </div>
                     </div>
-                    <div class="competency-node" data-competency="leadership">
-                        <div class="node-pulse"></div><span>Commercial Strategy</span>
-                    </div>
-                    <div class="competency-details-panel">
-                        <h3 id="competency-title">Click any competency bubble to know more</h3>
-                        <ul id="competency-skills">
-                            <li>Select a node to see related skills.</li>
-                        </ul>
+                    <div class="competency-block reveal">
+                        <h3>Commercial Strategy</h3>
+                        <p>Business cases, ROI modeling, investment analysis, and product roadmaps.</p>
+                        <div class="proof-links">
+                            <button class="proof-chip" data-modal-target="project4">Kellogg</button>
+                            <button class="proof-chip" data-modal-target="project1">PRISM</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -203,11 +219,15 @@
         <!-- ======== PROJECTS SECTION ======== -->
         <section id="projects" class="projects-section">
             <div class="container">
-                <h2 class="section-title">Signature Work</h2>
+                <header class="section-head reveal">
+                    <p class="section-eyebrow">Work &middot; 2016&ndash;2026</p>
+                    <h2 class="section-title">Signature Work</h2>
+                </header>
                 <div class="projects-grid">
 
                     <!-- Card 1: PRISM -->
-                    <div class="project-card" data-modal-target="project1">
+                    <div class="project-card reveal" data-modal-target="project1" tabindex="0" role="button"
+                        aria-haspopup="dialog">
                         <div class="card-visual" data-anchor="$0 to 1">
                             <div class="anchor-frame">
                                 <span></span>
@@ -224,7 +244,8 @@
                     </div>
 
                     <!-- Card 2: preCaution -->
-                    <div class="project-card" data-modal-target="project2">
+                    <div class="project-card reveal" data-modal-target="project2" tabindex="0" role="button"
+                        aria-haspopup="dialog">
                         <div class="card-visual" data-anchor="Solo Build">
                             <div class="anchor-frame">
                                 <span></span>
@@ -241,7 +262,8 @@
                     </div>
 
                     <!-- Card 3: Agent vs Agent -->
-                    <div class="project-card" data-modal-target="project3">
+                    <div class="project-card reveal" data-modal-target="project3" tabindex="0" role="button"
+                        aria-haspopup="dialog">
                         <div class="card-visual" data-anchor="AI × AI">
                             <div class="anchor-frame">
                                 <span></span>
@@ -258,7 +280,8 @@
                     </div>
 
                     <!-- Card 4: Kellogg -->
-                    <div class="project-card" data-modal-target="project4">
+                    <div class="project-card reveal" data-modal-target="project4" tabindex="0" role="button"
+                        aria-haspopup="dialog">
                         <div class="card-visual" data-anchor="$250M">
                             <div class="anchor-frame">
                                 <span></span>
@@ -275,7 +298,8 @@
                     </div>
 
                     <!-- Card 5: Foundation -->
-                    <div class="project-card" data-modal-target="project5">
+                    <div class="project-card reveal" data-modal-target="project5" tabindex="0" role="button"
+                        aria-haspopup="dialog">
                         <div class="card-visual" data-anchor="10 Years">
                             <div class="anchor-frame">
                                 <span></span>
@@ -299,27 +323,30 @@
         <!-- ======== RECOGNITION SECTION ======== -->
         <section id="recognition" class="recognition-section">
             <div class="container">
-                <h2 class="section-title">Recognition</h2>
+                <header class="section-head reveal">
+                    <p class="section-eyebrow">Recognition &middot; NBS, 2026</p>
+                    <h2 class="section-title">The Ledger</h2>
+                </header>
                 <ul class="recognition-ledger">
-                    <li class="recognition-item">
+                    <li class="recognition-item reveal">
                         <span class="ledger-marker" aria-hidden="true">01</span>
                         <span class="ledger-title">Dean's List 2026</span>
                         <span class="ledger-note">Top 10% of the graduating MBA cohort at Nanyang Business School,
                             on cumulative academic performance across the program.</span>
                     </li>
-                    <li class="recognition-item">
+                    <li class="recognition-item reveal">
                         <span class="ledger-marker" aria-hidden="true">02</span>
                         <span class="ledger-title">VCIC Asia Finalist</span>
                         <span class="ledger-note">First runner-up at the Venture Capital Investment Competition 2026
                             Asia Finals, acting as MedTech subject-matter expert on the due diligence.</span>
                     </li>
-                    <li class="recognition-item">
+                    <li class="recognition-item reveal">
                         <span class="ledger-marker" aria-hidden="true">03</span>
                         <span class="ledger-title">Mazda Strategy Challenge, 1st Place</span>
                         <span class="ledger-note">Won across the MBA cohort for a brand repositioning and
                             go-to-market strategy for Mazda Singapore.</span>
                     </li>
-                    <li class="recognition-item">
+                    <li class="recognition-item reveal">
                         <span class="ledger-marker" aria-hidden="true">04</span>
                         <span class="ledger-title">PGC Class Champion</span>
                         <span class="ledger-note">Nominated by Nanyang Business School, recognized with a certificate
@@ -332,28 +359,13 @@
         <!-- ======== VISION SECTION ======== -->
         <section id="vision" class="vision-section">
             <div class="container">
-                <h2 class="section-title">My Vision</h2>
-                <div class="vision-grid">
-                    <div class="vision-orb-container">
-                        <svg class="vision-lines" width="100%" height="100%" viewBox="0 0 400 400">
-                            <line x1="200" y1="200" x2="295" y2="105" />
-                            <line x1="200" y1="200" x2="105" y2="105" />
-                            <line x1="200" y1="200" x2="105" y2="295" />
-                            <line x1="200" y1="200" x2="295" y2="295" />
-                        </svg>
-                        <div class="vision-orb"></div>
-                        <div class="vision-pillar" id="pillar-1"><span>AI Strategy Advisory</span></div>
-                        <div class="vision-pillar" id="pillar-2"><span>Enterprise Transformation</span></div>
-                        <div class="vision-pillar" id="pillar-3"><span>Thought Leadership</span></div>
-                        <div class="vision-pillar" id="pillar-4"><span>Venture &amp; Innovation</span></div>
-                    </div>
-                    <div class="vision-text vision-card glass">
-                        <p>My vision is to operate at the intersection where technology strategy meets business impact.
-                            To advise organizations on how to build with AI intelligently, lead transformations that
-                            actually stick, and eventually back the founders building the next generation of enterprise
-                            technology.</p>
-                    </div>
-                </div>
+                <header class="section-head reveal">
+                    <p class="section-eyebrow">Vision &middot; What's next</p>
+                </header>
+                <p class="vision-statement reveal">Operate where technology strategy meets <span class="grad">business
+                        impact</span>. Advise organizations on how to build with AI intelligently, lead
+                    transformations that actually stick, and eventually back the founders building the next
+                    generation of enterprise technology.</p>
             </div>
         </section>
 
@@ -361,12 +373,15 @@
         <footer id="contact" class="footer">
             <div class="container">
                 <div class="footer-cta">
-                    <h2 class="section-title">Let's Talk Strategy</h2>
+                    <header class="section-head reveal">
+                        <p class="section-eyebrow">Contact &middot; Singapore</p>
+                        <h2 class="section-title">Let's Talk Strategy</h2>
+                    </header>
                     <p class="subtitle">Whether you are building something at the intersection of technology and
                         business, looking for an advisor who has operated on both sides, want to swap notes on what to
                         play or watch next, or just need someone to finally discuss the ending of Inception with, I am
                         always open to a conversation.</p>
-                    <a href="mailto:mail.yuvrajgupta@gmail.com" class="btn btn-primary magnetic">Get In Touch</a>
+                    <a href="mailto:mail.yuvrajgupta@gmail.com" class="btn btn-primary">Get In Touch</a>
                     <p class="contact-details">
                         <a href="mailto:mail.yuvrajgupta@gmail.com">mail.yuvrajgupta@gmail.com</a>
                         <span aria-hidden="true">&middot;</span>
@@ -376,10 +391,10 @@
                 </div>
                 <div class="footer-bottom">
                     <div class="social-links">
-                        <a href="https://www.linkedin.com/in/theyuvrajgupta/" target="_blank" class="magnetic"><i
-                                class="fa-brands fa-linkedin"></i></a>
-                        <a href="https://github.com/theyuvrajgupta" target="_blank" class="magnetic"><i
-                                class="fa-brands fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/theyuvrajgupta/" target="_blank" rel="noopener"
+                            aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="https://github.com/theyuvrajgupta" target="_blank" rel="noopener"
+                            aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
                     </div>
                     <p>&copy; 2026 Yuvraj Gupta.</p>
                 </div>
@@ -393,12 +408,12 @@
         <div class="modal-backdrop"></div>
 
         <!-- Modal 1: PRISM -->
-        <div id="project1" class="modal-content">
-            <button class="modal-close-btn magnetic"><i class="fa-solid fa-xmark"></i></button>
+        <div id="project1" class="modal-content" role="dialog" aria-modal="true" aria-labelledby="project1-title">
+            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
             <div class="card-visual modal-visual">
                 <span class="card-visual-anchor">$0 to 1</span>
             </div>
-            <h2>PRISM &middot; Agentic AI Strategy with IBM</h2>
+            <h2 id="project1-title">PRISM &middot; Agentic AI Strategy with IBM</h2>
             <div class="modal-body">
                 <div>
                     <h3>The Challenge</h3>
@@ -423,12 +438,12 @@
         </div>
 
         <!-- Modal 2: preCaution -->
-        <div id="project2" class="modal-content">
-            <button class="modal-close-btn magnetic"><i class="fa-solid fa-xmark"></i></button>
+        <div id="project2" class="modal-content" role="dialog" aria-modal="true" aria-labelledby="project2-title">
+            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
             <div class="card-visual modal-visual">
                 <span class="card-visual-anchor">Solo Build</span>
             </div>
-            <h2>preCaution &middot; Grounded, Not Generated</h2>
+            <h2 id="project2-title">preCaution &middot; Grounded, Not Generated</h2>
             <div class="modal-body">
                 <div>
                     <h3>The Build</h3>
@@ -461,12 +476,12 @@
         </div>
 
         <!-- Modal 3: Agent vs Agent -->
-        <div id="project3" class="modal-content">
-            <button class="modal-close-btn magnetic"><i class="fa-solid fa-xmark"></i></button>
+        <div id="project3" class="modal-content" role="dialog" aria-modal="true" aria-labelledby="project3-title">
+            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
             <div class="card-visual modal-visual">
                 <span class="card-visual-anchor">AI &times; AI</span>
             </div>
-            <h2>Agent vs Agent &middot; A Live AI Debate</h2>
+            <h2 id="project3-title">Agent vs Agent &middot; A Live AI Debate</h2>
             <div class="modal-body">
                 <div>
                     <h3>The Build</h3>
@@ -499,12 +514,12 @@
         </div>
 
         <!-- Modal 4: Kellogg -->
-        <div id="project4" class="modal-content">
-            <button class="modal-close-btn magnetic"><i class="fa-solid fa-xmark"></i></button>
+        <div id="project4" class="modal-content" role="dialog" aria-modal="true" aria-labelledby="project4-title">
+            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
             <div class="card-visual modal-visual">
                 <span class="card-visual-anchor">$250M</span>
             </div>
-            <h2>Kellogg &middot; Mekong Resilience Fund</h2>
+            <h2 id="project4-title">Kellogg &middot; Mekong Resilience Fund</h2>
             <div class="modal-body">
                 <div>
                     <h3>The Challenge</h3>
@@ -529,12 +544,12 @@
         </div>
 
         <!-- Modal 5: Foundation -->
-        <div id="project5" class="modal-content">
-            <button class="modal-close-btn magnetic"><i class="fa-solid fa-xmark"></i></button>
+        <div id="project5" class="modal-content" role="dialog" aria-modal="true" aria-labelledby="project5-title">
+            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
             <div class="card-visual modal-visual">
                 <span class="card-visual-anchor">10 Years</span>
             </div>
-            <h2>Foundation &middot; 10 Years Building Enterprise Systems That Had to Work</h2>
+            <h2 id="project5-title">Foundation &middot; 10 Years Building Enterprise Systems That Had to Work</h2>
             <div class="modal-body">
                 <div>
                     <h3>The Foundation</h3>
@@ -564,8 +579,6 @@
 
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
     <script src="./portfolio/js/script.js"></script>
 </body>
 

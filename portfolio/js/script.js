@@ -1,108 +1,85 @@
-/* global Lenis, gsap, ScrollTrigger */
-
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- DATA FOR COMPETENCIES ---
-    const competencies = {
-        ai: { title: "AI Strategy & Innovation", skills: ["Agentic AI Systems", "Enterprise AI Roadmapping", "Human-AI Decision Design", "Responsible AI Implementation"] },
-        tech: { title: "Enterprise Transformation", skills: ["Platform Modernization", "Go-To-Market Acceleration", "Legacy System Migration", "Stakeholder & Change Management"] },
-        cloud: { title: "Technology Architecture", skills: ["Cloud Native Design", "Serverless Infrastructure", "CI/CD and DevOps", "Systems Thinking"] },
-        leadership: { title: "Commercial Strategy", skills: ["Investment Analysis", "Business Case Development", "ROI Modeling", "Product Roadmapping"] }
-    };
+    // Gate all JS-driven hiding/animation behind body.js so a script failure
+    // leaves every element visible (no-JS users get the full static page).
+    document.body.classList.add('js');
 
-    // --- CUSTOM CURSOR & MAGNETIC ELEMENTS ---
-    // Only enable custom cursor on devices with fine pointer (mouse/trackpad)
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // --- SIMPLIFIED CURSOR: dot that morphs to corner brackets on interactives ---
     if (window.matchMedia('(pointer: fine)').matches) {
         const cursor = document.querySelector('.cursor');
-        const cursorFollower = document.querySelector('.cursor-follower');
-        if (cursor && cursorFollower) {
+        if (cursor) {
             document.body.classList.add('custom-cursor');
-            gsap.set(cursor, { xPercent: -50, yPercent: -50 });
-            gsap.set(cursorFollower, { xPercent: -50, yPercent: -50 });
+            let cx = -100, cy = -100, tx = -100, ty = -100;
 
             window.addEventListener('mousemove', e => {
-                gsap.to(cursor, { duration: 0.2, x: e.clientX, y: e.clientY });
-                gsap.to(cursorFollower, { duration: 0.6, x: e.clientX, y: e.clientY });
+                tx = e.clientX;
+                ty = e.clientY;
             });
 
-            document.querySelectorAll('.magnetic').forEach(el => {
-                el.addEventListener('mouseenter', () => gsap.to(cursorFollower, { scale: 2, background: 'rgba(0, 245, 195, 0.4)' }));
-                el.addEventListener('mouseleave', () => gsap.to(cursorFollower, { scale: 1, background: 'rgba(0, 245, 195, 0.2)' }));
+            const tick = () => {
+                cx += (tx - cx) * 0.35;
+                cy += (ty - cy) * 0.35;
+                cursor.style.transform = `translate(${cx}px, ${cy}px)`;
+                requestAnimationFrame(tick);
+            };
+            tick();
+
+            const interactiveSelector = 'a, button, [role="button"]';
+            document.addEventListener('mouseover', e => {
+                if (e.target.closest(interactiveSelector)) cursor.classList.add('on-interactive');
+            });
+            document.addEventListener('mouseout', e => {
+                if (e.target.closest(interactiveSelector)) cursor.classList.remove('on-interactive');
             });
         }
-    } else {
-        // Hide cursor elements on touch devices to prevent ghost touches or visual clutter
-        const cursor = document.querySelector('.cursor');
-        const cursorFollower = document.querySelector('.cursor-follower');
-        if (cursor) cursor.style.display = 'none';
-        if (cursorFollower) cursorFollower.style.display = 'none';
     }
 
-    // --- DYNAMIC "NEURAL DUST" BACKGROUND ---
-    const bgCanvas = document.getElementById('background-canvas');
-    if (bgCanvas) {
-        const ctx = bgCanvas.getContext('2d');
-        let particles = [];
-        let w = window.innerWidth;
+    // --- HERO DEPTH FIELD: cursor parallax + ambient drift ---
+    // Each [data-depth] layer translates against the cursor by its depth factor,
+    // plus a slow sine drift so the field breathes when the cursor is still.
+    const heroSection = document.querySelector('.home-section');
+    const layers = heroSection ? [...heroSection.querySelectorAll('[data-depth]')] : [];
+    if (layers.length > 0 && !prefersReducedMotion) {
+        let mx = 0, my = 0, sx = 0, sy = 0;
+        const t0 = performance.now();
 
-        const resize = () => {
-            // Only resize if width changes noticeably (address bar toggle affects height, not width)
-            // This prevents canvas reset/glitch when scrolling on mobile
-            if (window.innerWidth !== w) {
-                w = window.innerWidth;
-                bgCanvas.width = window.innerWidth;
-                bgCanvas.height = window.innerHeight;
-                createParticles();
-            }
-        };
+        window.addEventListener('mousemove', e => {
+            mx = (e.clientX / window.innerWidth - 0.5);
+            my = (e.clientY / window.innerHeight - 0.5);
+        });
 
-        const createParticles = () => {
-            bgCanvas.width = window.innerWidth; // Ensure width is set initially
-            bgCanvas.height = window.innerHeight;
-            particles = [];
-            const count = window.innerWidth < 768 ? 40 : 150; // Reduce count for mobile performance
-            for (let i = 0; i < count; i++) {
-                particles.push({
-                    x: Math.random() * bgCanvas.width,
-                    y: Math.random() * bgCanvas.height,
-                    vx: (Math.random() - 0.5) * 0.3,
-                    vy: (Math.random() - 0.5) * 0.3,
-                    radius: Math.random() * 1.5,
-                    alpha: Math.random() * 0.5 + 0.1
-                });
-            }
-        };
-        const animateBg = () => {
-            ctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-            particles.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
-                if (p.x < 0 || p.x > bgCanvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > bgCanvas.height) p.vy *= -1;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(230, 241, 255, ${p.alpha})`;
-                ctx.fill();
+        const raf = (now) => {
+            const t = (now - t0) / 1000;
+            sx += (mx - sx) * 0.055;
+            sy += (my - sy) * 0.055;
+            layers.forEach((el, i) => {
+                const d = parseFloat(el.dataset.depth);
+                const a = parseFloat(el.dataset.drift || 0);
+                const dx = Math.sin(t * 0.25 + i * 1.7) * a;
+                const dy = Math.cos(t * 0.21 + i * 2.3) * a * 0.7;
+                el.style.transform = `translate3d(${-sx * d * 260 + dx}px, ${-sy * d * 260 + dy}px, 0)`;
             });
-            requestAnimationFrame(animateBg);
+            requestAnimationFrame(raf);
         };
-
-        // Initial setup
-        createParticles();
-        animateBg();
-
-        // Optimized resize listener
-        window.addEventListener('resize', resize);
+        requestAnimationFrame(raf);
     }
 
-    // --- GSAP ANIMATIONS ---
-    gsap.registerPlugin(ScrollTrigger);
+    // --- SCROLL PROGRESS BAR + NAVBAR STATE + SCROLL INDICATOR ---
+    const progressBar = document.getElementById('scroll-progress-bar');
+    const navbar = document.querySelector('.navbar');
+    const scrollIndicator = document.querySelector('.scroll-indicator');
 
-    // Scroll Progress Bar
-    gsap.to("#scroll-progress-bar", {
-        width: "100%",
-        ease: "none",
-        scrollTrigger: { scrub: true }
-    });
+    const onScroll = () => {
+        const doc = document.documentElement;
+        const max = doc.scrollHeight - window.innerHeight;
+        if (progressBar) progressBar.style.width = `${max > 0 ? (window.scrollY / max) * 100 : 0}%`;
+        if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 40);
+        if (scrollIndicator) scrollIndicator.style.opacity = window.scrollY > 100 ? '0' : '1';
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
 
     // --- SCROLLSPY NAVIGATION ---
     const navLinks = document.querySelectorAll('.nav-menu a');
@@ -118,11 +95,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const sectionNavMap = {};
     let lastLinkedId = null;
     spyTargets.forEach(section => {
-        const id = section.id;
-        if (linkedIds.has(id)) {
-            lastLinkedId = id;
+        if (linkedIds.has(section.id)) {
+            lastLinkedId = section.id;
         }
-        sectionNavMap[id] = lastLinkedId;
+        sectionNavMap[section.id] = lastLinkedId;
     });
 
     // A thin horizontal band ~40% down the viewport decides the active section.
@@ -133,236 +109,93 @@ document.addEventListener('DOMContentLoaded', () => {
             if (entry.isIntersecting) {
                 const targetId = sectionNavMap[entry.target.id];
                 allNavLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (targetId && link.getAttribute('href') === `#${targetId}`) {
-                        link.classList.add('active');
-                    }
+                    link.classList.toggle('active', !!targetId && link.getAttribute('href') === `#${targetId}`);
                 });
             }
         });
     }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
 
-    spyTargets.forEach(section => {
-        scrollSpyObserver.observe(section);
-    });
+    spyTargets.forEach(section => scrollSpyObserver.observe(section));
 
-    // --- SVG "LIVING" ANIMATION ---
-    const animatedSvgs = document.querySelectorAll('.vision-lines, .competency-lines');
-    const svgObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('draw-active');
-            }
-        });
-    }, { threshold: 0.2 });
-
-    animatedSvgs.forEach(svg => svgObserver.observe(svg));
-
-    // --- FINAL HEADLINE ANIMATION: TEXT SCRAMBLE EFFECT ---
-    class TextScramble {
-        constructor(el) {
-            this.el = el;
-            this.chars = '!<>-_\\/[]{}—=+*^?#________';
-            this.update = this.update.bind(this);
-            // Track plain text ourselves: reading innerHTML mid-animation would
-            // pick up the <span class="dud"> markup and scramble it as content.
-            this.currentText = el.textContent.trim();
-        }
-        setText(newText) {
-            const oldText = this.currentText;
-            this.currentText = newText;
-            const length = Math.max(oldText.length, newText.length);
-            const promise = new Promise((resolve) => this.resolve = resolve);
-            this.queue = [];
-            for (let i = 0; i < length; i++) {
-                const from = oldText[i] || '';
-                const to = newText[i] || '';
-                const start = Math.floor(Math.random() * 40);
-                const end = start + Math.floor(Math.random() * 40);
-                this.queue.push({ from, to, start, end });
-            }
-            cancelAnimationFrame(this.frameRequest);
-            this.frame = 0;
-            this.update();
-            return promise;
-        }
-        update() {
-            let output = '';
-            let complete = 0;
-            for (let i = 0, n = this.queue.length; i < n; i++) {
-                let { from, to, start, end, char } = this.queue[i];
-                if (this.frame >= end) {
-                    complete++;
-                    output += to;
-                } else if (this.frame >= start) {
-                    if (!char || Math.random() < 0.28) {
-                        char = this.randomChar();
-                        this.queue[i].char = char;
-                    }
-                    output += `<span class="dud">${char}</span>`;
-                } else {
-                    output += from;
-                }
-            }
-            this.el.innerHTML = output.replace(/\n/g, '<br>');
-            if (complete === this.queue.length) {
-                this.resolve();
-            } else {
-                this.frameRequest = requestAnimationFrame(this.update);
-                this.frame++;
-            }
-        }
-        randomChar() {
-            return this.chars[Math.floor(Math.random() * this.chars.length)];
-        }
-    }
-
-    // The headline lives in the HTML (visible without JS); the scramble runs once
-    // as an entrance effect and settles — no infinite cycling, no identity churn.
-    const headlineEl = document.querySelector('.hero-headline');
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (headlineEl && !prefersReducedMotion) {
-        const finalText = headlineEl.innerText.trim(); // innerText keeps <br> as \n and decodes entities
-        headlineEl.textContent = '';
-        const fx = new TextScramble(headlineEl);
-        fx.currentText = '';
-        fx.setText(finalText);
-    }
-
-    gsap.from([".hero-eyebrow", ".hero-status", ".home-intro-text .subtitle", ".home-buttons"],
-        { opacity: 0, y: 14, duration: 0.8, delay: 0.6, stagger: 0.12 });
-    gsap.to(".scroll-indicator", { opacity: 1, duration: 0.8, delay: 1.5 });
-
-    // Hide Scroll Indicator on Scroll
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 100) {
-            gsap.to(".scroll-indicator", { opacity: 0, duration: 0.5, pointerEvents: "none" });
+    // --- SCROLL REVEALS ---
+    const revealEls = document.querySelectorAll('.reveal');
+    if (revealEls.length > 0) {
+        if (prefersReducedMotion) {
+            revealEls.forEach(el => el.classList.add('is-visible'));
         } else {
-            // Optional: Bring it back if they scroll to top
-            // gsap.to(".scroll-indicator", { opacity: 1, duration: 0.5, pointerEvents: "all" });
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12 });
+            revealEls.forEach(el => revealObserver.observe(el));
         }
-    });
-
-    // --- JOURNEY SECTION ANIMATION ---
-    const timelineItems = document.querySelectorAll('.timeline-item');
-    if (timelineItems.length > 0) {
-        const journeyObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                }
-            });
-        }, { threshold: 0.2 });
-        timelineItems.forEach(item => journeyObserver.observe(item));
     }
 
-    // --- RECOGNITION ITEMS ANIMATION ---
-    const recognitionItems = document.querySelectorAll('.recognition-item');
-    if (recognitionItems.length > 0) {
-        const recognitionItemsArr = Array.from(recognitionItems);
-        const recognitionObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const idx = recognitionItemsArr.indexOf(entry.target);
-                    setTimeout(() => entry.target.classList.add('is-visible'), idx * 120);
-                    recognitionObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.15 });
-        recognitionItems.forEach(item => recognitionObserver.observe(item));
-    }
-
-    // --- INTERACTIVE COMPETENCIES MAP ---
-    const competencyNodes = document.querySelectorAll('.competency-node');
-    const competencyTitle = document.getElementById('competency-title');
-    const competencySkills = document.getElementById('competency-skills');
-    const competencyDetailsPanel = document.querySelector('.competency-details-panel');
-
-    if (competencyNodes.length > 0 && competencyTitle && competencySkills) {
-        competencyNodes.forEach(node => {
-            node.addEventListener('click', () => {
-                const competencyKey = node.dataset.competency;
-                const data = competencies[competencyKey];
-                competencyTitle.textContent = data.title;
-
-                gsap.to("#competency-skills li", {
-                    opacity: 0, y: -10, stagger: 0.05, duration: 0.2,
-                    onComplete: () => {
-                        competencySkills.innerHTML = data.skills.map(skill => `<li>${skill}</li>`).join('');
-                        gsap.fromTo("#competency-skills li", { opacity: 0, y: 10 }, { opacity: 1, y: 0, stagger: 0.1, duration: 0.3, delay: 0.1 });
-
-                        if (window.innerWidth <= 992 && competencyDetailsPanel) {
-                            competencyDetailsPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                    }
-                });
-            });
-        });
-
-
-        // Reset expertise on click outside
-        document.addEventListener('click', (e) => {
-            const isClickInsideMap = e.target.closest('.expertise-interactive-map');
-            if (!isClickInsideMap && competencyTitle.textContent !== 'Click any competency bubble to know more') {
-                competencyTitle.textContent = 'Click any competency bubble to know more';
-                gsap.to("#competency-skills li", {
-                    opacity: 0, y: -10, stagger: 0.05, duration: 0.2,
-                    onComplete: () => {
-                        competencySkills.innerHTML = '<li>Select a node to see related skills.</li>';
-                        gsap.to("#competency-skills li", { opacity: 1, y: 0, duration: 0.3 });
-                    }
-                });
-            }
-        });
-    }
-
-    // --- 3D TILT FOR PROJECT CARDS ---
-    document.querySelectorAll('.project-card').forEach(card => {
-        card.addEventListener('mousemove', e => {
-            const { left, top, width, height } = card.getBoundingClientRect();
-            const x = (e.clientX - left) / width - 0.5;
-            const y = (e.clientY - top) / height - 0.5;
-            gsap.to(card, { duration: 0.5, rotationY: x * 15, rotationX: -y * 15, transformPerspective: 1000, ease: "power2.out" });
-        });
-        card.addEventListener('mouseleave', () => {
-            gsap.to(card, { duration: 0.8, rotationY: 0, rotationX: 0, ease: "elastic.out(1, 0.3)" });
-        });
-    });
-
-    // --- MODAL LOGIC WITH SCROLL LOCK ---
-    const projectCards = document.querySelectorAll('.project-card');
+    // --- MODALS (cards + proof chips), WITH KEYBOARD SUPPORT ---
     const modalContainer = document.getElementById('modal-container');
+    const openers = document.querySelectorAll('[data-modal-target]');
+    let lastFocused = null;
 
-    if (projectCards.length > 0 && modalContainer) {
-        projectCards.forEach(card => {
-            card.addEventListener('click', (e) => {
-                e.preventDefault();
-                document.body.classList.add('modal-open');
-                const targetModalId = card.getAttribute('data-modal-target');
-                const targetModal = document.getElementById(targetModalId);
-                if (targetModal) {
-                    modalContainer.classList.remove('hidden');
-                    targetModal.classList.add('active');
-                    animateNumbers(targetModal);
-                }
-            });
-        });
+    if (modalContainer && openers.length > 0) {
+        const openModal = (id, trigger) => {
+            const modal = document.getElementById(id);
+            if (!modal) return;
+            lastFocused = trigger || document.activeElement;
+            document.body.classList.add('modal-open');
+            modalContainer.classList.remove('hidden');
+            modal.classList.add('active');
+            const closeBtn = modal.querySelector('.modal-close-btn');
+            if (closeBtn) closeBtn.focus();
+        };
 
-        function animateNumbers(modal) {
-            modal.querySelectorAll('strong[data-number]').forEach(el => {
-                const endValue = parseInt(el.dataset.number, 10);
-                let startValue = { val: 0 };
-                gsap.to(startValue, { val: endValue, duration: 1.5, ease: 'power2.out', onUpdate: () => { el.textContent = Math.ceil(startValue.val); } });
-            });
-        }
-
-        function closeAllModals() {
+        const closeAllModals = () => {
             document.body.classList.remove('modal-open');
             modalContainer.classList.add('hidden');
-            document.querySelectorAll('.modal-content.active').forEach(modal => modal.classList.remove('active'));
-        }
+            document.querySelectorAll('.modal-content.active').forEach(m => m.classList.remove('active'));
+            if (lastFocused) {
+                lastFocused.focus();
+                lastFocused = null;
+            }
+        };
+
+        openers.forEach(el => {
+            el.addEventListener('click', () => openModal(el.getAttribute('data-modal-target'), el));
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openModal(el.getAttribute('data-modal-target'), el);
+                }
+            });
+        });
+
         document.querySelectorAll('.modal-close-btn').forEach(btn => btn.addEventListener('click', closeAllModals));
-        document.querySelector('.modal-backdrop').addEventListener('click', closeAllModals);
+        modalContainer.querySelector('.modal-backdrop').addEventListener('click', closeAllModals);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modalContainer.classList.contains('hidden')) {
+                closeAllModals();
+            }
+            // Keep Tab inside the open modal
+            if (e.key === 'Tab' && !modalContainer.classList.contains('hidden')) {
+                const active = modalContainer.querySelector('.modal-content.active');
+                if (!active) return;
+                const focusables = active.querySelectorAll('button, a[href]');
+                if (focusables.length === 0) return;
+                const first = focusables[0];
+                const last = focusables[focusables.length - 1];
+                if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        });
     }
 
     // --- HAMBURGER MENU ---
@@ -389,12 +222,10 @@ document.addEventListener('DOMContentLoaded', () => {
             mobileNav.classList.contains('open') ? closeMenu() : openMenu();
         });
 
-        // Close on mobile nav link click
         document.querySelectorAll('.mobile-nav a').forEach(link => {
             link.addEventListener('click', closeMenu);
         });
 
-        // Close on outside click
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.navbar') && !e.target.closest('.mobile-nav')) {
                 closeMenu();
