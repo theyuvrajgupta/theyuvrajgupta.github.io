@@ -413,45 +413,19 @@ button:focus-visible,
     outline-offset: 3px;
 }
 
-/* ======== HERO — DEPTH FIELD ======== */
+/* ======== HERO — THE AURORA ======== */
 .home-section {
     min-height: 100vh;
+    /* iOS Safari: 100vh is the LARGE viewport, so the hero's bottom band
+       hides under the expanded toolbar until first scroll. svh fits the
+       small viewport; on desktop svh === vh, and engines without svh
+       (Safari <15.4, Chrome <108) drop this line and keep 100vh. */
+    min-height: 100svh;
     padding: 0;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.hero-glow {
-    position: absolute;
-    inset: -25% -15%;
-    background:
-        radial-gradient(42% 50% at 32% 38%, rgba(0, 232, 150, 0.26), transparent 70%),
-        radial-gradient(46% 52% at 70% 66%, rgba(62, 107, 255, 0.24), transparent 70%);
-    filter: blur(34px);
-    will-change: transform;
-    pointer-events: none;
-}
-
-.hero-grid-lines {
-    position: absolute;
-    inset: -4%;
-    opacity: 0.45;
-    background-image:
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 72px 72px;
-    -webkit-mask-image: radial-gradient(70% 70% at 50% 46%, #000 35%, transparent 100%);
-    mask-image: radial-gradient(70% 70% at 50% 46%, #000 35%, transparent 100%);
-    will-change: transform;
-    pointer-events: none;
-}
-
-.hero-frags {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
 }
 
 .frag {
@@ -478,6 +452,9 @@ button:focus-visible,
     font-weight: 700;
 }
 
+/* No current frag carries a .v context span (the hero creds have their
+   own k/v pair under .cred) — kept so the k/v grammar stays available
+   to any future section-field frag without rediscovering the pattern. */
 .frag .v {
     color: var(--text-muted-color);
 }
@@ -499,50 +476,62 @@ button:focus-visible,
     opacity: 0.95;
 }
 
-.f1 { top: 16%; left: 9%; }
-.f2 { top: 23%; right: 7%; }
-.f3 { top: 57%; right: 8%; }
-.f4 { bottom: 18%; left: 12%; }
-.f5 { top: 43%; left: 4.5%; }
-
 .hero {
     position: relative;
+    z-index: 1;
     text-align: center;
-    max-width: 920px;
+    max-width: 1100px;
     padding: 0 24px;
     will-change: transform;
 }
 
-.hero-eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--text-muted-color);
-    margin-bottom: 1.5rem;
-}
-
 .hero-headline {
-    font-size: clamp(2.75rem, 7vw, 6rem);
-    line-height: 1.0;
+    font-size: clamp(2.9rem, 7.6vw, 6.6rem);
+    line-height: 0.98;
     letter-spacing: -0.03em;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.6rem;
     text-wrap: balance;
 }
 
-.hero-status {
+/* The name lives inside the h1 (accessible heading content), styled as
+   the mono lead line; the old eyebrow p is gone with the 0.3em orphan */
+.hero-headline .hero-name {
+    display: block;
     font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: var(--text-muted-color);
-    letter-spacing: 0.04em;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(240, 246, 243, 0.86);
+    margin-bottom: 1.5rem;
+}
+
+.hero-status {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(240, 246, 243, 0.86);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.55rem 1.1rem;
     margin-bottom: 1.6rem;
+}
+
+/* Dean's Honours List carries the ink on the spec plate */
+.hero-status .hs-em {
+    background: var(--grad-ink);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .hero-intro {
     font-size: clamp(1rem, 2vw, 1.1rem);
-    color: var(--text-muted-color);
+    color: rgba(240, 246, 243, 0.86);
     max-width: 46ch;
-    margin: 0 auto 2.2rem;
+    margin: 0 auto 2rem;
 }
 
 .home-buttons {
@@ -553,35 +542,148 @@ button:focus-visible,
 }
 
 .btn {
-    display: inline-block;
+    /* Machined control chassis. Raised interactive pole of the sitewide
+       material system: the plates' fabrication, never their carve.
+       inline-flex owns icon spacing (whitespace-only nodes are not flex
+       items, so gap is the single source of truth) */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     font-family: var(--font-heading);
     font-weight: 500;
     font-size: 0.95rem;
     text-decoration: none;
     padding: 0.85rem 1.8rem;
+    border: 1px solid transparent;
     border-radius: 10px;
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .btn-primary {
-    color: #071009;
-    background: var(--grad);
-    box-shadow: 0 8px 30px rgba(0, 200, 190, 0.22);
+    /* #010403 not #071009: imperceptibly darker, carries the label to
+       statutory AA against the gradient's emerald end (his call, Option C) */
+    color: #010403;
+    /* The duotone made a machined face: brushed highlight band, corner
+       specular from the site's light (up and slightly left), ground-bounce
+       returning into the lower edge, fine 3px striations, then the
+       signature gradient as the body */
+    background:
+        linear-gradient(116deg, transparent 30%, rgba(255, 255, 255, 0.10) 45%, rgba(255, 255, 255, 0.14) 50%, transparent 66%),
+        radial-gradient(130% 80% at 16% -8%, rgba(255, 255, 255, 0.16), transparent 55%),
+        radial-gradient(90% 45% at 50% 112%, rgba(255, 255, 255, 0.08), transparent 70%),
+        repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0 1px, rgba(4, 14, 10, 0.05) 1px 2px, transparent 2px 3px),
+        var(--grad);
+    /* Die-cut rim: translucent dark border darkens the gradient at its edge */
+    border-color: rgba(4, 14, 10, 0.40);
+    box-shadow:
+        /* Arris: top light, left grazing, right falls off, bottom occlusion */
+        inset 0 1px 0 rgba(255, 255, 255, 0.30),
+        inset 1px 0 0 rgba(255, 255, 255, 0.10),
+        inset -1px 0 0 rgba(4, 14, 10, 0.22),
+        inset 0 -2px 0 rgba(4, 14, 10, 0.30),
+        /* Staged mount: contact, mid, deep, dual-pole teal bloom */
+        0 2px 5px rgba(0, 0, 0, 0.40),
+        0 10px 22px -8px rgba(0, 0, 0, 0.48),
+        0 24px 48px -18px rgba(0, 0, 0, 0.55),
+        0 12px 36px -10px rgba(0, 200, 190, 0.28);
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:focus-visible {
     transform: translateY(-2px);
-    box-shadow: 0 12px 36px rgba(0, 200, 190, 0.3);
+    border-color: rgba(234, 255, 247, 0.35);
+    /* Same layer order as rest: arris brightens a touch, mount lifts
+       deeper, bloom intensifies */
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.36),
+        inset 1px 0 0 rgba(255, 255, 255, 0.12),
+        inset -1px 0 0 rgba(4, 14, 10, 0.22),
+        inset 0 -2px 0 rgba(4, 14, 10, 0.30),
+        0 4px 9px rgba(0, 0, 0, 0.44),
+        0 16px 32px -10px rgba(0, 0, 0, 0.52),
+        0 32px 62px -20px rgba(0, 0, 0, 0.60),
+        0 16px 46px -12px rgba(0, 200, 190, 0.40);
+}
+
+.btn-primary:active {
+    /* Press-in: face moves toward the mount, top light narrows, shadows
+       compress. Same layer order again so the press interpolates */
+    transform: translateY(1px);
+    border-color: rgba(4, 14, 10, 0.50);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        inset 1px 0 0 rgba(255, 255, 255, 0.06),
+        inset -1px 0 0 rgba(4, 14, 10, 0.26),
+        inset 0 -1px 0 rgba(4, 14, 10, 0.30),
+        0 1px 3px rgba(0, 0, 0, 0.45),
+        0 5px 12px -6px rgba(0, 0, 0, 0.48),
+        0 10px 24px -14px rgba(0, 0, 0, 0.50),
+        0 5px 20px -8px rgba(0, 200, 190, 0.20);
 }
 
 .btn-ghost {
     color: var(--text-color);
-    border: 1px solid var(--border-color);
-    background: rgba(255, 255, 255, 0.03);
+    /* Quiet anodised cobalt-black: the plates' steel raised into an
+       interactive control (right button, cobalt pole of the anchor
+       grammar). Brushed band, corner specular, cobalt ground-bounce,
+       striations, near-black body */
+    background:
+        linear-gradient(116deg, transparent 30%, rgba(178, 198, 255, 0.03) 45%, rgba(226, 236, 255, 0.045) 50%, transparent 66%),
+        radial-gradient(130% 85% at 16% -8%, rgba(202, 218, 255, 0.06), transparent 55%),
+        radial-gradient(90% 45% at 50% 112%, rgba(62, 107, 255, 0.05), transparent 70%),
+        repeating-linear-gradient(180deg, rgba(226, 236, 255, 0.012) 0 1px, rgba(2, 6, 12, 0.018) 1px 2px, transparent 2px 3px),
+        linear-gradient(180deg, #10161F 0%, #0A0F15 100%);
+    border-color: #1A2333;
+    border-top-color: rgba(205, 221, 255, 0.16);
+    box-shadow:
+        inset 0 1px 0 rgba(205, 221, 255, 0.09),
+        inset 1px 0 0 rgba(205, 221, 255, 0.03),
+        inset -1px 0 0 rgba(2, 6, 12, 0.28),
+        inset 0 -2px 0 rgba(2, 6, 12, 0.38),
+        0 1px 4px rgba(0, 0, 0, 0.35),
+        0 8px 18px -8px rgba(0, 0, 0, 0.42),
+        0 18px 38px -16px rgba(0, 0, 0, 0.48),
+        0 10px 30px -14px rgba(62, 107, 255, 0.12);
 }
 
-.btn-ghost:hover {
-    border-color: var(--text-muted-color);
+.btn-ghost:hover,
+.btn-ghost:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(120, 150, 230, 0.45);
+    border-top-color: rgba(205, 221, 255, 0.28);
+    box-shadow:
+        inset 0 1px 0 rgba(205, 221, 255, 0.14),
+        inset 1px 0 0 rgba(205, 221, 255, 0.05),
+        inset -1px 0 0 rgba(2, 6, 12, 0.28),
+        inset 0 -2px 0 rgba(2, 6, 12, 0.38),
+        0 3px 7px rgba(0, 0, 0, 0.40),
+        0 13px 26px -10px rgba(0, 0, 0, 0.48),
+        0 26px 52px -18px rgba(0, 0, 0, 0.54),
+        0 14px 38px -14px rgba(62, 107, 255, 0.22);
+}
+
+.btn-ghost:active {
+    transform: translateY(1px);
+    border-color: #1A2333;
+    border-top-color: rgba(205, 221, 255, 0.10);
+    box-shadow:
+        inset 0 1px 0 rgba(205, 221, 255, 0.05),
+        inset 1px 0 0 rgba(205, 221, 255, 0.02),
+        inset -1px 0 0 rgba(2, 6, 12, 0.30),
+        inset 0 -1px 0 rgba(2, 6, 12, 0.38),
+        0 1px 2px rgba(0, 0, 0, 0.40),
+        0 4px 10px -6px rgba(0, 0, 0, 0.42),
+        0 8px 18px -12px rgba(0, 0, 0, 0.44),
+        0 4px 16px -10px rgba(62, 107, 255, 0.08);
+}
+
+.btn:focus-visible {
+    /* Out-specifies the global a:focus-visible rule, which would clamp
+       the control to a 2px radius; ring stays the sitewide emerald */
+    outline: 2px solid var(--primary-accent);
+    outline-offset: 3px;
+    border-radius: 10px;
 }
 
 /* Hero entrance: one orchestrated load moment (JS-gated so no-JS stays visible) */
@@ -591,20 +693,10 @@ body.js .hero > * {
     animation: hero-rise 0.7s ease forwards;
 }
 
-body.js .hero-eyebrow { animation-delay: 0.05s; }
-body.js .hero-headline { animation-delay: 0.15s; }
-body.js .hero-status { animation-delay: 0.3s; }
-body.js .hero-intro { animation-delay: 0.4s; }
-body.js .home-buttons { animation-delay: 0.5s; }
-
-body.js .frag {
-    opacity: 0;
-    animation: frag-in 0.9s ease forwards;
-    animation-delay: 0.8s;
-}
-
-body.js .frag-far { animation-name: frag-in-far; }
-body.js .frag-mid { animation-name: frag-in-mid; }
+body.js .hero-headline { animation-delay: 0.25s; }
+body.js .hero-status { animation-delay: 0.42s; }
+body.js .hero-intro { animation-delay: 0.54s; }
+body.js .home-buttons { animation-delay: 0.66s; }
 
 @keyframes hero-rise {
     to {
@@ -613,16 +705,485 @@ body.js .frag-mid { animation-name: frag-in-mid; }
     }
 }
 
-@keyframes frag-in {
-    to { opacity: 0.95; }
+/* ======== THE AURORA (hero sky) ========
+   The site is named Aurora Field, and the hero is the only place the
+   aurora itself appears. Every machined surface below carries specular
+   bands and pole blooms — reflections of this light. Four structured
+   curtains (soft vertical rays, skewed, mask-faded at the base) breathe
+   over the headline on slow desynchronised loops: emerald pole left,
+   cobalt pole right, the sanctioned blend hues between. The cursor
+   steers the sky via the shared depth engine (transform lives on the
+   .au-wrap layers; curtains animate inside them). All motion is
+   transform/opacity only. No-JS and reduced-motion rest at full form;
+   the front layer drops away ≤992px. */
+.hero-aurora {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
 }
 
-@keyframes frag-in-mid {
-    to { opacity: 0.78; }
+.au-wash {
+    position: absolute;
+    left: 50%;
+    top: -22%;
+    width: 130vw;
+    height: 78%;
+    transform: translateX(-50%);
+    background:
+        radial-gradient(46% 60% at 36% 34%, rgba(0, 232, 150, 0.08), transparent 70%),
+        radial-gradient(50% 64% at 64% 30%, rgba(62, 107, 255, 0.12), transparent 72%);
 }
 
-@keyframes frag-in-far {
-    to { opacity: 0.6; }
+/* The crown: the aurora's bright top arc, spilling in from above the
+   viewport edge — the light the curtains hang from */
+.au-crown {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 18%;
+    background:
+        radial-gradient(60% 130% at 30% -45%, rgba(0, 232, 150, 0.14), transparent 68%),
+        radial-gradient(64% 140% at 70% -48%, rgba(62, 107, 255, 0.17), transparent 70%);
+}
+
+.au-wrap {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+}
+
+/* The living sky: the canvas aurora renders above the CSS curtains
+   under desktop + motion + JS (body.sky-live, set by the engine); the
+   CSS curtains remain the no-JS / reduced-motion / mobile rest state.
+   Low internal resolution upscaled; the softening blur is static. */
+.au-live {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    filter: blur(5px);
+}
+
+body.sky-live .au-live {
+    display: block;
+}
+
+body.sky-live .au-back,
+body.sky-live .au-front {
+    display: none;
+}
+
+.au-curtain {
+    --sk: -11deg;
+    position: absolute;
+    top: -14%;
+    height: 72%;
+    transform: skewX(var(--sk));
+    mask-image: linear-gradient(180deg, #000 24%, transparent 96%);
+    -webkit-mask-image: linear-gradient(180deg, #000 24%, transparent 96%);
+}
+
+/* Hide the curtain rectangles: the base fade is intersected with a
+   horizontal edge fade where compositing allows (the plates' own
+   mask-composite pattern); the vertical fade alone is the fallback */
+@supports ((mask-composite: intersect) or (-webkit-mask-composite: source-in)) {
+    .au-curtain {
+        mask-image: linear-gradient(180deg, #000 24%, transparent 96%),
+            linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
+        mask-composite: intersect;
+        -webkit-mask-image: linear-gradient(180deg, #000 24%, transparent 96%),
+            linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
+        -webkit-mask-composite: source-in;
+    }
+}
+
+/* Left to right: emerald → teal blend → blue blend → cobalt (the
+   duotone sampled the same way the punch card samples it). Each
+   curtain layers two ray periods so the interference breaks any
+   visible repeat — light, not stripes. */
+.au-c1 {
+    --sk: -12deg;
+    left: 10vw;
+    width: 26vw;
+    background:
+        repeating-linear-gradient(90deg,
+            rgba(0, 232, 150, 0) 0px,
+            rgba(0, 232, 150, 0.11) 54px,
+            rgba(0, 232, 150, 0) 112px),
+        repeating-linear-gradient(90deg,
+            rgba(0, 232, 150, 0) 0px,
+            rgba(0, 232, 150, 0.08) 98px,
+            rgba(0, 232, 150, 0) 214px),
+        linear-gradient(180deg, rgba(0, 232, 150, 0.09), transparent 82%);
+}
+
+.au-c2 {
+    --sk: -9deg;
+    left: 32vw;
+    width: 18vw;
+    background:
+        repeating-linear-gradient(90deg,
+            rgba(21, 190, 187, 0) 0px,
+            rgba(21, 190, 187, 0.12) 44px,
+            rgba(21, 190, 187, 0) 96px),
+        repeating-linear-gradient(90deg,
+            rgba(21, 190, 187, 0) 0px,
+            rgba(21, 190, 187, 0.08) 82px,
+            rgba(21, 190, 187, 0) 178px),
+        linear-gradient(180deg, rgba(21, 190, 187, 0.08), transparent 78%);
+}
+
+.au-c3 {
+    --sk: -13deg;
+    left: 50vw;
+    width: 25vw;
+    background:
+        repeating-linear-gradient(90deg,
+            rgba(42, 150, 222, 0) 0px,
+            rgba(42, 150, 222, 0.12) 54px,
+            rgba(42, 150, 222, 0) 114px),
+        repeating-linear-gradient(90deg,
+            rgba(42, 150, 222, 0) 0px,
+            rgba(42, 150, 222, 0.08) 100px,
+            rgba(42, 150, 222, 0) 218px),
+        linear-gradient(180deg, rgba(42, 150, 222, 0.09), transparent 82%);
+}
+
+.au-c4 {
+    --sk: -10deg;
+    left: 70vw;
+    width: 20vw;
+    background:
+        repeating-linear-gradient(90deg,
+            rgba(62, 107, 255, 0) 0px,
+            rgba(62, 107, 255, 0.15) 46px,
+            rgba(62, 107, 255, 0) 100px),
+        repeating-linear-gradient(90deg,
+            rgba(62, 107, 255, 0) 0px,
+            rgba(62, 107, 255, 0.10) 88px,
+            rgba(62, 107, 255, 0) 190px),
+        linear-gradient(180deg, rgba(62, 107, 255, 0.11), transparent 78%);
+}
+
+/* The sky breathes: each curtain sways and brightens on its own
+   period so the field never repeats visibly */
+@media (prefers-reduced-motion: no-preference) {
+    .au-curtain {
+        animation: au-sway 27s ease-in-out infinite alternate;
+    }
+
+    .au-c2 { animation-duration: 33s; animation-delay: -9s; }
+    .au-c3 { animation-duration: 38s; animation-delay: -17s; }
+    .au-c4 { animation-duration: 30s; animation-delay: -5s; }
+}
+
+@keyframes au-sway {
+    from {
+        transform: skewX(var(--sk)) translateX(-2.4vw);
+        opacity: 0.55;
+    }
+
+    45% { opacity: 1; }
+
+    to {
+        transform: skewX(var(--sk)) translateX(2.4vw);
+        opacity: 0.75;
+    }
+}
+
+/* The credentials — THE LANDINGS: the aurora comes down in three
+   places. Each credential is a landing site spread across the hero's
+   lower volume: a cone of station-hued light descending from the sky,
+   the machined instrument plate at its foot, a glow pool beneath.
+   The three wrappers sit at three parallax depths (data-depth, engine
+   owns their transforms), so the cursor pulls the sites apart in
+   space. Real content; the machined plates are the first surfaces
+   the aurora touches. */
+.creds-field {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    font-family: var(--font-mono);
+    text-align: left;
+}
+
+/* The three landing sites, staggered across the lower volume; the
+   centre site anchors deepest under the buttons */
+.cred-wrap {
+    position: absolute;
+    will-change: transform;
+}
+
+/* HIS LAYOUT, stated clearly and final: TWO spotlights on the left
+   side, ONE on the right, all three at the same level on the y-axis,
+   in the band between the "Leader." headline line and the buttons
+   (his call, plus a round-9 nudge lower): plates lock to
+   50% + 108px so the alignment tracks every viewport height; the
+   pair sits left of the word, the cobalt plate right of it. The
+   bottom-centre lane stays empty for the scroll cue. Cone heights
+   stagger 24/19/22vh so the cones rise up through the Leader-line
+   zone and the level line still reads as three depths of light,
+   and the wrappers' depth factors pull the sites apart under the
+   cursor. */
+.cw-1 { left: 3%; top: calc(50% + 108px); }
+.cw-2 { left: 17.5%; top: calc(50% + 108px); }
+.cw-3 { right: 5%; top: calc(50% + 108px); }
+
+/* Below ~1460px the flanks are too narrow to sit beside the
+   headline; the level line drops to the bottom band instead.
+   X re-flows too: at 993px a 17.5% offset leaves only ~144px
+   between the left pair, less than a plate's width — the two
+   emerald/teal plates overlapped through the 993–1300px slice */
+@media (min-width: 993px) and (max-width: 1461px) {
+    .cred-wrap {
+        top: auto;
+        bottom: 5.5%;
+    }
+
+    .cw-2 {
+        left: 33%;
+    }
+
+    .cw-3 {
+        right: 3%;
+    }
+}
+
+.cw-1 .cred-beam { height: 24vh; }
+.cw-2 .cred-beam { height: 19vh; }
+.cw-3 .cred-beam { height: 22vh; }
+
+/* Station hues (--st: r, g, b) + per-pole plate bodies */
+.creds-field .cred-e { --st: 0, 232, 150;  --pa: #10201B; --pb: #0B1216; }
+.creds-field .cred-t { --st: 32, 170, 205; --pa: #0F1D1E; --pb: #0B1316; }
+.creds-field .cred-c { --st: 62, 107, 255; --pa: #101827; --pb: #0A0F18; }
+
+/* The light cone: the station's shaft of sky reaching down to the
+   plate. Brightens with the cursor's catch (--lit). */
+.creds-field .cred-beam {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    width: 88px;
+    height: 27vh;
+    transform: translateX(-50%);
+    /* -webkit- duplicate: Safari 9.1-13 has no unprefixed basic-shape
+       clip-path — without it the cone paints as a solid rectangle */
+    -webkit-clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+    clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+    background: linear-gradient(180deg,
+        rgba(var(--st), 0) 4%,
+        rgba(var(--st), 0.08) 55%,
+        rgba(var(--st), 0.2));
+    opacity: calc(0.72 + var(--lit, 0) * 0.28);
+    pointer-events: none;
+}
+
+/* The glow pool: the landed light spilling on the ground */
+.creds-field .cred-pool {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 50%;
+    width: 130%;
+    height: 22px;
+    transform: translateX(-50%);
+    background: radial-gradient(50% 100% at 50% 0%,
+        rgba(var(--st), 0.2), transparent 70%);
+    pointer-events: none;
+}
+
+.creds-field .cred {
+    position: relative;
+    z-index: 1;
+    /* the field itself is pointer-events: none; the plates opt back in */
+    pointer-events: auto;
+    padding: 0.8rem 1.15rem 0.85rem;
+    line-height: 1.55;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    /* Machined face in miniature: sky bloom under the rim, diagonal
+       brushed band, 3px striations, corner specular, pole ground
+       bounce, pole body */
+    background:
+        linear-gradient(180deg, rgba(var(--st), 0.12), transparent 58%),
+        linear-gradient(112deg, transparent 32%, rgba(255, 255, 255, 0.045) 44%, transparent 56%),
+        repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.016) 0 1px, transparent 1px 3px),
+        radial-gradient(120% 90% at 0% 0%, rgba(255, 255, 255, 0.05), transparent 44%),
+        linear-gradient(0deg, rgba(var(--st), 0.05), transparent 42%),
+        linear-gradient(165deg, var(--pa), var(--pb));
+    /* Arris bevel insets + staged mount (contact / mid / deep) +
+       pole-coloured bloom */
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+        inset 1px 0 0 rgba(255, 255, 255, 0.02),
+        inset -1px 0 0 rgba(0, 0, 0, 0.35),
+        0 1px 2px rgba(0, 0, 0, 0.5),
+        0 6px 14px rgba(0, 0, 0, 0.38),
+        0 16px 34px rgba(0, 0, 0, 0.3),
+        0 10px 30px rgba(var(--st), 0.09);
+}
+
+/* The skylit rim: the aurora landing on the plate's top arris */
+.creds-field .cred::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 6px;
+    right: 6px;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent,
+        rgba(var(--st), 0.9) 20%, rgba(var(--st), 0.9) 80%, transparent);
+    box-shadow:
+        0 0 10px rgba(var(--st), 0.4),
+        0 0 26px rgba(var(--st), 0.18);
+}
+
+/* The catch: the cursor-steered sky handing extra light to whichever
+   plate sits under it. ADDITIVE ONLY — opacity 0 is the complete rest
+   state; JS drives --lit (0..1); text is never dimmed by this layer */
+.creds-field .cred-catch {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(var(--st), 0.16), transparent 64%);
+    box-shadow: 0 0 24px rgba(var(--st), 0.16);
+    opacity: var(--lit, 0);
+    pointer-events: none;
+}
+
+.creds-field .k {
+    position: relative;
+    z-index: 1;
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.creds-field .v {
+    position: relative;
+    z-index: 1;
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(240, 246, 243, 0.86);
+}
+
+/* Entrance: the landings arrive site by site after the buttons. Each
+   plate rises into place, its light cone draws DOWN from the sky onto
+   it, the pool spills, the rim draws, and the catch flashes once
+   before handing its opacity back to the cursor (the 100% keyframe
+   resolves var(--lit) live, so there is no snap at handoff). The
+   plate rise sits outside the motion media so the global reduced-
+   motion kill completes it instantly; beams/pools/rims/catches use
+   backwards fills whose base styles ARE the finished rest state. */
+body.js .creds-field .cred {
+    opacity: 0;
+    animation: cred-arrive 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+body.js .cw-1 .cred { animation-delay: 0.9s; }
+body.js .cw-2 .cred { animation-delay: 1.1s; }
+body.js .cw-3 .cred { animation-delay: 1.3s; }
+
+@media (prefers-reduced-motion: no-preference) {
+    body.js .creds-field .cred-beam {
+        transform-origin: top center;
+        animation: beam-draw 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    body.js .cw-1 .cred-beam { animation-delay: 1.05s; }
+    body.js .cw-2 .cred-beam { animation-delay: 1.25s; }
+    body.js .cw-3 .cred-beam { animation-delay: 1.45s; }
+
+    body.js .creds-field .cred-pool {
+        animation: pool-fade 0.6s ease backwards;
+    }
+
+    body.js .cw-1 .cred-pool { animation-delay: 1.3s; }
+    body.js .cw-2 .cred-pool { animation-delay: 1.5s; }
+    body.js .cw-3 .cred-pool { animation-delay: 1.7s; }
+
+    body.js .creds-field .cred::before {
+        transform-origin: left;
+        animation: cred-rim-draw 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    body.js .cw-1 .cred::before { animation-delay: 1.25s; }
+    body.js .cw-2 .cred::before { animation-delay: 1.45s; }
+    body.js .cw-3 .cred::before { animation-delay: 1.65s; }
+
+    body.js .creds-field .cred-catch {
+        animation: cred-ignite 0.9s ease backwards;
+    }
+
+    body.js .cw-1 .cred-catch { animation-delay: 1.5s; }
+    body.js .cw-2 .cred-catch { animation-delay: 1.7s; }
+    body.js .cw-3 .cred-catch { animation-delay: 1.9s; }
+}
+
+@keyframes cred-arrive {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes beam-draw {
+    from { transform: translateX(-50%) scaleY(0); }
+}
+
+@keyframes pool-fade {
+    from { opacity: 0; }
+}
+
+@keyframes cred-rim-draw {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+@keyframes cred-ignite {
+    0% { opacity: 0; }
+    45% { opacity: 0.85; }
+    100% { opacity: var(--lit, 0); }
+}
+
+/* Entrance: dawn — the sky blooms up out of the void first, then the
+   content column rises into the light (delays live on the content
+   rules below). Base styles are the end state; reduced motion and
+   no-JS rest fully formed. */
+body.js .hero-aurora {
+    opacity: 0;
+    animation: au-dawn 2.4s ease forwards 0.1s;
+}
+
+@keyframes au-dawn {
+    to { opacity: 1; }
+}
+
+/* The signature gradient is ALIVE here and only here: the hero mints
+   it as moving light, every other surface carries it frozen */
+.hero-headline .grad {
+    background-size: 220% 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    body.js .hero-headline .grad {
+        animation: au-ink 12s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes au-ink {
+    from { background-position: 0% 0; }
+    to { background-position: 100% 0; }
 }
 
 .scroll-indicator {
@@ -634,13 +1195,21 @@ body.js .frag-mid { animation-name: frag-in-mid; }
     flex-direction: column;
     align-items: center;
     gap: 0.4rem;
-    color: var(--text-muted-color);
+    color: rgba(240, 246, 243, 0.86);
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     animation: bounce 2.4s infinite;
     transition: opacity 0.5s ease;
+}
+
+/* Short windows: the landings line holds the bottom band, so the
+   cue would crowd it */
+@media (max-height: 780px) {
+    .scroll-indicator {
+        display: none;
+    }
 }
 
 @keyframes bounce {

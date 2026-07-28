@@ -82,32 +82,77 @@
 
         <!-- ======== HOME SECTION ======== -->
         <section id="home" class="home-section">
-            <div class="hero-glow" data-depth="0.030" data-drift="18" aria-hidden="true"></div>
-            <div class="hero-grid-lines" data-depth="0.015" data-drift="10" aria-hidden="true"></div>
-
-            <div class="hero-frags" aria-hidden="true">
-                <div class="frag frag-far f1" data-depth="0.035" data-drift="6"><span class="k">1 of 100
-                        globally</span><span class="v">MBA World Summit 2026</span></div>
-                <div class="frag frag-mid f2" data-depth="0.075" data-drift="9"><span class="k">Built solo</span><span
-                        class="v">Anthropic Life Sciences hackathon</span></div>
-                <div class="frag frag-near f3" data-depth="0.130" data-drift="12"><span class="k">Led 0-to-1 AI
-                        strategy</span><span class="v">team of 5, with IBM</span></div>
-                <div class="frag frag-mid f4" data-depth="0.075" data-drift="10"><span class="k">97% uptime</span><span
-                        class="v">clinical infrastructure SLAs</span></div>
-                <div class="frag frag-near f5" data-depth="0.130" data-drift="14"><span class="k">10 years</span><span
-                        class="v">enterprise &amp; healthcare tech</span></div>
+            <!-- THE AURORA: the site is named Aurora Field, and the hero is
+                 the only place the aurora itself appears. Structured light
+                 curtains breathe above the headline — emerald pole left,
+                 cobalt right, the blend hues between — and the cursor
+                 steers the sky via the shared depth engine. Decorative;
+                 the credential row below is real content in the hero. -->
+            <div class="hero-aurora" aria-hidden="true">
+                <div class="au-wash"></div>
+                <div class="au-crown"></div>
+                <div class="au-wrap au-back" data-depth="0.025" data-drift="0">
+                    <div class="au-curtain au-c1"></div>
+                    <div class="au-curtain au-c3"></div>
+                </div>
+                <div class="au-wrap au-front" data-depth="0.06" data-drift="0">
+                    <div class="au-curtain au-c2"></div>
+                    <div class="au-curtain au-c4"></div>
+                </div>
+                <!-- The living sky: canvas ribbons rendered by the engine
+                     under desktop + motion; the CSS curtains above are the
+                     rest state everywhere else -->
+                <canvas class="au-live" width="640" height="300"></canvas>
             </div>
-
             <div class="hero" data-depth="-0.018" data-drift="4">
-                <p class="hero-eyebrow">Yuvraj Gupta</p>
-                <h1 class="hero-headline">Product &amp; <span class="grad">Platform</span><br>Leader.</h1>
-                <p class="hero-status">Singapore &middot; MBA (Dean's List), Nanyang Business School &middot; 2026</p>
-                <p class="hero-intro">I lead product and platform teams that ship, and help organizations decide what
+                <h1 class="hero-headline"><span class="hero-name">Yuvraj Gupta</span>Product &amp; <span
+                        class="grad">Platform</span><br>Leader.</h1>
+                <p class="hero-status">Operating since 2015 &middot; MBA (<span class="hs-em">Dean's Honours
+                        List</span>)
+                    &middot; 2026</p>
+                <p class="hero-intro">I lead product and platform teams that ship, and help organisations decide what
                     to build with AI, then make sure it actually works in the real world.</p>
                 <div class="home-buttons">
                     <a href="#projects" class="btn btn-primary">View Signature Work</a>
                     <a href="./portfolio/assets/Resume_YuvrajGupta.pdf" class="btn btn-ghost" download><i
-                            class="fa-solid fa-download"></i> Download Resume</a>
+                            class="fa-solid fa-download" aria-hidden="true"></i> Download Resume</a>
+                </div>
+            </div>
+
+            <!-- THE LANDINGS: the aurora comes down in three places. Each
+                 credential is a landing site spread across the hero's lower
+                 volume: a cone of station-hued light descending from the
+                 sky, the machined instrument plate at its foot, a glow pool
+                 beneath, each at its own parallax depth (data-depth on the
+                 wrappers; the engine owns their transforms). Real content;
+                 decorative spans only are aria-hidden. -->
+            <div class="creds-field">
+                <div class="cred-wrap cw-1" data-depth="0.04" data-drift="5">
+                    <div class="cred cred-e">
+                        <span class="cred-beam" aria-hidden="true"></span>
+                        <span class="cred-pool" aria-hidden="true"></span>
+                        <span class="cred-catch" aria-hidden="true"></span>
+                        <span class="k">1 of 24 speakers</span><span class="v">MBA World Summit
+                            2026</span>
+                    </div>
+                </div>
+                <div class="cred-wrap cw-2" data-depth="0.07" data-drift="6">
+                    <div class="cred cred-t">
+                        <span class="cred-beam" aria-hidden="true"></span>
+                        <span class="cred-pool" aria-hidden="true"></span>
+                        <span class="cred-catch" aria-hidden="true"></span>
+                        <span class="k">1 of 500 builders</span><span class="v">Built with Claude
+                            &middot; Anthropic</span>
+                    </div>
+                </div>
+                <div class="cred-wrap cw-3" data-depth="0.1" data-drift="5">
+                    <div class="cred cred-c">
+                        <span class="cred-beam" aria-hidden="true"></span>
+                        <span class="cred-pool" aria-hidden="true"></span>
+                        <span class="cred-catch" aria-hidden="true"></span>
+                        <span class="k">Top 12 of 186</span><span class="v">Kellogg&ndash;Morgan Stanley
+                            &middot; $250M vehicle</span>
+                    </div>
                 </div>
             </div>
 
