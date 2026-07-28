@@ -703,58 +703,73 @@
 
         <!-- Modal 1: PRISM -->
         <div id="project1" class="modal-content" role="dialog" aria-modal="true" aria-labelledby="project1-title">
-            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-            <div class="card-visual modal-visual">
-                <span class="card-visual-anchor">$0 to 1</span>
+            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"
+                    aria-hidden="true"></i></button>
+            <div class="card-visual modal-visual" aria-hidden="true">
+                <div class="anchor-frame">
+                    <span></span>
+                    <span class="card-visual-anchor">0 to 1</span>
+                    <span></span>
+                </div>
             </div>
-            <h2 id="project1-title">PRISM</h2>
             <p class="modal-kicker">Agentic AI Strategy &middot; with IBM</p>
+            <h2 id="project1-title">PRISM</h2>
             <div class="modal-body">
                 <div>
                     <h3>The Challenge</h3>
-                    <p>Retail enterprises in APAC were being overwhelmed by sell-side AI tools that optimised for the
-                        retailer, not the buyer. The market lacked a credible buy-side intelligence product that could
-                        shift the power dynamic while remaining commercially viable.</p>
+                    <p>APAC consumers were surrounded by sell-side AI tools that optimised for the retailer, not the
+                        buyer, while their shopping identity stayed fragmented across platforms, cards, and product
+                        categories. The market lacked a credible buy-side product that could shift the power dynamic
+                        while remaining commercially viable.</p>
                 </div>
                 <div>
                     <h3>Strategic Action</h3>
-                    <p>As Team Lead of a five-person team on a live product strategy engagement with IBM, defined the
-                        core product concept, buy-side versus sell-side positioning, and willingness-to-pay framework.
-                        Conducted primary research across 86 respondents and developed an investor-grade business case
-                        and agentic AI roadmap.</p>
+                    <p>As Team Lead of a five-person team on a live product strategy engagement with IBM, led the
+                        business strategy workstreams for PRISM, an agentic AI digital twin for commerce:
+                        willingness-to-pay analysis, pricing strategy, market sizing, financial modelling, competitive
+                        benchmarking, and go-to-market planning for APAC market entry. Conducted primary research
+                        across 86 respondents.</p>
                 </div>
                 <div>
-                    <h3>Business Impact</h3>
+                    <h3>The Outcome</h3>
                     <p>The engagement wrapped in May 2026 with a commercially defensible product strategy: validated
-                        market sizing, ROI modeling, and a phased go-to-market plan for APAC retail markets, delivered
-                        as an investor-grade business plan.</p>
+                        market sizing, ROI modelling, and a phased go-to-market plan for APAC entry, delivered as an
+                        investor-grade business case.</p>
                 </div>
             </div>
         </div>
 
         <!-- Modal 2: preCaution -->
         <div id="project2" class="modal-content" role="dialog" aria-modal="true" aria-labelledby="project2-title">
-            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-            <div class="card-visual modal-visual">
-                <span class="card-visual-anchor">Solo Build</span>
+            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"
+                    aria-hidden="true"></i></button>
+            <div class="card-visual modal-visual" aria-hidden="true">
+                <div class="anchor-frame">
+                    <span></span>
+                    <span class="card-visual-anchor">Solo Build</span>
+                    <span></span>
+                </div>
             </div>
+            <p class="modal-kicker">Grounded, Not Generated &middot; Built with Claude</p>
             <h2 id="project2-title">preCaution</h2>
-            <p class="modal-kicker">Grounded, Not Generated &middot; Built for Anthropic</p>
             <div class="modal-body">
                 <div>
                     <h3>The Build</h3>
-                    <p>Built solo for Anthropic's Built with Claude: Life Sciences hackathon, on the Builder Track.
+                    <p>Built solo for Anthropic's Built with Claude: Life Sciences hackathon, on the Builder Track,
+                        selected as 1 of 500 builders from around 6,000 applications.
                         preCaution reads a free-text experimental protocol and returns a source-linked safety brief
                         specific to that procedure, instead of an 80-page safety data sheet dump. It needs a language
-                        model for one reason: comprehension, accumulation, and omission-detection across messy prose
-                        that a database query cannot read.</p>
+                        model only for reading: comprehension, extraction, and omission-checking across messy
+                        prose that a database query cannot parse.</p>
                 </div>
                 <div>
                     <h3>Grounded, Not Generated</h3>
-                    <p>Four stages, and Claude runs in exactly one of them. Stage 1 reads the protocol into structured
-                        state. Stages 2 to 4 make zero model calls: live PubChem lookups for grounding, a hand-encoded
-                        interaction table from NOAA CAMEO Chemicals, and pure-Python composition of the brief. Claude
-                        read the protocol. Claude did not write the safety advice.</p>
+                    <p>Six stages, and Claude appears in three of them, all on the reading side: segmenting the
+                        prose into steps, extracting chemicals and vessels, and flagging omissions as advisory.
+                        Every safety verdict is produced by the deterministic side: live PubChem lookups for
+                        grounding, a hand-encoded interaction table from NOAA CAMEO Chemicals, and pure-Python
+                        composition of the brief. Claude reads the protocol. Claude does not write the safety
+                        advice.</p>
                 </div>
                 <div>
                     <h3>Why It Matters</h3>
@@ -766,31 +781,36 @@
                 </div>
                 <div class="modal-links">
                     <a href="https://github.com/theyuvrajgupta/PreCaution" target="_blank" rel="noopener"
-                        class="modal-link"><i class="fa-brands fa-github"></i> View the repository</a>
+                        class="modal-link"><i class="fa-brands fa-github" aria-hidden="true"></i> View the
+                        repository</a>
                 </div>
             </div>
         </div>
 
         <!-- Modal 3: Agent vs Agent -->
         <div id="project3" class="modal-content" role="dialog" aria-modal="true" aria-labelledby="project3-title">
-            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-            <div class="card-visual modal-visual">
-                <span class="card-visual-anchor">AI &times; AI</span>
+            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"
+                    aria-hidden="true"></i></button>
+            <div class="card-visual modal-visual" aria-hidden="true">
+                <div class="anchor-frame">
+                    <span></span>
+                    <span class="card-visual-anchor">AI &times; AI</span>
+                    <span></span>
+                </div>
             </div>
-            <h2 id="project3-title">Agent vs Agent</h2>
             <p class="modal-kicker">A Live AI Debate &middot; NTU PACE</p>
+            <h2 id="project3-title">Agent vs Agent</h2>
             <div class="modal-body">
                 <div>
                     <h3>The Build</h3>
-                    <p>Two AI agents take divergent stances on the same question and debate in real time, with voice
-                        output so an audience can follow who is speaking without watching the screen. React and Vite
-                        frontend, the Anthropic API for reasoning, built around a three-layer architecture: a fixed
-                        identity per agent, a randomly selected stance per run, and full conversation history passed
-                        into every call.</p>
+                    <p>Two AI agents take divergent stances on the same question and debate in real time. React and
+                        Vite frontend, the Anthropic API for reasoning, built around a three-layer architecture: a
+                        fixed identity per agent, a randomly selected stance per run, and full conversation history
+                        passed into every call.</p>
                 </div>
                 <div>
                     <h3>The Insight</h3>
-                    <p>Temperature alone did not create meaningful divergence. The randomness that actually makes each
+                    <p>Temperature alone did not create meaningful divergence. The randomness that makes each
                         run diverge lives at the prompt level, in the stance modifier appended to each agent's system
                         prompt. The personas, a sceptical COO and an optimistic Chief AI Officer, were placeholders on
                         top of that mechanic.</p>
@@ -799,30 +819,34 @@
                     <h3>The Delivery</h3>
                     <p>Presented to a C-suite, Director, and senior-executive audience at an NTU PACE executive
                         leadership workshop. The demo was the proof point for a larger arc: from building systems, to
-                        building the bridge between systems and people, to asking what gets built and why. The work
-                        was credible enough that NBS later sought advice on running AI for a faculty-level public
-                        panel.</p>
+                        building the bridge between systems and people, to asking what gets built and why.</p>
                 </div>
                 <div class="modal-links">
                     <a href="https://agent-dialogue-eight.vercel.app" target="_blank" rel="noopener"
-                        class="modal-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open the live demo</a>
+                        class="modal-link"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                        Open the live demo</a>
                 </div>
             </div>
         </div>
 
         <!-- Modal 4: Kellogg -->
         <div id="project4" class="modal-content" role="dialog" aria-modal="true" aria-labelledby="project4-title">
-            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-            <div class="card-visual modal-visual">
-                <span class="card-visual-anchor">$250M</span>
+            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"
+                    aria-hidden="true"></i></button>
+            <div class="card-visual modal-visual" aria-hidden="true">
+                <div class="anchor-frame">
+                    <span></span>
+                    <span class="card-visual-anchor">$250M</span>
+                    <span></span>
+                </div>
             </div>
-            <h2 id="project4-title">Mekong Resilience Fund</h2>
             <p class="modal-kicker">Kellogg&ndash;Morgan Stanley finals</p>
+            <h2 id="project4-title">Mekong Resilience Fund</h2>
             <div class="modal-body">
                 <div>
                     <h3>The Challenge</h3>
-                    <p>Climate-driven salinity intrusion in Vietnam's Mekong Delta was threatening 1.1 million farming
-                        families and disrupting agricultural supply chains across Southeast Asia. Institutional investors
+                    <p>Climate-driven salinity intrusion in Vietnam's Mekong Delta was threatening roughly 1.1 million
+                        smallholder farming families and disrupting agricultural supply chains across Southeast Asia. Institutional investors
                         lacked a credible vehicle to fund climate resilience in the region while generating returns.</p>
                 </div>
                 <div>
@@ -830,48 +854,61 @@
                     <p>Led strategy, narrative architecture, and investor framing for a four-person team. Developed
                         the core Supply Chain Insetting concept, a mechanism where corporations fund climate
                         resilience within their own supply chain geography through outcomes-based success fees, rather
-                        than buying unrelated offsets elsewhere. Structured a $250M blended finance vehicle and
-                        presented to senior investment stakeholders at Morgan Stanley's offices in London.</p>
+                        than buying unrelated offsets elsewhere. Positioned a $250M blended finance vehicle and
+                        presented it to senior investment stakeholders at Morgan Stanley's offices in London.</p>
                 </div>
                 <div>
                     <h3>Business Impact</h3>
-                    <p>Reached the global finals as one of 12 teams from 186 globally, and the first NBS team to do so.
-                        Post-pitch, a judge independently requested the full proposal for further exploration.</p>
+                    <p>Reached the global finals as one of 12 teams from 186 globally, and the first Nanyang Business
+                        School team to do so. Post-pitch, a judge independently requested the full proposal for
+                        further exploration.</p>
                 </div>
             </div>
         </div>
 
         <!-- Modal 5: Foundation -->
         <div id="project5" class="modal-content" role="dialog" aria-modal="true" aria-labelledby="project5-title">
-            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-            <div class="card-visual modal-visual">
-                <span class="card-visual-anchor">10 Years</span>
+            <button class="modal-close-btn" aria-label="Close"><i class="fa-solid fa-xmark"
+                    aria-hidden="true"></i></button>
+            <div class="card-visual modal-visual" aria-hidden="true">
+                <div class="anchor-frame">
+                    <span></span>
+                    <span class="card-visual-anchor">10 Years</span>
+                    <span></span>
+                </div>
             </div>
-            <h2 id="project5-title">Foundation</h2>
-            <p class="modal-kicker">Ten years &middot; Siemens Healthineers &amp; CitiusTech</p>
+            <p class="modal-kicker">2015&ndash;2025 &middot; Siemens Healthineers &amp; CitiusTech</p>
+            <h2 id="project5-title">Decade One</h2>
             <div class="modal-body">
                 <div>
-                    <h3>The Foundation</h3>
-                    <p>Before strategy consulting and investment analysis, there were 10 years of building systems that
-                        could not fail. Clinical diagnostic tools used by radiologists making cancer calls. Healthcare
-                        data pipelines processing millions of medical code sets quarterly. Infrastructure supporting
-                        contractual 97% uptime SLAs for major US healthcare clients.</p>
+                    <h3>Systems That Could Not Fail</h3>
+                    <p>Ten years of building systems that could not fail. Clinical diagnostic tools used by
+                        radiologists making cancer calls. Healthcare
+                        data pipelines processing 35&ndash;40 quarterly code set releases. Infrastructure supporting
+                        a contractual 97% uptime SLA commitment.</p>
                 </div>
                 <div>
                     <h3>What This Built</h3>
-                    <p>Designed clinical workflows around an AI-powered lesion detection capability at Siemens
-                        Healthineers, a company-first initiative that strengthened the product line's commercial
-                        performance. Architected a serverless AWS pipeline at CitiusTech that reduced validation from
-                        <strong>4 hours to under 20 minutes</strong> and became the technical foundation for a
-                        commercially launched client product. Built and led a cross-functional engineering team from
-                        scratch, introducing Agile practices and reducing release cycles by <strong>33%</strong>, and
-                        automated incident routing across 15&ndash;20 monitoring tools, cutting time-to-assignment
-                        from <strong>30 minutes to 5</strong>.</p>
+                    <p>Designed clinical workflows around an AI-powered lesion detection capability in syngo.via,
+                        Siemens Healthineers' flagship imaging platform deployed across thousands of clinical sites.
+                        A company-first initiative in MI Oncology.</p>
+                    <p>At CitiusTech, led the redesign of
+                        legacy batch processing into a serverless AWS architecture that became the technical
+                        foundation for a commercially launched client product, and separately rebuilt validation
+                        pipelines, cutting cycle time from <strong>4 hours to under 20 minutes</strong> per release.
+                        Built and led a cross-functional engineering team from scratch, introducing Agile practices
+                        and reducing release cycles by <strong>33%</strong>, and automated incident routing across
+                        15&ndash;20 monitoring tools, cutting time-to-assignment from <strong>30 minutes to
+                        5</strong>.</p>
+                    <p>A targeted engineering enhancement for a high-priority clinical workflow issue was
+                        adopted as a software improvement for the China market, recognised by regional management.
+                        Backed by a Post Graduate Diploma in Machine Learning and Artificial Intelligence (IIIT,
+                        2021), earned while shipping clinical software.</p>
                 </div>
                 <div>
                     <h3>Why It Matters</h3>
-                    <p>Most strategists have never shipped a product. Most consultants have never owned an SLA. That
-                        decade is what makes the strategy layer credible, not just theoretical.</p>
+                    <p>Most strategy has never met a production incident. That decade is what the product and
+                        commercial judgement stands on.</p>
                 </div>
             </div>
         </div>

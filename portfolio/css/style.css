@@ -3420,18 +3420,35 @@ body.js .hero-aurora {
 
 .modal-content {
     position: relative;
-    background: var(--surface-color);
+    /* Same machined emerald-black material as the Work card that opened
+       it: brushed band, corner specular, emerald ground-bounce,
+       striations, body */
+    background:
+        linear-gradient(116deg, transparent 30%, rgba(150, 255, 210, 0.03) 45%, rgba(230, 255, 244, 0.04) 50%, transparent 66%),
+        radial-gradient(130% 40% at 20% 0%, rgba(240, 246, 243, 0.04), transparent 58%),
+        radial-gradient(90% 30% at 50% 106%, rgba(0, 232, 150, 0.05), transparent 70%),
+        repeating-linear-gradient(180deg, rgba(230, 255, 244, 0.012) 0 1px, rgba(2, 10, 8, 0.018) 1px 2px, transparent 2px 3px),
+        linear-gradient(180deg, #12211D 0%, #0B1218 100%);
     border-radius: 16px;
     width: 100%;
     max-width: 800px;
+    /* svh after vh: on iOS Safari 90 large-viewport-heights puts the
+       close button under the expanded toolbar (same fix as .home-section) */
     max-height: 90vh;
+    max-height: 90svh;
     overflow-y: auto;
-    border: 1px solid var(--border-color);
+    border: 1px solid #1B2B2C;
+    border-top-color: rgba(160, 245, 210, 0.14);
     transform: scale(0.97);
     opacity: 0;
     transition: transform 0.3s ease, opacity 0.3s ease;
     display: none;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    box-shadow:
+        inset 0 -2px 0 rgba(2, 10, 8, 0.4),
+        inset 0 0 40px rgba(2, 10, 8, 0.16),
+        0 2px 8px rgba(0, 0, 0, 0.4),
+        0 20px 60px rgba(0, 0, 0, 0.6),
+        0 40px 110px -30px rgba(0, 232, 150, 0.16);
 }
 
 .modal-content.active {
@@ -3441,9 +3458,16 @@ body.js .hero-aurora {
 }
 
 .modal-close-btn {
-    position: absolute;
+    /* Sticky inside the modal's scroll container so the close control
+       never scrolls out of view in long modals. The margins reproduce
+       the old absolute top/right 1rem offsets, and the negative bottom
+       margin (36px height + 1rem top margin) removes the button from
+       the flow so the visual band below starts at the modal top. */
+    position: sticky;
     top: 1rem;
-    right: 1rem;
+    margin: 1rem 1rem -52px auto;
+    display: grid;
+    place-items: center;
     background: rgba(6, 9, 11, 0.5);
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -3462,7 +3486,7 @@ body.js .hero-aurora {
 }
 
 .modal-content h2 {
-    padding: 2rem 2rem 0;
+    padding: 0.55rem 2rem 0;
     font-size: 1.7rem;
     font-weight: 500;
     letter-spacing: -0.01em;
@@ -3470,11 +3494,11 @@ body.js .hero-aurora {
 
 .modal-kicker {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.16em;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--primary-accent);
-    padding: 0.55rem 2rem 0;
+    padding: 2rem 2rem 0;
 }
 
 .modal-body {
@@ -3496,11 +3520,20 @@ body.js .hero-aurora {
 .modal-body p {
     color: var(--text-muted-color);
     font-size: 0.95rem;
+    /* the modals are the longest-dwell reading surface; cap the measure */
+    max-width: 68ch;
+}
+
+/* Multi-paragraph modal groups (Decade One) need breathing room between
+   paragraphs; grid children otherwise carry margin 0 and butt together */
+.modal-body div p + p {
+    margin-top: 0.9rem;
 }
 
 .modal-body strong {
     color: var(--text-color);
-    font-weight: 600;
+    /* 500 is Inter's heaviest LOADED weight; 600 was browser-synthesized */
+    font-weight: 500;
 }
 
 .modal-links {
@@ -3579,12 +3612,17 @@ body.js .hero-aurora {
     border-bottom: 1px solid var(--border-color);
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.35s ease;
+    /* visibility keeps closed-menu links out of the tab order without JS
+       (JS also sets inert); the delay lets the collapse animation finish */
+    visibility: hidden;
+    transition: max-height 0.35s ease, visibility 0s linear 0.35s;
     padding-top: 72px;
 }
 
 .mobile-nav.open {
     max-height: 450px;
+    visibility: visible;
+    transition: max-height 0.35s ease, visibility 0s;
 }
 
 .mobile-nav ul {
@@ -3614,8 +3652,96 @@ body.js .hero-aurora {
 
 /* ======== RESPONSIVE ======== */
 @media (max-width: 992px) {
-    .hero-frags {
+    /* Mobile keeps the sky (wash + back curtains); only the front
+       layer drops, and the credential row stacks. The canvas never
+       renders here — the CSS curtains return even if sky-live was
+       set at a wider size */
+    .au-front {
         display: none;
+    }
+
+    body.sky-live .au-live {
+        display: none;
+    }
+
+    body.sky-live .au-back {
+        display: block;
+    }
+
+    /* The landings collapse to a static centred stack; beams and
+       pools leave with the spatial layout. Top padding clears the
+       fixed navbar so the h1 never renders under it */
+    .home-section {
+        flex-direction: column;
+        padding-top: 6.5rem;
+    }
+
+    .creds-field {
+        position: static;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.9rem;
+        /* 5.5rem bottom, not 2.5: the scroll cue holds bottom 2rem
+           (~43px tall) and the stacked third plate was running into
+           it on tall phones. Spacing clears the cue — the cue itself
+           is never removed (his standing rule) */
+        padding: 0 24px 5.5rem;
+    }
+
+    .cred-wrap {
+        position: static;
+        width: min(100%, 340px);
+    }
+
+    /* The depth engine writes inline drift transforms every frame;
+       the stacked plates must stay aligned, so pin them here */
+    .creds-field .cred-wrap {
+        transform: none !important;
+    }
+
+    .creds-field .cred-beam,
+    .creds-field .cred-pool {
+        display: none;
+    }
+
+    .creds-field .cred {
+        width: 100%;
+    }
+
+    /* Field frags leave with the hero frags; the deep ghosts, the horizon
+       vista, photo brackets, and footer frame stay, so mobile keeps the
+       layered page */
+    .section-field .frag {
+        display: none;
+    }
+
+    .expertise-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .punchcard {
+        display: none;
+    }
+
+    .about-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .about-frame-col {
+        display: none;
+    }
+
+    .convergence {
+        display: none;
+    }
+
+    .signature-mark {
+        display: none;
+    }
+
+    .section-ghost {
+        font-size: clamp(4.5rem, 14vw, 7rem);
     }
 
     .competency-grid {
@@ -3632,16 +3758,49 @@ body.js .hero-aurora {
         grid-column: 1;
     }
 
-    .recognition-item {
-        grid-template-columns: 2rem 1fr;
+    .recognition-ledger {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
     }
 
-    .recognition-item .ledger-note {
-        grid-column: 2;
+    .recognition-item {
+        padding: 1.8rem 1.5rem;
+    }
+
+    .ledger-engraving {
+        font-size: 2rem;
+        margin-bottom: 1rem;
     }
 
     .vision-statement {
-        max-width: none;
+        max-width: 20ch;
+    }
+
+    .vision-section {
+        --hzb: 22vh;
+        padding-bottom: 28vh;
+    }
+
+    /* minmax(0, 1fr): a bare 1fr track's minimum is the items'
+       min-content, and the draft card's unbreakable email string
+       forced the whole column past the viewport */
+    .footer-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2.75rem;
+    }
+
+    .draft-value {
+        overflow-wrap: anywhere;
+    }
+
+    /* The wandering bearing wraps as one unit, never mid-value */
+    .coords-live {
+        white-space: nowrap;
+    }
+
+    /* Full-width stacked draft lies flat */
+    .draft-card {
+        transform: none;
     }
 }
 
@@ -3654,10 +3813,18 @@ body.js .hero-aurora {
         display: none !important;
     }
 
-    body.custom-cursor,
-    body.custom-cursor a,
-    body.custom-cursor button {
+    /* Narrow fine-pointer windows: restore the native cursor system.
+       Interactives get pointer back explicitly — a bare `cursor: auto`
+       on the grouped selector out-specified every component's
+       `cursor: pointer` and showed the arrow on links and cards */
+    body.custom-cursor {
         cursor: auto;
+    }
+
+    body.custom-cursor a,
+    body.custom-cursor button,
+    body.custom-cursor [role="button"] {
+        cursor: pointer;
     }
 
     .nav-menu {
@@ -3683,15 +3850,24 @@ body.js .hero-aurora {
         gap: 1.5rem;
     }
 
-    .featured-moment-photo {
-        width: 110px;
-        height: 110px;
+    .featured-frame {
+        width: min(240px, 75vw);
+        margin: 0 auto;
     }
 
     .footer-bottom {
         flex-direction: column;
         align-items: flex-start;
     }
+
+    .footer-frame {
+        padding: 1.75rem 1.25rem;
+    }
+
+    .draft-card {
+        padding: 1.4rem 1.3rem 0.7rem;
+    }
+
 }
 
 /* ======== REDUCED MOTION ======== */
@@ -3714,15 +3890,38 @@ body.js .hero-aurora {
         transform: none;
     }
 
-    body.js .hero > *,
-    body.js .frag {
+    body.js .hero > * {
         opacity: 1;
         transform: none;
         animation: none;
     }
 
-    body.js .frag-mid { opacity: 0.78; }
-    body.js .frag-far { opacity: 0.6; }
+    /* The landings rest fully formed; beams and pools keep their
+       centring translate (transform: none would shift them) */
+    body.js .creds-field .cred {
+        opacity: 1;
+        transform: none;
+        animation: none;
+    }
+
+    body.js .creds-field .cred-beam,
+    body.js .creds-field .cred-pool,
+    body.js .creds-field .cred::before,
+    body.js .creds-field .cred-catch {
+        animation: none;
+    }
+
+    /* The sky rests at full form: entrance fade killed, curtains keep
+       their skew (transform: none would flatten the rays) */
+    body.js .hero-aurora {
+        opacity: 1;
+        animation: none;
+    }
+
+    .au-curtain {
+        animation: none;
+        opacity: 1;
+    }
 
     .scroll-indicator {
         animation: none;
