@@ -28,42 +28,57 @@
 </head>
 
 <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="page-atmosphere" aria-hidden="true">
         <span class="atmo atmo-1"></span>
         <span class="atmo atmo-2"></span>
         <span class="atmo atmo-3"></span>
     </div>
-    <div id="scroll-progress-bar"></div>
+    <div id="scroll-progress-bar" aria-hidden="true"></div>
     <div class="cursor" aria-hidden="true"><span></span></div>
 
-    <nav class="navbar">
+    <nav class="navbar" aria-label="Primary">
         <div class="container">
-            <a href="#home" class="nav-logo">YG</a>
-            <ul class="nav-menu">
+            <a href="#home" class="nav-logo" aria-label="YG, back to top">
+                <svg viewBox="0 0 320 360" aria-hidden="true" focusable="false">
+                    <defs>
+                        <linearGradient id="nav-grad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0" stop-color="#00E896" />
+                            <stop offset="1" stop-color="#3E6BFF" />
+                        </linearGradient>
+                    </defs>
+                    <path fill="none" stroke="url(#nav-grad)" stroke-width="24" stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M 100,112 L 160,198 L 160,272 M 220,112 L 160,198 M 236,77 A 133 133 0 1 0 280,241 L 226,241" />
+                    <circle cx="208" cy="241" r="16" fill="url(#nav-grad)" />
+                </svg>
+            </a>
+            <ul class="nav-menu" role="list">
                 <li><a href="#about">About</a></li>
                 <li><a href="#projects">Work</a></li>
                 <li><a href="#recognition">Recognition</a></li>
                 <li><a href="#vision">Vision</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
-            <button class="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false">
+            <button class="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false"
+                aria-controls="mobile-nav">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
         </div>
     </nav>
-    <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
-        <ul>
+    <nav class="mobile-nav" id="mobile-nav" aria-hidden="true" aria-label="Menu">
+        <ul role="list">
             <li><a href="#about">About</a></li>
             <li><a href="#projects">Work</a></li>
             <li><a href="#recognition">Recognition</a></li>
             <li><a href="#vision">Vision</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
-    </div>
+    </nav>
 
-    <main id="main-content">
+    <main id="main-content" tabindex="-1">
 
         <!-- ======== HOME SECTION ======== -->
         <section id="home" class="home-section">
