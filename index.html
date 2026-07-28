@@ -166,32 +166,34 @@
         <section id="about" class="about-section">
             <div class="container">
                 <header class="section-head reveal">
-                    <p class="section-eyebrow">About &middot; 2016&ndash;2026</p>
+                    <p class="section-eyebrow">About &middot; 2015&ndash;2026</p>
                     <h2 class="section-title">The Story</h2>
                 </header>
+                <div class="about-layout">
                 <div class="timeline-container">
-                    <div class="timeline-item reveal">
-                        <span class="timeline-marker">01</span>
+                    <span class="timeline-progress" aria-hidden="true"></span>
+                    <div class="timeline-item reveal" data-focal>
+                        <span class="timeline-marker" aria-hidden="true">01</span>
                         <div class="timeline-content">
                             <h3>The Foundation</h3>
                             <p>Ten years building enterprise systems that had to work under real constraints. Regulated
                                 environments, clinical workflows, mission-critical infrastructure. That experience taught
-                                me that technology only creates value when it fits the human and organizational context
+                                me that technology only creates value when it fits the human and organisational context
                                 around it.</p>
                         </div>
                     </div>
-                    <div class="timeline-item reveal">
-                        <span class="timeline-marker">02</span>
+                    <div class="timeline-item reveal" data-focal>
+                        <span class="timeline-marker" aria-hidden="true">02</span>
                         <div class="timeline-content">
                             <h3>The Sharpening</h3>
                             <p>An MBA at Nanyang Business School, completed in 2026, added the commercial and
                                 strategic layer. Not a career change, a capability expansion. From executing
-                                transformations to advising on them, from building products to defining what gets
+                                transformations to steering them, from building products to deciding what gets
                                 built and why.</p>
                         </div>
                     </div>
-                    <div class="timeline-item reveal">
-                        <span class="timeline-marker">03</span>
+                    <div class="timeline-item reveal" data-focal>
+                        <span class="timeline-marker" aria-hidden="true">03</span>
                         <div class="timeline-content">
                             <h3>The Edge</h3>
                             <p>Most strategists cannot go deep on architecture. Most engineers cannot hold a room of
@@ -199,84 +201,197 @@
                                 between technical teams and business decision-makers.</p>
                         </div>
                     </div>
-                    <div class="timeline-item reveal">
-                        <span class="timeline-marker">04</span>
+                    <div class="timeline-item reveal" data-focal>
+                        <span class="timeline-marker" aria-hidden="true">04</span>
                         <div class="timeline-content">
                             <h3>Beyond Work</h3>
-                            <p>Thought leader on AI, strategy, and leadership on LinkedIn. Avid gamer when not thinking
-                                about enterprise transformation. Firm believer that the best ideas come from outside your
-                                industry.</p>
+                            <!-- The thinking travels three channels; each line is a proof
+                                 already on this site (Featured strip, card 3, footer marks) -->
+                            <ul class="voice-lines" role="list">
+                                <li><span class="k">On stage</span><span class="v">MBA World Summit 2026 &middot; 1 of
+                                        24 speakers</span></li>
+                                <li><span class="k">In the room</span><span class="v">Agent vs Agent, argued live for a
+                                        C-suite audience</span></li>
+                                <li><span class="k">On the feed</span><span class="v">AI, strategy, and leadership on
+                                        <a href="https://www.linkedin.com/in/theyuvrajgupta/" target="_blank"
+                                            rel="noopener noreferrer">LinkedIn</a></span></li>
+                            </ul>
+                            <p>Avid gamer when not thinking about enterprise transformation. Firm believer that the
+                                best ideas come from outside your industry.</p>
                         </div>
                     </div>
+                </div>
+                <div class="about-frame-col" aria-hidden="true">
+                    <div class="about-frame" id="about-frame">
+                        <span class="afc afc-tl"></span>
+                        <span class="afc afc-tr"></span>
+                        <span class="afc afc-bl"></span>
+                        <span class="afc afc-br"></span>
+                        <span class="af-dot"></span>
+                    </div>
+                </div>
                 </div>
             </div>
         </section>
 
         <!-- ======== FEATURED MOMENT SECTION ======== -->
-        <section id="featured-moment" class="featured-moment-section">
+        <section id="featured-moment" class="featured-moment-section" data-focal>
+            <div class="section-field" aria-hidden="true">
+                <span class="frag frag-far fm1" data-fz="0.10"><span class="k">~45,000 reached</span></span>
+                <span class="frag frag-mid fm2" data-fz="0.14"><span class="k">100 selected</span></span>
+                <span class="frag frag-near fm3" data-fz="0.18"><span class="k">24 speakers</span></span>
+                <span class="frag frag-far fm4" data-fz="0.08"><span class="k">49.14&deg; N &middot; Heilbronn</span></span>
+                <span class="section-ghost featured-ghost" data-fz="0.06">1 / 100</span>
+            </div>
             <div class="container">
                 <header class="section-head reveal">
                     <p class="section-eyebrow">Featured &middot; Heilbronn, June 2026</p>
                 </header>
+                <div class="convergence" aria-hidden="true">
+                    <svg viewBox="0 0 1200 210" preserveAspectRatio="none" focusable="false">
+                        <defs>
+                            <linearGradient id="cvg" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0" stop-color="#00E896" />
+                                <stop offset="1" stop-color="#3E6BFF" />
+                            </linearGradient>
+                        </defs>
+                        <g class="cv-field">
+                            <circle cx="45" cy="26" r="1.3" /><circle cx="118" cy="12" r="1.3" />
+                            <circle cx="176" cy="38" r="1.3" /><circle cx="248" cy="18" r="1.3" />
+                            <circle cx="332" cy="30" r="1.3" /><circle cx="410" cy="10" r="1.3" />
+                            <circle cx="472" cy="42" r="1.3" /><circle cx="548" cy="22" r="1.3" />
+                            <circle cx="628" cy="34" r="1.3" /><circle cx="694" cy="14" r="1.3" />
+                            <circle cx="762" cy="40" r="1.3" /><circle cx="838" cy="20" r="1.3" />
+                            <circle cx="902" cy="32" r="1.3" /><circle cx="988" cy="12" r="1.3" />
+                            <circle cx="1056" cy="36" r="1.3" /><circle cx="1122" cy="24" r="1.3" />
+                            <circle cx="1178" cy="44" r="1.3" /><circle cx="84" cy="52" r="1.3" />
+                            <circle cx="586" cy="52" r="1.3" /><circle cx="920" cy="54" r="1.3" />
+                        </g>
+                        <g class="cv-paths">
+                            <path class="cv cv-out" pathLength="1" d="M1140,30 C1050,70 950,100 880,122" />
+                            <path class="cv cv-out" pathLength="1" d="M980,40 C900,80 820,110 758,130" />
+                            <path class="cv cv-out" pathLength="1" d="M240,34 C280,80 322,110 352,134" />
+                            <path class="cv cv-out" pathLength="1" d="M64,58 C120,100 180,122 232,142" />
+                            <path class="cv cv-out" pathLength="1" d="M636,46 C600,90 560,120 528,140" />
+                            <path class="cv cv-mid" pathLength="1" d="M120,22 C160,80 200,124 230,162" />
+                            <path class="cv cv-mid" pathLength="1" d="M340,10 C350,70 302,124 270,172" />
+                            <path class="cv cv-mid" pathLength="1" d="M520,18 C480,90 380,132 302,180" />
+                            <path class="cv cv-mid" pathLength="1" d="M700,12 C640,90 482,142 322,188" />
+                            <path class="cv cv-mid" pathLength="1" d="M880,20 C780,100 560,152 362,196" />
+                            <path class="cv cv-one" pathLength="1" d="M1050,16 C900,82 480,120 217,206" />
+                        </g>
+                    </svg>
+                    <span class="cv-dot"></span>
+                </div>
                 <div class="featured-moment-strip reveal">
-                    <img src="./portfolio/assets/profile-pic.jpg" alt="Yuvraj Gupta" width="320" height="480"
-                        loading="lazy" class="featured-moment-photo">
+                    <div class="featured-frame">
+                        <img src="./portfolio/assets/profile-pic.jpg" alt="Yuvraj Gupta" width="320" height="480"
+                            loading="lazy" class="featured-moment-photo">
+                    </div>
                     <div class="featured-moment-content">
-                        <span class="featured-moment-label">MBA World Summit 2026</span>
-                        <h2>Spoke at the MBA World Summit 2026. Selected as 1 of 100 MBA candidates globally from
-                            roughly 45,000 considered, then chosen as 1 of 24 session speakers.</h2>
-                        <p class="session-line">Led "Last Human Standing: Who Is Really Making the Call?", an
-                            interactive session on AI, human judgment, and who actually makes the decision, built on
-                            ten years in healthcare technology. The room left with more questions than answers, which
-                            was the point.</p>
-                        <p class="closing-line">Hosted at the Innovation Park Artificial Intelligence, June 2026, in
-                            partnership with the Technical University of Munich. Three days, a cohort spanning 50-plus
-                            nationalities, and the closing chapter of the MBA.</p>
+                        <h2 class="featured-moment-label">MBA World Summit 2026</h2>
+                        <p class="featured-moment-statement">Selected as 1 of 100 MBA candidates worldwide, then
+                            chosen as 1 of 24 session speakers.</p>
+                        <p class="session-line">Led "Last Human Standing: Who is Really Making the Call?", an
+                            interactive session on where human judgement sits inside AI-run decisions, built on
+                            ten years in healthcare technology. The argument the room started there did not finish
+                            in the session.</p>
+                        <p class="closing-line">Hosted at the Innovation Park Artificial Intelligence (IPAI), in
+                            partnership with the Technical University of Munich. Three days, a cohort spanning
+                            50-plus nationalities.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- ======== EXPERTISE SECTION ======== -->
-        <section id="expertise" class="expertise-section">
+        <section id="expertise" class="expertise-section" data-focal>
             <div class="container">
                 <header class="section-head reveal">
                     <p class="section-eyebrow">Capabilities &middot; Linked to proof</p>
                     <h2 class="section-title">Core Competencies</h2>
                 </header>
+                <div class="expertise-layout">
                 <div class="competency-grid">
                     <div class="competency-block reveal">
                         <h3>AI Strategy &amp; Innovation</h3>
                         <p>Agentic systems, enterprise AI roadmaps, and human-AI decision design.</p>
                         <div class="proof-links">
-                            <button class="proof-chip" data-modal-target="project1">PRISM</button>
-                            <button class="proof-chip" data-modal-target="project2">preCaution</button>
-                            <button class="proof-chip" data-modal-target="project3">Agent vs Agent</button>
+                            <button class="proof-chip" aria-haspopup="dialog" data-modal-target="project1">PRISM</button>
+                            <button class="proof-chip" aria-haspopup="dialog" data-modal-target="project2">preCaution</button>
+                            <button class="proof-chip" aria-haspopup="dialog" data-modal-target="project3">Agent vs Agent</button>
                         </div>
                     </div>
                     <div class="competency-block reveal">
                         <h3>Enterprise Transformation</h3>
-                        <p>Platform modernization, go-to-market acceleration, and change that sticks.</p>
+                        <p>Platform modernisation, go-to-market acceleration, and change that sticks.</p>
                         <div class="proof-links">
-                            <button class="proof-chip" data-modal-target="project5">Foundation</button>
+                            <button class="proof-chip" aria-haspopup="dialog" data-modal-target="project5">Decade One</button>
                         </div>
                     </div>
                     <div class="competency-block reveal">
                         <h3>Technology Architecture</h3>
                         <p>Cloud-native design, serverless infrastructure, and systems thinking.</p>
                         <div class="proof-links">
-                            <button class="proof-chip" data-modal-target="project5">Foundation</button>
-                            <button class="proof-chip" data-modal-target="project2">preCaution</button>
+                            <button class="proof-chip" aria-haspopup="dialog" data-modal-target="project5">Decade One</button>
                         </div>
                     </div>
                     <div class="competency-block reveal">
                         <h3>Commercial Strategy</h3>
-                        <p>Business cases, ROI modeling, investment analysis, and product roadmaps.</p>
+                        <p>Business cases, ROI modelling, investment analysis, and product roadmaps.</p>
                         <div class="proof-links">
-                            <button class="proof-chip" data-modal-target="project4">Mekong Fund</button>
-                            <button class="proof-chip" data-modal-target="project1">PRISM</button>
+                            <button class="proof-chip" aria-haspopup="dialog" data-modal-target="project4">Mekong Resilience Fund</button>
+                            <button class="proof-chip" aria-haspopup="dialog" data-modal-target="project1">PRISM</button>
                         </div>
                     </div>
+                </div>
+                <!-- THE PUNCH CARD: the proof mapping as a perforated record.
+                     Seven apertures punched clean through an anodised card;
+                     the aurora behind shows only where work actually ran, so
+                     absence is solid metal and no empty cells can exist. The
+                     clipped corner is the registration cut. Decorative
+                     duplicate (chips carry the real mapping); labels carry
+                     data-ghost for the focus-pull JS (PRISM and Decade One
+                     punch twice, so labels repeat and ids would collide). -->
+                <div class="punchcard" aria-hidden="true">
+                    <div class="pc-plate">
+                        <div class="pc-head">The through-line</div>
+                        <div class="pc-group" data-c="1">
+                            <span class="pc-name">AI Strategy &amp; Innovation</span>
+                            <div class="pc-rows">
+                                <div class="pc-punch"><span class="pc-aperture pc-a1"></span><span
+                                        class="pc-label" data-ghost="project1">PRISM</span></div>
+                                <div class="pc-punch"><span class="pc-aperture pc-a2"></span><span
+                                        class="pc-label" data-ghost="project2">preCaution</span></div>
+                                <div class="pc-punch"><span class="pc-aperture pc-a3"></span><span
+                                        class="pc-label" data-ghost="project3">Agent vs Agent</span></div>
+                            </div>
+                        </div>
+                        <div class="pc-group" data-c="2">
+                            <span class="pc-name">Enterprise Transformation</span>
+                            <div class="pc-rows">
+                                <div class="pc-punch"><span class="pc-aperture pc-a4"></span><span
+                                        class="pc-label" data-ghost="project5">Decade One</span></div>
+                            </div>
+                        </div>
+                        <div class="pc-group" data-c="3">
+                            <span class="pc-name">Technology Architecture</span>
+                            <div class="pc-rows">
+                                <div class="pc-punch"><span class="pc-aperture pc-a5"></span><span
+                                        class="pc-label" data-ghost="project5">Decade One</span></div>
+                            </div>
+                        </div>
+                        <div class="pc-group" data-c="4">
+                            <span class="pc-name">Commercial Strategy</span>
+                            <div class="pc-rows">
+                                <div class="pc-punch"><span class="pc-aperture pc-a6"></span><span
+                                        class="pc-label" data-ghost="project4">Mekong Resilience Fund</span></div>
+                                <div class="pc-punch"><span class="pc-aperture pc-a7"></span><span
+                                        class="pc-label" data-ghost="project1">PRISM</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
         </section>
