@@ -3,118 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1200">
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        /* Static 1200x630 distillation of the approved Aurora hero (v13/v15).
+           Tokens lifted from portfolio/css/style.css. Zero animation: the
+           screenshot happens at an arbitrary moment, so everything rests
+           fully formed. CSS gradients only, no JS, no canvas. */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             width: 1200px;
             height: 630px;
             overflow: hidden;
-            background-color: #0a0f2c;
-            font-family: 'Satoshi', sans-serif;
+            background-color: #06090B;
+            font-family: 'Space Grotesk', sans-serif;
             position: relative;
         }
 
-        .top-bar {
+        /* ---- The aurora sky (hero-only signature) ---- */
+        .sky {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Duotone wash behind the curtains */
+        .au-wash {
+            position: absolute;
+            left: 50%;
+            top: -140px;
+            width: 1560px;
+            height: 490px;
+            transform: translateX(-50%);
+            background:
+                radial-gradient(46% 60% at 36% 34%, rgba(0, 232, 150, 0.10), transparent 70%),
+                radial-gradient(50% 64% at 64% 30%, rgba(62, 107, 255, 0.14), transparent 72%);
+        }
+
+        /* The crown: the bright top arc spilling in from above the frame,
+           kept clear of the curtains by dark sky (his rule: never mesh) */
+        .au-crown {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 4px;
-            background-color: #00f5c3;
+            right: 0;
+            height: 115px;
+            background:
+                radial-gradient(60% 130% at 30% -45%, rgba(0, 232, 150, 0.17), transparent 68%),
+                radial-gradient(64% 140% at 70% -48%, rgba(62, 107, 255, 0.20), transparent 70%);
         }
 
-        .glow {
+        /* Four structured light curtains: emerald pole left, cobalt pole
+           right, the sanctioned blend hues between. Two ray periods each
+           so the interference breaks any visible repeat. Opacities sit a
+           touch above the live rest state so the sky reads at card size. */
+        .au-curtain {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 900px;
-            height: 500px;
-            background: radial-gradient(ellipse at center, rgba(0, 245, 195, 0.08) 0%, transparent 70%);
-            pointer-events: none;
+            top: -88px;
+            height: 454px;
+            mask-image: linear-gradient(180deg, #000 24%, transparent 96%);
+            -webkit-mask-image: linear-gradient(180deg, #000 24%, transparent 96%);
         }
 
-        .ghost-text {
-            position: absolute;
-            right: 60px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-family: 'Space Mono', monospace;
-            font-size: 180px;
-            font-weight: 700;
-            color: #00f5c3;
-            opacity: 0.03;
-            user-select: none;
-            line-height: 1;
-            letter-spacing: -0.04em;
+        @supports ((mask-composite: intersect) or (-webkit-mask-composite: source-in)) {
+            .au-curtain {
+                mask-image: linear-gradient(180deg, #000 24%, transparent 96%),
+                    linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
+                mask-composite: intersect;
+                -webkit-mask-image: linear-gradient(180deg, #000 24%, transparent 96%),
+                    linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
+                -webkit-mask-composite: source-in;
+            }
         }
 
+        .au-c1 {
+            left: 120px;
+            width: 312px;
+            transform: skewX(-12deg);
+            background:
+                repeating-linear-gradient(90deg,
+                    rgba(0, 232, 150, 0) 0px,
+                    rgba(0, 232, 150, 0.15) 54px,
+                    rgba(0, 232, 150, 0) 112px),
+                repeating-linear-gradient(90deg,
+                    rgba(0, 232, 150, 0) 0px,
+                    rgba(0, 232, 150, 0.10) 98px,
+                    rgba(0, 232, 150, 0) 214px),
+                linear-gradient(180deg, rgba(0, 232, 150, 0.11), transparent 82%);
+        }
+
+        .au-c2 {
+            left: 384px;
+            width: 216px;
+            transform: skewX(-9deg);
+            background:
+                repeating-linear-gradient(90deg,
+                    rgba(21, 190, 187, 0) 0px,
+                    rgba(21, 190, 187, 0.15) 44px,
+                    rgba(21, 190, 187, 0) 96px),
+                repeating-linear-gradient(90deg,
+                    rgba(21, 190, 187, 0) 0px,
+                    rgba(21, 190, 187, 0.10) 82px,
+                    rgba(21, 190, 187, 0) 178px),
+                linear-gradient(180deg, rgba(21, 190, 187, 0.10), transparent 78%);
+        }
+
+        .au-c3 {
+            left: 600px;
+            width: 300px;
+            transform: skewX(-13deg);
+            background:
+                repeating-linear-gradient(90deg,
+                    rgba(42, 150, 222, 0) 0px,
+                    rgba(42, 150, 222, 0.15) 54px,
+                    rgba(42, 150, 222, 0) 114px),
+                repeating-linear-gradient(90deg,
+                    rgba(42, 150, 222, 0) 0px,
+                    rgba(42, 150, 222, 0.10) 100px,
+                    rgba(42, 150, 222, 0) 218px),
+                linear-gradient(180deg, rgba(42, 150, 222, 0.11), transparent 82%);
+        }
+
+        .au-c4 {
+            left: 840px;
+            width: 240px;
+            transform: skewX(-10deg);
+            background:
+                repeating-linear-gradient(90deg,
+                    rgba(62, 107, 255, 0) 0px,
+                    rgba(62, 107, 255, 0.19) 46px,
+                    rgba(62, 107, 255, 0) 100px),
+                repeating-linear-gradient(90deg,
+                    rgba(62, 107, 255, 0) 0px,
+                    rgba(62, 107, 255, 0.13) 88px,
+                    rgba(62, 107, 255, 0) 190px),
+                linear-gradient(180deg, rgba(62, 107, 255, 0.14), transparent 78%);
+        }
+
+        /* ---- The hero content plane ---- */
         .content {
             position: absolute;
-            top: 50%;
-            left: 80px;
+            left: 0;
+            right: 0;
+            top: 52%;
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
-        .label {
-            font-family: 'Space Mono', monospace;
-            font-size: 14px;
-            color: #00f5c3;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            font-weight: 400;
-        }
-
+        /* The name: mono lead line living with the headline, as on site */
         .name {
-            font-family: 'Satoshi', sans-serif;
-            font-size: 72px;
-            font-weight: 700;
-            color: #e6f1ff;
-            margin-top: 16px;
-            line-height: 1.1;
-            letter-spacing: -0.02em;
-        }
-
-        .role {
-            font-family: 'Satoshi', sans-serif;
-            font-size: 28px;
-            font-weight: 500;
-            color: #a8b2d1;
-            margin-top: 8px;
-            line-height: 1.3;
-        }
-
-        .divider {
-            width: 480px;
-            height: 1px;
-            background-color: #232a55;
-            margin-top: 32px;
-        }
-
-        .url {
             font-family: 'Space Mono', monospace;
-            font-size: 16px;
-            color: #00f5c3;
-            margin-top: 24px;
-            letter-spacing: 0.02em;
+            font-size: 15px;
+            font-weight: 400;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: rgba(240, 246, 243, 0.86);
+            margin-bottom: 30px;
+        }
+
+        .headline {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 96px;
+            font-weight: 700;
+            line-height: 0.98;
+            letter-spacing: -0.03em;
+            color: #F0F6F3;
+            margin-bottom: 34px;
+        }
+
+        .headline .grad {
+            background: linear-gradient(90deg, #00E896, #3E6BFF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* The status spec-plate capsule */
+        .status {
+            display: inline-block;
+            font-family: 'Space Mono', monospace;
+            font-size: 15px;
+            font-weight: 400;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(240, 246, 243, 0.86);
+            border: 1px solid #17242A;
+            border-radius: 8px;
+            padding: 11px 22px;
+        }
+
+        .status .hs-em {
+            background: linear-gradient(90deg, #00E896, #3E6BFF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
     </style>
 </head>
 <body>
-    <div class="top-bar"></div>
-    <div class="glow"></div>
-    <div class="ghost-text">YG</div>
+    <div class="sky">
+        <div class="au-wash"></div>
+        <div class="au-crown"></div>
+        <div class="au-curtain au-c1"></div>
+        <div class="au-curtain au-c2"></div>
+        <div class="au-curtain au-c3"></div>
+        <div class="au-curtain au-c4"></div>
+    </div>
     <div class="content">
-        <span class="label">Portfolio</span>
-        <h1 class="name">Yuvraj Gupta</h1>
-        <p class="role">Product &amp; Platform Leader &middot; AI Strategy</p>
-        <div class="divider"></div>
-        <span class="url">theyuvrajgupta.github.io</span>
+        <div class="name">Yuvraj Gupta</div>
+        <h1 class="headline">Product &amp; <span class="grad">Platform</span><br>Leader.</h1>
+        <div class="status">Operating since 2015 &middot; MBA (<span class="hs-em">Dean's Honours List</span>) &middot; 2026</div>
     </div>
 </body>
 </html>
