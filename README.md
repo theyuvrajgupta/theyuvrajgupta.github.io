@@ -1,89 +1,77 @@
-# theyuvrajgupta.github.io
+# Aurora Field
 
-🌐 **Personal Portfolio Website of Yuvraj Gupta**
+**The portfolio of Yuvraj Gupta — Product & Platform Leader.**
 
-## ❓ Frequently Asked Questions (FAQs)
+Ten years of systems that could not fail, now leading what organisations build with AI. MBA (Dean's Honours List), Nanyang Business School.
 
-### **Q: What is this project?**
-This is my animated, scroll-driven portfolio presenting my work as an **AI Strategist** — a decade of enterprise engineering, an MBA at Nanyang Business School, and a focus on operating at the intersection of technology strategy and business impact. Built for investors, recruiters, collaborators, and anyone who wants to understand the work.
+➡️ **Live: [theyuvrajgupta.github.io](https://theyuvrajgupta.github.io)**
 
-### **Q: Where can I see it live?**
-➡️ **[https://theyuvrajgupta.github.io](https://theyuvrajgupta.github.io)**
-
----
-
-### **Q: What are the key features?**
-
-*   **Rotating Hero Headline**: A TextScramble animation cycles through three positioning statements — AI Strategist, Enterprise Transformer, Tech-Fluent Leader.
-*   **Animated Story Timeline**: Career progression (The Foundation → The Sharpening → The Edge → Beyond Work) rendered as a scroll-triggered timeline.
-*   **Featured Moment Strip**: A highlighted callout for the most significant current recognition — presently the MBA World Summit 2026 selection.
-*   **Interactive Competency Map**: A node-based SVG map. Clicking a core competency (AI Strategy, Enterprise Transformation, Technology Architecture, Commercial Strategy) reveals detailed skills.
-*   **Signature Work Cards & Modals**: Five project cards (PRISM, Kellogg–Mekong Resilience Fund, VCIC, Mazda, Foundation) with 3D tilt on hover, ghost text overlays, animated corner brackets, and click-to-open glassmorphism modals presenting full case studies.
-*   **Recognition List**: Staggered-in achievement items covering MBA World Summit, Kellogg–Morgan Stanley Global Finals, VCIC Asia Finals, and PGC Class Champion.
-*   **Vision Section**: A pulsing orb with four strategic pillars connected by animated SVG lines.
-*   **Mobile Hamburger Menu**: Full-width slide-down nav for screens below 768px, with smooth open/close animation and outside-click dismissal.
-*   **"Synaptic Night" Aesthetic**: Dark space theme with a live Neural Dust particle canvas background, glassmorphism panels, teal (`#00f5c3`) and purple (`#c869ff`) accents, and a Space Mono / Satoshi / Inter font pairing.
+![Vanilla JS](https://img.shields.io/badge/JS-vanilla%2C%20zero%20libraries-00E896?style=flat-square)
+![No build step](https://img.shields.io/badge/build-none-3E6BFF?style=flat-square)
+![Hosted on GitHub Pages](https://img.shields.io/badge/hosted-GitHub%20Pages-0C1218?style=flat-square)
 
 ---
 
-### **Q: What technologies were used to build this?**
+## The idea
 
-*   **HTML5 & CSS3**: CSS Grid, Flexbox, Custom Properties, `clamp()` fluid typography, `backdrop-filter` glassmorphism.
-*   **JavaScript (ES6+)**: Single-file, no framework, all logic inside one `DOMContentLoaded` block.
-*   **GSAP (GreenSock Animation Platform)**: ScrollTrigger, magnetic cursor effects, number counter animations, modal transitions.
-*   **HTML5 Canvas**: Custom "Neural Dust" animated particle network background.
-*   **Font Awesome**: Iconography.
+The site is named after its sky. The hero holds an aurora — a living canvas of six duotone light ribbons riding drifting sine fields — and every machined surface below it carries that light's reflections: brushed metal cards, engraved plates, instrument spotlights, a border glint that wakes when something can be pressed.
 
----
+One design physics runs the whole page: **light moves, material doesn't.** Real content never transforms; only decorative layers ride the depth field, and focus is always additive — nothing legible ever dims.
 
-### **Q: How is the project structured?**
+## Highlights
+
+- **The Living Sky** — a canvas aurora rendered at low internal resolution and upscaled under a static blur. Cursor steering bends the ribbons; the first 60vh of scroll charges the sky so the scroll gesture is rewarded instantly. Phases are integrated per frame, so no scroll speed can whip the timeline.
+- **The Landings** — three credential spotlights in the hero's lower volume: a cone of station-hued light from the sky, a machined instrument plate at its foot, a glow pool beneath, all pulled apart in space by cursor parallax.
+- **The machined material system** — one fabrication (brushed highlight, corner specular, ground bounce, striations, staged mount shadows) tinted per surface: emerald for the work, cobalt steel for the honours, the full duotone for the controls.
+- **Distinct section heroes** — an assembling frame, a converging trajectory, a punched record card, a signature that inks itself as you read, an engraved ledger that closes with bookkeeping's double rule, a CSS-3D horizon, and a dashed path that turns solid where it lands on the footer.
+- **The Live Edge** — a border light on the site's primary pressable surfaces (the hero and Calendly buttons, the five work cards) that wakes on hover or keyboard focus: a static duotone ring whose travelling glint brightens whatever colour it passes. It is never on anything you cannot press.
+- **One rAF loop** — cursor, parallax, canvas sky, spotlight tracking, and the scroll-scrubbed heroes all run as tasks in a single loop with one layout read per frame, IntersectionObserver gates for everything off-screen, and epsilon-gated writes.
+
+## Built to degrade gracefully
+
+- **No JavaScript?** The full page renders, fully formed and fully lit — all entrance hiding is gated behind a `body.js` class, and a runtime error failsafe strips it back off.
+- **`prefers-reduced-motion`?** Comprehensive: global animation kill plus live per-frame checks. Every rest state is the finished composition, never an empty stage.
+- **Mobile?** The spatial engines switch off below 993px and layouts collapse to static stacks; the sky remains as CSS light curtains.
+- **Keyboard and screen readers?** Focus-trapped dialogs with `inert` backgrounds, focus return on close, a skip link, `aria-current` scrollspy, real text on every engraved surface, and decorative layers hidden from assistive tech.
+
+## Stack
+
+None, deliberately. Three hand-written files — `index.html`, one stylesheet, one script — plus Font Awesome icons and three Google Fonts (Space Grotesk, Space Mono, Inter). No frameworks, no animation libraries, no build step, no dependencies to rot.
 
 ```
 /
-├─ index.html              # All content, markup, and section structure
-├─ CLAUDE.md               # Codebase guidance for Claude Code
-├─ README.md
+├─ index.html               all content and structure
+├─ CLAUDE.md                the design constitution (decisions and rules)
+├─ docs/
+│  └─ ARCHITECTURE.md       the engineering manual (how it works, how to extend it)
 └─ portfolio/
-   ├─ css/
-   │  └─ style.css         # All styles — theme, layout, animations, responsive
-   ├─ js/
-   │  └─ script.js         # All interactivity — GSAP, canvas, modals, scrollspy
-   └─ assets/              # Images and resume PDF
+   ├─ css/style.css         all styles
+   ├─ js/script.js          all interactivity, one DOMContentLoaded block
+   └─ assets/               images, resume, social preview
 ```
 
-GSAP and ScrollTrigger are loaded from CDN — there is no build step, no package manager, and no bundler.
+## Run it locally
 
----
+Any static server from the repo root:
 
-### **Q: How can I use or customize this template?**
+```
+python -m http.server 8123
+```
 
-1.  **Fork / Clone** this repository.
-2.  **Customize Content**: Edit `index.html` to update bio, timeline, featured moment, projects, recognition, and vision.
-3.  **Update Skills Data**: Modify the `competencies` object near the top of `portfolio/js/script.js`.
-4.  **Update Headline Variants**: Edit the `headlines` array in `portfolio/js/script.js`.
-5.  **Update Assets**: Replace images and the resume PDF in `portfolio/assets/`.
-6.  **Deploy**: Push changes to your `main` branch. GitHub Pages will automatically host it at `https://yourusername.github.io`.
+Then open `http://localhost:8123`. There is nothing to install and nothing to build. Pushing to `main` deploys to GitHub Pages automatically.
 
----
+## Documentation
 
-### **Q: Who created this?**
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — the machine manual: runtime anatomy, the material and motion systems, extension recipes, a registry of hard-won browser traps, and the testing playbook.
+- **[CLAUDE.md](CLAUDE.md)** — the constitution: the design system's binding decisions and copy rules.
+
+## Contact
 
 **Yuvraj Gupta**
 📧 [mail.yuvrajgupta@gmail.com](mailto:mail.yuvrajgupta@gmail.com)
-🔗 [LinkedIn – theyuvrajgupta](https://www.linkedin.com/in/theyuvrajgupta/)
-📍 Singapore
+🔗 [LinkedIn — theyuvrajgupta](https://www.linkedin.com/in/theyuvrajgupta/)
+📅 [Book a conversation](https://calendly.com/theyuvrajgupta)
 
----
+## License
 
-### **Q: What is the license?**
-
-This portfolio is licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
-
-**You are free to:**
-*   **Share** — copy and redistribute the material in any medium or format
-*   **Adapt** — remix, transform, and build upon the material for any purpose
-
-**Under the following terms:**
-*   **Attribution** — You must give appropriate credit to **Yuvraj Gupta** and provide a link to the original repository.
-
-> *Designed to inspire, inform, and invite collaboration.*
+Licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/): share and adapt freely, with credit to **Yuvraj Gupta** and a link back to this repository.

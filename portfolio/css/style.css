@@ -1,14 +1,26 @@
-/* ======== GLOBAL STYLES & THEME V10.0 ======== */
+/* ======== THEME V13 — "AURORA FIELD" ========
+   Near-black ground, emerald→cobalt duotone, depth-field hero.
+   Type: Space Grotesk (display) · Space Mono (utility) · Inter (body) */
 :root {
-    --background-color: #0a0f2c;
-    --surface-color: #10182c;
-    --primary-accent: #00f5c3;
-    --secondary-accent: #c869ff;
-    --text-color: #e6f1ff;
-    --text-muted-color: #a8b2d1;
-    --border-color: #232a55;
-    --font-heading: 'Satoshi', sans-serif;
+    --background-color: #06090B;
+    --surface-color: #0C1218;
+    --primary-accent: #00E896;
+    --secondary-accent: #3E6BFF;
+    --text-color: #F0F6F3;
+    --text-muted-color: #87989C;
+    --border-color: #17242A;
+    --grad: linear-gradient(100deg, var(--primary-accent) 5%, var(--secondary-accent) 95%);
+    /* The duotone as INK: same 226° cobalt hue lifted to #5C82FF so the
+       gradient stays readable at the 0.75rem micro-label step (≥4.9:1 on
+       its surfaces). Text-fill sizes only — glows, beams, buttons, and
+       every pole surface keep --grad; the two blues never sit adjacent
+       at text scale. */
+    --grad-ink: linear-gradient(100deg, var(--primary-accent) 5%, #5C82FF 95%);
+    --font-heading: 'Space Grotesk', sans-serif;
     --font-body: 'Inter', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+    /* Dark UA chrome (scrollbars) against the near-black ground */
+    color-scheme: dark;
 }
 
 * {
@@ -20,16 +32,56 @@
 html {
     scroll-behavior: smooth;
     background-color: var(--background-color);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
 }
 
 body {
     font-family: var(--font-body);
     background-color: transparent;
-    /* Allow canvas to show through */
     color: var(--text-color);
     line-height: 1.7;
     overflow-x: hidden;
-    cursor: none;
+}
+
+/* ======== PAGE ATMOSPHERE — persistent aurora behind all content ======== */
+.page-atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.atmo {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    will-change: transform;
+}
+
+.atmo-1 {
+    width: 55vw;
+    height: 55vw;
+    left: -12vw;
+    top: -8vh;
+    background: radial-gradient(circle, rgba(0, 232, 150, 0.16), transparent 65%);
+}
+
+.atmo-2 {
+    width: 52vw;
+    height: 52vw;
+    right: -14vw;
+    top: 28vh;
+    background: radial-gradient(circle, rgba(62, 107, 255, 0.15), transparent 65%);
+}
+
+.atmo-3 {
+    width: 48vw;
+    height: 48vw;
+    left: 22vw;
+    bottom: -14vh;
+    background: radial-gradient(circle, rgba(0, 232, 150, 0.11), transparent 65%);
 }
 
 body.modal-open {
@@ -42,58 +94,157 @@ a {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* ======== UTILITIES ======== */
-.glass {
-    background: rgba(16, 24, 44, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+::selection {
+    background: rgba(0, 232, 150, 0.25);
 }
 
-#background-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
+.grad {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 #scroll-progress-bar {
     position: fixed;
     top: 0;
     left: 0;
-    height: 4px;
-    background: var(--primary-accent);
+    height: 3px;
+    background: var(--grad);
     width: 0%;
-    z-index: 9999;
-    transform: translateZ(0);
+    /* Above the navbar (1000) and mobile nav (999), below the modal
+       container (2000) so the bar dims behind the modal backdrop */
+    z-index: 1500;
 }
 
-.cursor,
-.cursor-follower {
+/* Keyboard skip link: off-screen until focused, styled in the mono/plate
+   grammar. Fixed, not absolute — Shift+Tab from below the fold must still
+   reveal it in-viewport, not at document top */
+.skip-link {
+    position: fixed;
+    left: 1rem;
+    top: -3.5rem;
+    z-index: 3000;
+    padding: 0.6rem 1rem;
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+    top: 1rem;
+}
+
+/* Screen-reader-only text (the card buttons carry their project name
+   this way: "View the Strategy · PRISM") */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+#main-content:focus {
+    outline: none;
+}
+
+/* ======== SIMPLIFIED CURSOR (dot → bracket corners on interactives) ======== */
+/* Opt-in via JS adding body.custom-cursor so a script failure never hides the native cursor */
+.cursor {
     position: fixed;
     top: 0;
     left: 0;
-    pointer-events: none;
-    z-index: 9998;
-    border-radius: 50%;
-}
-
-.cursor {
     width: 8px;
     height: 8px;
-    background-color: var(--primary-accent);
+    margin: -4px 0 0 -4px;
+    background: var(--primary-accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    display: none;
+    transition: width 0.2s ease, height 0.2s ease, margin 0.2s ease, background-color 0.2s ease;
 }
 
-.cursor-follower {
+.cursor span::before,
+.cursor span::after,
+.cursor::before,
+.cursor::after {
+    content: '';
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.cursor::before {
+    top: 0;
+    left: 0;
+    border-top: 1.5px solid var(--primary-accent);
+    border-left: 1.5px solid var(--primary-accent);
+}
+
+.cursor::after {
+    bottom: 0;
+    right: 0;
+    border-bottom: 1.5px solid var(--secondary-accent);
+    border-right: 1.5px solid var(--secondary-accent);
+}
+
+.cursor span::before {
+    top: 0;
+    right: 0;
+    border-top: 1.5px solid var(--primary-accent);
+    border-right: 1.5px solid var(--primary-accent);
+}
+
+.cursor span::after {
+    bottom: 0;
+    left: 0;
+    border-bottom: 1.5px solid var(--secondary-accent);
+    border-left: 1.5px solid var(--secondary-accent);
+}
+
+body.custom-cursor .cursor {
+    display: block;
+}
+
+body.custom-cursor,
+body.custom-cursor a,
+body.custom-cursor button,
+body.custom-cursor [role="button"] {
+    cursor: none;
+}
+
+.cursor.on-interactive {
     width: 30px;
     height: 30px;
-    background-color: rgba(0, 245, 195, 0.2);
-    transition: transform 0.1s ease-out, background-color 0.2s, width 0.2s, height 0.2s;
+    margin: -15px 0 0 -15px;
+    background: transparent;
+    border-radius: 4px;
 }
 
+.cursor.on-interactive::before,
+.cursor.on-interactive::after,
+.cursor.on-interactive span::before,
+.cursor.on-interactive span::after {
+    opacity: 1;
+}
+
+/* ======== LAYOUT PRIMITIVES ======== */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -110,22 +261,85 @@ h4 {
     font-weight: 700;
 }
 
+section {
+    padding: 7rem 0;
+    position: relative;
+    overflow: clip;
+}
+
+/* Safari <16 / Firefox <81 drop `overflow: clip` and fall back to visible,
+   letting decorative field layers bleed across neighbouring sections. Restore
+   clipping there with `hidden`, but ONLY on sections with no sticky
+   descendants: #about (.about-frame) and #projects (.signature-mark) must
+   stay `visible` because `hidden` creates a scroll container that would break
+   their sticky rails; #home already declares overflow: hidden itself. This
+   block can never match in any browser that supports clip. */
+@supports not (overflow: clip) {
+    #featured-moment,
+    #expertise,
+    #recognition,
+    #vision {
+        overflow: hidden;
+    }
+}
+
+/* Content plane sits above each section's decorative field layer */
+section > .container {
+    position: relative;
+    z-index: 1;
+}
+
+.section-head {
+    margin-bottom: 3.5rem;
+}
+
+.section-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text-muted-color);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+}
+
+.section-eyebrow::before {
+    content: '';
+    width: 22px;
+    height: 2px;
+    background: var(--grad);
+    flex: none;
+}
+
 .section-title {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    margin-bottom: 4rem;
-    text-align: center;
+    font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+    letter-spacing: -0.02em;
 }
 
 .subtitle {
-    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-size: clamp(1rem, 2.5vw, 1.15rem);
     color: var(--text-muted-color);
     max-width: 600px;
     font-weight: 400;
 }
 
-section {
-    padding: 8rem 0;
-    position: relative;
+/* Scroll reveals (JS adds .is-visible; without JS everything stays visible) */
+.reveal {
+    opacity: 1;
+    transform: none;
+}
+
+body.js .reveal {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+body.js .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
 /* ======== NAVIGATION ======== */
@@ -135,14 +349,17 @@ section {
     left: 0;
     width: 100%;
     z-index: 1000;
-    padding: 1.5rem 0;
-    transition: all 0.3s ease;
+    padding: 1.4rem 0;
+    transition: background-color 0.3s ease, border-color 0.3s ease, padding 0.3s ease;
+    border-bottom: 1px solid transparent;
 }
 
 .navbar.scrolled {
-    background-color: rgba(10, 15, 44, 0.8);
+    background-color: rgba(6, 9, 11, 0.85);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border-color);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom-color: var(--border-color);
+    padding: 1rem 0;
 }
 
 .navbar .container {
@@ -154,10 +371,16 @@ section {
 }
 
 .nav-logo {
-    font-size: 1.8rem;
-    font-weight: 700;
     color: var(--text-color);
     text-decoration: none;
+    display: block;
+}
+
+/* The brand mark: the same YG monogram the Work section signs with */
+.nav-logo svg {
+    display: block;
+    height: 38px;
+    width: auto;
 }
 
 .nav-menu {
@@ -169,8 +392,9 @@ section {
 .nav-menu a {
     color: var(--text-muted-color);
     text-decoration: none;
+    font-family: var(--font-heading);
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 0.95rem;
     transition: color 0.3s ease;
 }
 
@@ -179,69 +403,1017 @@ section {
     color: var(--primary-accent);
 }
 
-/* ======== HOME SECTION (REDESIGNED) ======== */
+/* No border-radius here: the outline follows each component's own radius,
+   and a global radius out-specifies every component rule (it was squaring
+   cards, chips, and the close button on keyboard focus) */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+    outline: 2px solid var(--primary-accent);
+    outline-offset: 3px;
+}
+
+/* ======== HERO — THE AURORA ======== */
 .home-section {
     min-height: 100vh;
+    /* iOS Safari: 100vh is the LARGE viewport, so the hero's bottom band
+       hides under the expanded toolbar until first scroll. svh fits the
+       small viewport; on desktop svh === vh, and engines without svh
+       (Safari <15.4, Chrome <108) drop this line and keep 100vh. */
+    min-height: 100svh;
+    padding: 0;
+    overflow: hidden;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
-.home-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    /* Prevent content blowouts */
+.frag {
+    position: absolute;
+    font-family: var(--font-mono);
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    display: flex;
     align-items: center;
-    gap: 4rem;
+    gap: 10px;
+    will-change: transform;
 }
 
-#headline-canvas-container {
-    width: 100%;
-    height: auto;
-    overflow: hidden;
-    /* Ensure text doesn't push grid */
+.frag::before {
+    content: '';
+    width: 14px;
+    height: 2px;
+    flex: none;
+    background: var(--grad);
 }
 
-.home-intro-text {
-    text-align: right;
+.frag .k {
+    color: var(--text-color);
+    font-weight: 700;
 }
 
-.home-intro-text .subtitle {
-    margin-left: auto;
-    margin-bottom: 2rem;
-    opacity: 0;
+/* No current frag carries a .v context span (the hero creds have their
+   own k/v pair under .cred) — kept so the k/v grammar stays available
+   to any future section-field frag without rediscovering the pattern. */
+.frag .v {
+    color: var(--text-muted-color);
+}
+
+.frag-far {
+    font-size: 0.75rem;
+    opacity: 0.6;
+    filter: blur(0.7px);
+}
+
+.frag-mid {
+    font-size: 0.84rem;
+    opacity: 0.78;
+    filter: blur(0.3px);
+}
+
+.frag-near {
+    font-size: 0.94rem;
+    opacity: 0.95;
+}
+
+.hero {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 1100px;
+    padding: 0 24px;
+    will-change: transform;
+}
+
+.hero-headline {
+    font-size: clamp(2.9rem, 7.6vw, 6.6rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.6rem;
+    text-wrap: balance;
+}
+
+/* The name lives inside the h1 (accessible heading content), styled as
+   the mono lead line; the old eyebrow p is gone with the 0.3em orphan */
+.hero-headline .hero-name {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(240, 246, 243, 0.86);
+    margin-bottom: 1.5rem;
+}
+
+.hero-status {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(240, 246, 243, 0.86);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.55rem 1.1rem;
+    margin-bottom: 1.6rem;
+}
+
+/* Dean's Honours List carries the ink on the spec plate */
+.hero-status .hs-em {
+    background: var(--grad-ink);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-intro {
+    font-size: clamp(1rem, 2vw, 1.1rem);
+    color: rgba(240, 246, 243, 0.86);
+    max-width: 46ch;
+    margin: 0 auto 2rem;
 }
 
 .home-buttons {
-    opacity: 0;
+    display: flex;
+    gap: 0.9rem;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .btn {
-    display: inline-block;
-    padding: 1rem 2.5rem;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 500;
+    /* Machined control chassis. Raised interactive pole of the sitewide
+       material system: the plates' fabrication, never their carve.
+       inline-flex owns icon spacing (whitespace-only nodes are not flex
+       items, so gap is the single source of truth) */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     font-family: var(--font-heading);
-    transition: all 0.3s ease;
-    border: 1px solid var(--primary-accent);
-    cursor: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    padding: 0.85rem 1.8rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .btn-primary {
-    background: var(--primary-accent);
-    color: var(--background-color);
+    /* #010403 not #071009: imperceptibly darker, carries the label to
+       statutory AA against the gradient's emerald end (his call, Option C) */
+    color: #010403;
+    /* The duotone made a machined face: brushed highlight band, corner
+       specular from the site's light (up and slightly left), ground-bounce
+       returning into the lower edge, fine 3px striations, then the
+       signature gradient as the body */
+    background:
+        linear-gradient(116deg, transparent 30%, rgba(255, 255, 255, 0.10) 45%, rgba(255, 255, 255, 0.14) 50%, transparent 66%),
+        radial-gradient(130% 80% at 16% -8%, rgba(255, 255, 255, 0.16), transparent 55%),
+        radial-gradient(90% 45% at 50% 112%, rgba(255, 255, 255, 0.08), transparent 70%),
+        repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0 1px, rgba(4, 14, 10, 0.05) 1px 2px, transparent 2px 3px),
+        var(--grad);
+    /* Die-cut rim: translucent dark border darkens the gradient at its edge */
+    border-color: rgba(4, 14, 10, 0.40);
+    box-shadow:
+        /* Arris: top light, left grazing, right falls off, bottom occlusion */
+        inset 0 1px 0 rgba(255, 255, 255, 0.30),
+        inset 1px 0 0 rgba(255, 255, 255, 0.10),
+        inset -1px 0 0 rgba(4, 14, 10, 0.22),
+        inset 0 -2px 0 rgba(4, 14, 10, 0.30),
+        /* Staged mount: contact, mid, deep, dual-pole teal bloom */
+        0 2px 5px rgba(0, 0, 0, 0.40),
+        0 10px 22px -8px rgba(0, 0, 0, 0.48),
+        0 24px 48px -18px rgba(0, 0, 0, 0.55),
+        0 12px 36px -10px rgba(0, 200, 190, 0.28);
 }
 
-.btn-primary:hover {
-    background: transparent;
-    color: var(--primary-accent);
+.btn-primary:hover,
+.btn-primary:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(234, 255, 247, 0.35);
+    /* Same layer order as rest: arris brightens a touch, mount lifts
+       deeper, bloom intensifies */
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.36),
+        inset 1px 0 0 rgba(255, 255, 255, 0.12),
+        inset -1px 0 0 rgba(4, 14, 10, 0.22),
+        inset 0 -2px 0 rgba(4, 14, 10, 0.30),
+        0 4px 9px rgba(0, 0, 0, 0.44),
+        0 16px 32px -10px rgba(0, 0, 0, 0.52),
+        0 32px 62px -20px rgba(0, 0, 0, 0.60),
+        0 16px 46px -12px rgba(0, 200, 190, 0.40);
 }
 
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
+.btn-primary:active {
+    /* Press-in: face moves toward the mount, top light narrows, shadows
+       compress. Same layer order again so the press interpolates */
+    transform: translateY(1px);
+    border-color: rgba(4, 14, 10, 0.50);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        inset 1px 0 0 rgba(255, 255, 255, 0.06),
+        inset -1px 0 0 rgba(4, 14, 10, 0.26),
+        inset 0 -1px 0 rgba(4, 14, 10, 0.30),
+        0 1px 3px rgba(0, 0, 0, 0.45),
+        0 5px 12px -6px rgba(0, 0, 0, 0.48),
+        0 10px 24px -14px rgba(0, 0, 0, 0.50),
+        0 5px 20px -8px rgba(0, 200, 190, 0.20);
+}
+
+.btn-ghost {
     color: var(--text-color);
-    border-color: var(--text-muted-color);
-    margin-left: 1rem;
+    /* Quiet anodised cobalt-black: the plates' steel raised into an
+       interactive control (right button, cobalt pole of the anchor
+       grammar). Brushed band, corner specular, cobalt ground-bounce,
+       striations, near-black body */
+    background:
+        linear-gradient(116deg, transparent 30%, rgba(178, 198, 255, 0.03) 45%, rgba(226, 236, 255, 0.045) 50%, transparent 66%),
+        radial-gradient(130% 85% at 16% -8%, rgba(202, 218, 255, 0.06), transparent 55%),
+        radial-gradient(90% 45% at 50% 112%, rgba(62, 107, 255, 0.05), transparent 70%),
+        repeating-linear-gradient(180deg, rgba(226, 236, 255, 0.012) 0 1px, rgba(2, 6, 12, 0.018) 1px 2px, transparent 2px 3px),
+        linear-gradient(180deg, #10161F 0%, #0A0F15 100%);
+    border-color: #1A2333;
+    border-top-color: rgba(205, 221, 255, 0.16);
+    box-shadow:
+        inset 0 1px 0 rgba(205, 221, 255, 0.09),
+        inset 1px 0 0 rgba(205, 221, 255, 0.03),
+        inset -1px 0 0 rgba(2, 6, 12, 0.28),
+        inset 0 -2px 0 rgba(2, 6, 12, 0.38),
+        0 1px 4px rgba(0, 0, 0, 0.35),
+        0 8px 18px -8px rgba(0, 0, 0, 0.42),
+        0 18px 38px -16px rgba(0, 0, 0, 0.48),
+        0 10px 30px -14px rgba(62, 107, 255, 0.12);
+}
+
+.btn-ghost:hover,
+.btn-ghost:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(120, 150, 230, 0.45);
+    border-top-color: rgba(205, 221, 255, 0.28);
+    box-shadow:
+        inset 0 1px 0 rgba(205, 221, 255, 0.14),
+        inset 1px 0 0 rgba(205, 221, 255, 0.05),
+        inset -1px 0 0 rgba(2, 6, 12, 0.28),
+        inset 0 -2px 0 rgba(2, 6, 12, 0.38),
+        0 3px 7px rgba(0, 0, 0, 0.40),
+        0 13px 26px -10px rgba(0, 0, 0, 0.48),
+        0 26px 52px -18px rgba(0, 0, 0, 0.54),
+        0 14px 38px -14px rgba(62, 107, 255, 0.22);
+}
+
+.btn-ghost:active {
+    transform: translateY(1px);
+    border-color: #1A2333;
+    border-top-color: rgba(205, 221, 255, 0.10);
+    box-shadow:
+        inset 0 1px 0 rgba(205, 221, 255, 0.05),
+        inset 1px 0 0 rgba(205, 221, 255, 0.02),
+        inset -1px 0 0 rgba(2, 6, 12, 0.30),
+        inset 0 -1px 0 rgba(2, 6, 12, 0.38),
+        0 1px 2px rgba(0, 0, 0, 0.40),
+        0 4px 10px -6px rgba(0, 0, 0, 0.42),
+        0 8px 18px -12px rgba(0, 0, 0, 0.44),
+        0 4px 16px -10px rgba(62, 107, 255, 0.08);
+}
+
+.btn:focus-visible {
+    /* Out-specifies the global a:focus-visible rule, which would clamp
+       the control to a 2px radius; ring stays the sitewide emerald */
+    outline: 2px solid var(--primary-accent);
+    outline-offset: 3px;
+    border-radius: 10px;
+}
+
+/* THE LIVE EDGE (hover border-light on pressable surfaces: hero
+   buttons, footer Calendly, the five Work cards): on hover the
+   border ring lights with the duotone loop and a bright glint laps
+   the surface while hovered. Rest is the plain machined border. The
+   ring is a decorative .btn-edge span masked with the plates'
+   composite trick; the motion is a compositor transform turning an
+   oversized gradient disc inside it. TWO ENGINE RULES: (1) never
+   animate the gradient's angle via a registered @property — Chrome
+   recalculates the angle but never repaints the conic
+   (paint-invalidation gap), which shipped a frozen ring; transforms
+   always repaint. (2) never put the spatial cast (filter or
+   box-shadow) on the masked span — the mask erases shadow ink
+   (filter-then-mask order), which shipped an invisible aura; casts
+   live on unmasked carriers (.btn-live-edge::before, the cards'
+   repurposed ::after). Reduced motion and older browsers rest at
+   rotate(0): the static lit ring on hover, glint parked on the top
+   arris. Face and label never move. */
+@supports ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
+    .btn-live-edge {
+        position: relative;
+    }
+
+    .btn-edge {
+        position: absolute;
+        inset: -1px;
+        border-radius: 11px;
+        /* Ring spans the 1px border plus a hair of face either side */
+        padding: 2px;
+        overflow: hidden;
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        /* The duotone lives HERE, static: emerald parked on the left
+           edge, cobalt on the right (the anchor grammar, held), only
+           the two theme accents interpolating directly so midtones
+           are exactly what --grad passes through. The light moves,
+           the colour does not */
+        background: conic-gradient(from 90deg,
+            var(--secondary-accent) 0turn,
+            var(--primary-accent) 0.5turn,
+            var(--secondary-accent) 1turn);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    /* The spatial cast: the lit ring throws its light off the arris
+       into space, emerald leftward, cobalt rightward, hugging the
+       control's shape. Lives on an UNMASKED pseudo of the button:
+       shadow ink on the masked span itself would be erased by the
+       mask (engine rule 2 above) */
+    .btn-live-edge::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 10px;
+        box-shadow:
+            -6px 0 14px rgba(0, 232, 150, 0.30),
+            6px 0 14px rgba(62, 107, 255, 0.32);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .btn-live-edge:hover::before,
+    .btn-live-edge:focus-visible::before {
+        opacity: 1;
+    }
+
+    /* The ground pool: the circulating light lands beneath the
+       button, the Landings' beam-and-pool grammar at control scale.
+       Static blur (never animated), dual-pole like the aura */
+    .btn-live-edge::after {
+        content: '';
+        position: absolute;
+        left: 8%;
+        right: 8%;
+        bottom: -16px;
+        height: 18px;
+        background:
+            radial-gradient(60% 100% at 30% 50%, rgba(0, 232, 150, 0.22), transparent 70%),
+            radial-gradient(60% 100% at 70% 50%, rgba(62, 107, 255, 0.24), transparent 70%);
+        filter: blur(6px);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .btn-live-edge:hover::after,
+    .btn-live-edge:focus-visible::after {
+        opacity: 1;
+    }
+
+    .btn-edge::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        /* Square disc large enough to cover the ring at any rotation */
+        width: 340%;
+        aspect-ratio: 1;
+        transform: translate(-50%, -50%) rotate(0deg);
+        /* The disc carries ONLY the light: a translucent mint glint
+           arc plus its dim counter-arc opposite. Sweeping over the
+           static duotone beneath, it BRIGHTENS the local colour, so
+           the glint flares emerald over the left edge and cobalt
+           over the right, sampling the border's own gradient as it
+           travels. Rest parks the glint on the top arris */
+        background: conic-gradient(from 180deg,
+            rgba(234, 255, 247, 0.20) 0turn,
+            rgba(255, 255, 255, 0) 0.06turn,
+            rgba(255, 255, 255, 0) 0.4turn,
+            rgba(234, 255, 247, 0.72) 0.5turn,
+            rgba(255, 255, 255, 0) 0.6turn,
+            rgba(255, 255, 255, 0) 0.94turn,
+            rgba(234, 255, 247, 0.20) 1turn);
+    }
+
+    .btn-live-edge:hover .btn-edge,
+    .btn-live-edge:focus-visible .btn-edge {
+        opacity: 1;
+    }
+
+    /* PERSONALISED VARIANTS. Same formula, each element's own light. */
+
+    /* The primary's face already carries the gradient, so its ring is
+       that material's LIT EDGE: the two accents lifted toward the
+       site light, never re-saturated (a second full-strength gradient
+       against the gradient face would cancel out) */
+    .btn-primary.btn-live-edge .btn-edge {
+        background: conic-gradient(from 90deg,
+            rgba(154, 178, 255, 0.95) 0turn,
+            rgba(148, 255, 214, 0.95) 0.5turn,
+            rgba(154, 178, 255, 0.95) 1turn);
+    }
+
+    /* The footer control sits at the page's cobalt terminus: its cast
+       and pool weight toward cobalt (the draft plate's ambience); the
+       ring keeps the full anchor grammar */
+    .edge-cobalt::before {
+        box-shadow:
+            -6px 0 14px rgba(0, 232, 150, 0.20),
+            6px 0 15px rgba(62, 107, 255, 0.42);
+    }
+
+    .edge-cobalt.btn-live-edge::after {
+        background:
+            radial-gradient(60% 100% at 30% 50%, rgba(0, 232, 150, 0.14), transparent 70%),
+            radial-gradient(60% 100% at 70% 50%, rgba(62, 107, 255, 0.34), transparent 70%);
+    }
+
+    /* THE QUIET CUT (Work cards): the formula at card scale. The card
+       clips at its edge (overflow hidden), so the ring sits at inset 0
+       and its cast falls INWARD onto the machined face; outward depth
+       stays with the card's own hover lift and emerald mount bloom,
+       so no ground pool either. Softer accents, slower lap */
+    .card-edge {
+        inset: 0;
+        border-radius: 14px;
+        z-index: 2;
+        background: conic-gradient(from 90deg,
+            rgba(62, 107, 255, 0.55) 0turn,
+            rgba(0, 232, 150, 0.55) 0.5turn,
+            rgba(62, 107, 255, 0.55) 1turn);
+    }
+
+    .card-edge::before {
+        background: conic-gradient(from 180deg,
+            rgba(234, 255, 247, 0.12) 0turn,
+            rgba(255, 255, 255, 0) 0.06turn,
+            rgba(255, 255, 255, 0) 0.4turn,
+            rgba(234, 255, 247, 0.5) 0.5turn,
+            rgba(255, 255, 255, 0) 0.6turn,
+            rgba(255, 255, 255, 0) 0.94turn,
+            rgba(234, 255, 247, 0.12) 1turn);
+    }
+
+    .project-card:hover .card-edge,
+    .project-card:has(.project-link:focus-visible) .card-edge {
+        opacity: 1;
+    }
+
+    /* On live-edge cards the old hover top-strip ::after is
+       REPURPOSED as the inward cast: the ring's light falling onto
+       the machined face (the card clips at its edge, and shadow ink
+       on the masked span would be erased by the mask — engine rule 2
+       — so the cast lives on this unmasked pseudo and falls inward).
+       It now spans the full face above the z-1 click overlay, so
+       pointer-events must stay none. Rest opacity 0 and the hover
+       opacity 1 come from the strip's existing rules */
+    .project-card:has(.card-edge)::after {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: auto;
+        background: none;
+        border-radius: 14px;
+        pointer-events: none;
+        box-shadow:
+            inset 10px 0 22px -12px rgba(0, 232, 150, 0.22),
+            inset -10px 0 22px -12px rgba(62, 107, 255, 0.24);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .btn-edge::before {
+            animation: edge-orbit 3s linear infinite;
+            animation-play-state: paused;
+        }
+
+        /* Card scale: the same angular speed would race around the
+           longer perimeter */
+        .card-edge::before {
+            animation-duration: 5s;
+        }
+
+        .btn-live-edge:hover .btn-edge::before,
+        .btn-live-edge:focus-visible .btn-edge::before,
+        .project-card:hover .card-edge::before,
+        .project-card:has(.project-link:focus-visible) .card-edge::before {
+            animation-play-state: running;
+        }
+
+        @keyframes edge-orbit {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    }
+}
+
+/* Hero entrance: one orchestrated load moment (JS-gated so no-JS stays visible) */
+body.js .hero > * {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: hero-rise 0.7s ease forwards;
+}
+
+body.js .hero-headline { animation-delay: 0.25s; }
+body.js .hero-status { animation-delay: 0.42s; }
+body.js .hero-intro { animation-delay: 0.54s; }
+body.js .home-buttons { animation-delay: 0.66s; }
+
+@keyframes hero-rise {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ======== THE AURORA (hero sky) ========
+   The site is named Aurora Field, and the hero is the only place the
+   aurora itself appears. Every machined surface below carries specular
+   bands and pole blooms — reflections of this light. Four structured
+   curtains (soft vertical rays, skewed, mask-faded at the base) breathe
+   over the headline on slow desynchronised loops: emerald pole left,
+   cobalt pole right, the sanctioned blend hues between. The cursor
+   steers the sky via the shared depth engine (transform lives on the
+   .au-wrap layers; curtains animate inside them). All motion is
+   transform/opacity only. No-JS and reduced-motion rest at full form;
+   the front layer drops away ≤992px. */
+.hero-aurora {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.au-wash {
+    position: absolute;
+    left: 50%;
+    top: -22%;
+    width: 130vw;
+    height: 78%;
+    transform: translateX(-50%);
+    background:
+        radial-gradient(46% 60% at 36% 34%, rgba(0, 232, 150, 0.08), transparent 70%),
+        radial-gradient(50% 64% at 64% 30%, rgba(62, 107, 255, 0.12), transparent 72%);
+}
+
+/* The crown: the aurora's bright top arc, spilling in from above the
+   viewport edge — the light the curtains hang from */
+.au-crown {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 18%;
+    background:
+        radial-gradient(60% 130% at 30% -45%, rgba(0, 232, 150, 0.14), transparent 68%),
+        radial-gradient(64% 140% at 70% -48%, rgba(62, 107, 255, 0.17), transparent 70%);
+}
+
+.au-wrap {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+}
+
+/* The living sky: the canvas aurora renders above the CSS curtains
+   under desktop + motion + JS (body.sky-live, set by the engine); the
+   CSS curtains remain the no-JS / reduced-motion / mobile rest state.
+   Low internal resolution upscaled; the softening blur is static. */
+.au-live {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    filter: blur(5px);
+}
+
+body.sky-live .au-live {
+    display: block;
+}
+
+body.sky-live .au-back,
+body.sky-live .au-front {
+    display: none;
+}
+
+.au-curtain {
+    --sk: -11deg;
+    position: absolute;
+    top: -14%;
+    height: 72%;
+    transform: skewX(var(--sk));
+    mask-image: linear-gradient(180deg, #000 24%, transparent 96%);
+    -webkit-mask-image: linear-gradient(180deg, #000 24%, transparent 96%);
+}
+
+/* Hide the curtain rectangles: the base fade is intersected with a
+   horizontal edge fade where compositing allows (the plates' own
+   mask-composite pattern); the vertical fade alone is the fallback */
+@supports ((mask-composite: intersect) or (-webkit-mask-composite: source-in)) {
+    .au-curtain {
+        mask-image: linear-gradient(180deg, #000 24%, transparent 96%),
+            linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
+        mask-composite: intersect;
+        -webkit-mask-image: linear-gradient(180deg, #000 24%, transparent 96%),
+            linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
+        -webkit-mask-composite: source-in;
+    }
+}
+
+/* Left to right: emerald → teal blend → blue blend → cobalt (the
+   duotone sampled the same way the punch card samples it). Each
+   curtain layers two ray periods so the interference breaks any
+   visible repeat — light, not stripes. */
+.au-c1 {
+    --sk: -12deg;
+    left: 10vw;
+    width: 26vw;
+    background:
+        repeating-linear-gradient(90deg,
+            rgba(0, 232, 150, 0) 0px,
+            rgba(0, 232, 150, 0.11) 54px,
+            rgba(0, 232, 150, 0) 112px),
+        repeating-linear-gradient(90deg,
+            rgba(0, 232, 150, 0) 0px,
+            rgba(0, 232, 150, 0.08) 98px,
+            rgba(0, 232, 150, 0) 214px),
+        linear-gradient(180deg, rgba(0, 232, 150, 0.09), transparent 82%);
+}
+
+.au-c2 {
+    --sk: -9deg;
+    left: 32vw;
+    width: 18vw;
+    background:
+        repeating-linear-gradient(90deg,
+            rgba(21, 190, 187, 0) 0px,
+            rgba(21, 190, 187, 0.12) 44px,
+            rgba(21, 190, 187, 0) 96px),
+        repeating-linear-gradient(90deg,
+            rgba(21, 190, 187, 0) 0px,
+            rgba(21, 190, 187, 0.08) 82px,
+            rgba(21, 190, 187, 0) 178px),
+        linear-gradient(180deg, rgba(21, 190, 187, 0.08), transparent 78%);
+}
+
+.au-c3 {
+    --sk: -13deg;
+    left: 50vw;
+    width: 25vw;
+    background:
+        repeating-linear-gradient(90deg,
+            rgba(42, 150, 222, 0) 0px,
+            rgba(42, 150, 222, 0.12) 54px,
+            rgba(42, 150, 222, 0) 114px),
+        repeating-linear-gradient(90deg,
+            rgba(42, 150, 222, 0) 0px,
+            rgba(42, 150, 222, 0.08) 100px,
+            rgba(42, 150, 222, 0) 218px),
+        linear-gradient(180deg, rgba(42, 150, 222, 0.09), transparent 82%);
+}
+
+.au-c4 {
+    --sk: -10deg;
+    left: 70vw;
+    width: 20vw;
+    background:
+        repeating-linear-gradient(90deg,
+            rgba(62, 107, 255, 0) 0px,
+            rgba(62, 107, 255, 0.15) 46px,
+            rgba(62, 107, 255, 0) 100px),
+        repeating-linear-gradient(90deg,
+            rgba(62, 107, 255, 0) 0px,
+            rgba(62, 107, 255, 0.10) 88px,
+            rgba(62, 107, 255, 0) 190px),
+        linear-gradient(180deg, rgba(62, 107, 255, 0.11), transparent 78%);
+}
+
+/* The sky breathes: each curtain sways and brightens on its own
+   period so the field never repeats visibly */
+@media (prefers-reduced-motion: no-preference) {
+    .au-curtain {
+        animation: au-sway 27s ease-in-out infinite alternate;
+    }
+
+    .au-c2 { animation-duration: 33s; animation-delay: -9s; }
+    .au-c3 { animation-duration: 38s; animation-delay: -17s; }
+    .au-c4 { animation-duration: 30s; animation-delay: -5s; }
+}
+
+@keyframes au-sway {
+    from {
+        transform: skewX(var(--sk)) translateX(-2.4vw);
+        opacity: 0.55;
+    }
+
+    45% { opacity: 1; }
+
+    to {
+        transform: skewX(var(--sk)) translateX(2.4vw);
+        opacity: 0.75;
+    }
+}
+
+/* The credentials — THE LANDINGS: the aurora comes down in three
+   places. Each credential is a landing site spread across the hero's
+   lower volume: a cone of station-hued light descending from the sky,
+   the machined instrument plate at its foot, a glow pool beneath.
+   The three wrappers sit at three parallax depths (data-depth, engine
+   owns their transforms), so the cursor pulls the sites apart in
+   space. Real content; the machined plates are the first surfaces
+   the aurora touches. */
+.creds-field {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    font-family: var(--font-mono);
+    text-align: left;
+}
+
+/* The three landing sites, staggered across the lower volume; the
+   centre site anchors deepest under the buttons */
+.cred-wrap {
+    position: absolute;
+    will-change: transform;
+}
+
+/* HIS LAYOUT, stated clearly and final: TWO spotlights on the left
+   side, ONE on the right, all three at the same level on the y-axis,
+   in the band between the "Leader." headline line and the buttons
+   (his call, plus a round-9 nudge lower): plates lock to
+   50% + 108px so the alignment tracks every viewport height; the
+   pair sits left of the word, the cobalt plate right of it. The
+   bottom-centre lane stays empty for the scroll cue. Cone heights
+   stagger 24/19/22vh so the cones rise up through the Leader-line
+   zone and the level line still reads as three depths of light,
+   and the wrappers' depth factors pull the sites apart under the
+   cursor. */
+.cw-1 { left: 3%; top: calc(50% + 108px); }
+.cw-2 { left: 17.5%; top: calc(50% + 108px); }
+.cw-3 { right: 5%; top: calc(50% + 108px); }
+
+/* Below ~1460px the flanks are too narrow to sit beside the
+   headline; the level line drops to the bottom band instead.
+   X re-flows too: at 993px a 17.5% offset leaves only ~144px
+   between the left pair, less than a plate's width — the two
+   emerald/teal plates overlapped through the 993–1300px slice */
+@media (min-width: 993px) and (max-width: 1461px) {
+    .cred-wrap {
+        top: auto;
+        bottom: 5.5%;
+    }
+
+    .cw-2 {
+        left: 33%;
+    }
+
+    .cw-3 {
+        right: 3%;
+    }
+}
+
+.cw-1 .cred-beam { height: 24vh; }
+.cw-2 .cred-beam { height: 19vh; }
+.cw-3 .cred-beam { height: 22vh; }
+
+/* Station hues (--st: r, g, b) + per-pole plate bodies */
+.creds-field .cred-e { --st: 0, 232, 150;  --pa: #10201B; --pb: #0B1216; }
+.creds-field .cred-t { --st: 32, 170, 205; --pa: #0F1D1E; --pb: #0B1316; }
+.creds-field .cred-c { --st: 62, 107, 255; --pa: #101827; --pb: #0A0F18; }
+
+/* The light cone: the station's shaft of sky reaching down to the
+   plate. Brightens with the cursor's catch (--lit). */
+.creds-field .cred-beam {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    width: 88px;
+    height: 27vh;
+    transform: translateX(-50%);
+    /* -webkit- duplicate: Safari 9.1-13 has no unprefixed basic-shape
+       clip-path — without it the cone paints as a solid rectangle */
+    -webkit-clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+    clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+    background: linear-gradient(180deg,
+        rgba(var(--st), 0) 4%,
+        rgba(var(--st), 0.08) 55%,
+        rgba(var(--st), 0.2));
+    opacity: calc(0.72 + var(--lit, 0) * 0.28);
+    pointer-events: none;
+}
+
+/* The glow pool: the landed light spilling on the ground */
+.creds-field .cred-pool {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 50%;
+    width: 130%;
+    height: 22px;
+    transform: translateX(-50%);
+    background: radial-gradient(50% 100% at 50% 0%,
+        rgba(var(--st), 0.2), transparent 70%);
+    pointer-events: none;
+}
+
+.creds-field .cred {
+    position: relative;
+    z-index: 1;
+    /* the field itself is pointer-events: none; the plates opt back in */
+    pointer-events: auto;
+    padding: 0.8rem 1.15rem 0.85rem;
+    line-height: 1.55;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    /* Machined face in miniature: sky bloom under the rim, diagonal
+       brushed band, 3px striations, corner specular, pole ground
+       bounce, pole body */
+    background:
+        linear-gradient(180deg, rgba(var(--st), 0.12), transparent 58%),
+        linear-gradient(112deg, transparent 32%, rgba(255, 255, 255, 0.045) 44%, transparent 56%),
+        repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.016) 0 1px, transparent 1px 3px),
+        radial-gradient(120% 90% at 0% 0%, rgba(255, 255, 255, 0.05), transparent 44%),
+        linear-gradient(0deg, rgba(var(--st), 0.05), transparent 42%),
+        linear-gradient(165deg, var(--pa), var(--pb));
+    /* Arris bevel insets + staged mount (contact / mid / deep) +
+       pole-coloured bloom */
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+        inset 1px 0 0 rgba(255, 255, 255, 0.02),
+        inset -1px 0 0 rgba(0, 0, 0, 0.35),
+        0 1px 2px rgba(0, 0, 0, 0.5),
+        0 6px 14px rgba(0, 0, 0, 0.38),
+        0 16px 34px rgba(0, 0, 0, 0.3),
+        0 10px 30px rgba(var(--st), 0.09);
+}
+
+/* The skylit rim: the aurora landing on the plate's top arris */
+.creds-field .cred::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 6px;
+    right: 6px;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent,
+        rgba(var(--st), 0.9) 20%, rgba(var(--st), 0.9) 80%, transparent);
+    box-shadow:
+        0 0 10px rgba(var(--st), 0.4),
+        0 0 26px rgba(var(--st), 0.18);
+}
+
+/* The catch: the cursor-steered sky handing extra light to whichever
+   plate sits under it. ADDITIVE ONLY — opacity 0 is the complete rest
+   state; JS drives --lit (0..1); text is never dimmed by this layer */
+.creds-field .cred-catch {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(var(--st), 0.16), transparent 64%);
+    box-shadow: 0 0 24px rgba(var(--st), 0.16);
+    opacity: var(--lit, 0);
+    pointer-events: none;
+}
+
+.creds-field .k {
+    position: relative;
+    z-index: 1;
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.creds-field .v {
+    position: relative;
+    z-index: 1;
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(240, 246, 243, 0.86);
+}
+
+/* Entrance: the landings arrive site by site after the buttons. Each
+   plate rises into place, its light cone draws DOWN from the sky onto
+   it, the pool spills, the rim draws, and the catch flashes once
+   before handing its opacity back to the cursor (the 100% keyframe
+   resolves var(--lit) live, so there is no snap at handoff). The
+   plate rise sits outside the motion media so the global reduced-
+   motion kill completes it instantly; beams/pools/rims/catches use
+   backwards fills whose base styles ARE the finished rest state. */
+body.js .creds-field .cred {
+    opacity: 0;
+    animation: cred-arrive 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+body.js .cw-1 .cred { animation-delay: 0.9s; }
+body.js .cw-2 .cred { animation-delay: 1.1s; }
+body.js .cw-3 .cred { animation-delay: 1.3s; }
+
+@media (prefers-reduced-motion: no-preference) {
+    body.js .creds-field .cred-beam {
+        transform-origin: top center;
+        animation: beam-draw 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    body.js .cw-1 .cred-beam { animation-delay: 1.05s; }
+    body.js .cw-2 .cred-beam { animation-delay: 1.25s; }
+    body.js .cw-3 .cred-beam { animation-delay: 1.45s; }
+
+    body.js .creds-field .cred-pool {
+        animation: pool-fade 0.6s ease backwards;
+    }
+
+    body.js .cw-1 .cred-pool { animation-delay: 1.3s; }
+    body.js .cw-2 .cred-pool { animation-delay: 1.5s; }
+    body.js .cw-3 .cred-pool { animation-delay: 1.7s; }
+
+    body.js .creds-field .cred::before {
+        transform-origin: left;
+        animation: cred-rim-draw 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    body.js .cw-1 .cred::before { animation-delay: 1.25s; }
+    body.js .cw-2 .cred::before { animation-delay: 1.45s; }
+    body.js .cw-3 .cred::before { animation-delay: 1.65s; }
+
+    body.js .creds-field .cred-catch {
+        animation: cred-ignite 0.9s ease backwards;
+    }
+
+    body.js .cw-1 .cred-catch { animation-delay: 1.5s; }
+    body.js .cw-2 .cred-catch { animation-delay: 1.7s; }
+    body.js .cw-3 .cred-catch { animation-delay: 1.9s; }
+}
+
+@keyframes cred-arrive {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes beam-draw {
+    from { transform: translateX(-50%) scaleY(0); }
+}
+
+@keyframes pool-fade {
+    from { opacity: 0; }
+}
+
+@keyframes cred-rim-draw {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+@keyframes cred-ignite {
+    0% { opacity: 0; }
+    45% { opacity: 0.85; }
+    100% { opacity: var(--lit, 0); }
+}
+
+/* Entrance: dawn — the sky blooms up out of the void first, then the
+   content column rises into the light (delays live on the content
+   rules below). Base styles are the end state; reduced motion and
+   no-JS rest fully formed. */
+body.js .hero-aurora {
+    opacity: 0;
+    animation: au-dawn 2.4s ease forwards 0.1s;
+}
+
+@keyframes au-dawn {
+    to { opacity: 1; }
+}
+
+/* The signature gradient is ALIVE here and only here: the hero mints
+   it as moving light, every other surface carries it frozen */
+.hero-headline .grad {
+    background-size: 220% 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    body.js .hero-headline .grad {
+        animation: au-ink 12s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes au-ink {
+    from { background-position: 0% 0; }
+    to { background-position: 100% 0; }
 }
 
 .scroll-indicator {
@@ -252,12 +1424,22 @@ section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
-    color: var(--text-muted-color);
-    font-size: 0.9rem;
-    animation: bounce 2s infinite;
-    opacity: 0;
-    transition: opacity 1s ease;
+    gap: 0.4rem;
+    color: rgba(240, 246, 243, 0.86);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    animation: bounce 2.4s infinite;
+    transition: opacity 0.5s ease;
+}
+
+/* Short windows: the landings line holds the bottom band, so the
+   cue would crowd it */
+@media (max-height: 780px) {
+    .scroll-indicator {
+        display: none;
+    }
 }
 
 @keyframes bounce {
@@ -271,242 +1453,768 @@ section {
     }
 
     40% {
-        transform: translateX(-50%) translateY(-10px);
+        transform: translateX(-50%) translateY(-8px);
     }
 
     60% {
-        transform: translateX(-50%) translateY(-5px);
+        transform: translateX(-50%) translateY(-4px);
     }
 }
 
-.btn-secondary:hover {
-    background: var(--text-color);
-    color: var(--background-color);
-    border-color: var(--text-color);
-}
-
-/* ======== ABOUT SECTION (REDESIGNED) ======== */
-#about {
-    background-color: transparent;
-}
-
+/* ======== ABOUT — TIMELINE ======== */
 .timeline-container {
     position: relative;
     max-width: 700px;
-    margin: 4rem auto 0;
+    margin: 0;
+    padding-left: 0;
 }
 
-.timeline-line {
+.timeline-container::before {
+    content: '';
     position: absolute;
-    left: 24px;
-    top: 0;
+    left: 0;
+    top: -3.25rem;
     bottom: 0;
-    width: 2px;
-    background-color: var(--border-color);
+    width: 1px;
+    /* The thread fades in from above: the story's axis descends out of the
+       hero's field rather than starting cold at the first entry */
+    background: linear-gradient(to bottom, transparent 0%, var(--primary-accent) 16%, var(--secondary-accent) 60%, transparent 100%);
+    opacity: 0.55;
 }
 
 .timeline-item {
     position: relative;
-    padding: 1rem 0 3rem 60px;
-    opacity: 0;
-    transform: translateY(30px);
+    padding: 0.25rem 0 2.75rem 3.2rem;
 }
 
-.timeline-item.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-
-.timeline-icon {
+.timeline-item::before {
+    content: '';
     position: absolute;
-    left: 0;
-    top: 1rem;
-    width: 50px;
-    height: 50px;
-    background-color: var(--surface-color);
-    border: 2px solid var(--border-color);
+    left: -5px;
+    top: 0.55rem;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    color: var(--primary-accent);
-    transition: all 0.3s ease;
+    background: var(--background-color);
+    border: 2px solid var(--primary-accent);
+    box-shadow: 0 0 12px rgba(0, 232, 150, 0.5);
 }
 
-.timeline-item.is-visible .timeline-icon {
-    transform: scale(1);
-    border-color: var(--primary-accent);
-}
-
-.timeline-content {
-    transition: all 0.3s ease;
-    border-radius: 12px;
-    padding: 1.5rem;
-    background: rgba(16, 24, 44, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(5px);
-}
-
-.timeline-item:hover .timeline-content {
-    background-color: var(--surface-color);
-    transform: translateX(10px);
-}
-
-.timeline-item:hover .timeline-icon {
-    transform: scale(1.1);
-    box-shadow: 0 0 15px var(--primary-accent);
+.timeline-marker {
+    position: absolute;
+    left: 1.1rem;
+    top: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted-color);
 }
 
 .timeline-content h3 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     margin-bottom: 0.5rem;
-    color: var(--primary-accent);
+    font-weight: 500;
+}
+
+.timeline-content h3::after {
+    content: '';
+    display: block;
+    width: 26px;
+    height: 2px;
+    margin-top: 0.55rem;
+    background: var(--grad);
 }
 
 .timeline-content p {
     color: var(--text-muted-color);
+    max-width: 60ch;
 }
 
-/* ======== EXPERTISE SECTION ======== */
-.expertise-interactive-map {
-    position: relative;
-    height: 500px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    align-items: center;
-    justify-items: center;
+/* Beyond Work: the channels the thinking travels — the frag grammar
+   (gradient tick + mono k / muted v) promoted to real content in place
+   of a claims paragraph. Every line restates proof already on the site
+   (Featured strip, card 3, the footer marks). */
+.voice-lines {
+    list-style: none;
+    margin: 0 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    max-width: 60ch;
 }
 
-.competency-lines {
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
+.voice-lines li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
 }
 
-.competency-lines line {
-    stroke-width: 1;
-    opacity: 0.3;
-    transition: opacity 0.3s ease;
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 1000;
-    transition: stroke-dashoffset 2s ease-out, opacity 0.3s ease;
+.voice-lines li::before {
+    content: '';
+    width: 14px;
+    height: 2px;
+    flex: none;
+    align-self: center;
+    background: var(--grad);
 }
 
-.competency-lines.draw-active line {
-    stroke-dashoffset: 0;
+.voice-lines .k {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-color);
+    white-space: nowrap;
 }
 
-.expertise-interactive-map:hover .competency-lines line {
-    opacity: 0.3;
+.voice-lines .v {
+    color: var(--text-muted-color);
+    font-size: 0.92rem;
 }
 
-.competency-node {
+.voice-lines .v a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(0, 232, 150, 0.5);
+    transition: color 0.25s ease;
+}
+
+.voice-lines .v a:hover,
+.voice-lines .v a:focus-visible {
+    color: var(--text-color);
+}
+
+/* ======== FEATURED MOMENT ======== */
+.featured-moment-section {
+    padding: 4rem 0 6rem;
+}
+
+.featured-moment-strip {
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
+    gap: 3.5rem;
+    /* The one surface where both poles of the section axis share a face:
+       the Summit is where the decade converged. The base is deliberately
+       NEUTRAL (green = blue, no lean) so the emerald and cobalt washes in
+       ::after carry the two poles evenly. Machined neutral: brushed band,
+       corner specular, striations, body. The mount blooms BOTH poles,
+       emerald off the left edge, cobalt off the right. */
+    background:
+        linear-gradient(116deg, transparent 30%, rgba(220, 240, 248, 0.035) 45%, rgba(240, 250, 252, 0.045) 50%, transparent 66%),
+        radial-gradient(130% 60% at 16% -4%, rgba(240, 246, 243, 0.05), transparent 55%),
+        repeating-linear-gradient(180deg, rgba(240, 250, 252, 0.012) 0 1px, rgba(3, 8, 10, 0.016) 1px 2px, transparent 2px 3px),
+        linear-gradient(180deg, #101C1E 0%, #0B1315 100%);
     border: 1px solid var(--border-color);
-    cursor: pointer;
-    transition: all 0.3s ease;
+    border-top-color: rgba(240, 246, 243, 0.12);
+    border-radius: 16px;
+    padding: 3rem 3.5rem;
+    box-shadow:
+        inset 0 -2px 0 rgba(3, 8, 10, 0.4),
+        inset 0 0 36px rgba(3, 8, 10, 0.16),
+        0 2px 6px rgba(0, 0, 0, 0.4),
+        0 18px 44px -16px rgba(0, 0, 0, 0.55),
+        0 42px 84px -30px rgba(0, 0, 0, 0.6),
+        -18px 30px 80px -34px rgba(0, 232, 150, 0.14),
+        18px 30px 80px -34px rgba(62, 107, 255, 0.16);
+    overflow: hidden;
 }
 
-.competency-node:hover {
-    background-color: var(--surface-color);
-    transform: scale(1.1);
-}
-
-.competency-node span {
-    font-family: var(--font-heading);
-    font-weight: 500;
-    text-align: center;
-}
-
-.node-pulse {
+.featured-moment-strip::before {
+    content: '';
     position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background-color: var(--primary-accent);
-    opacity: 0;
-    animation: pulse 2s infinite;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--grad);
 }
 
-@keyframes pulse {
-    0% {
-        transform: scale(0.9);
-        opacity: 0.5;
-    }
-
-    70% {
-        transform: scale(1.3);
-        opacity: 0;
-    }
-
-    100% {
-        transform: scale(1.3);
-        opacity: 0;
-    }
-}
-
-.competency-details-panel {
+.featured-moment-strip::after {
+    content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 300px;
-    text-align: center;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 40%, rgba(0, 232, 150, 0.1) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 80%, rgba(62, 107, 255, 0.1) 0%, transparent 55%);
     pointer-events: none;
 }
 
-.competency-details-panel h3 {
+/* ======== FEATURED HERO — THE CONVERGENCE ========
+   The selection made visible: a wordless scatter of points (the ~45,000),
+   trajectories that mostly fade out mid-flight, and exactly one line that
+   completes the journey to a glowing dot landing on the photograph.
+   Distinct form; quiet ties: the scatter echoes the hero's field, the
+   drawn line echoes About's thread, the dot is About's dot, arrived. */
+.convergence {
+    position: relative;
+    height: 210px;
+    margin-bottom: 1.4rem;
+}
+
+.convergence svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.cv-field circle {
+    fill: var(--text-color);
+    opacity: 0.22;
+}
+
+.convergence path {
+    fill: none;
+    stroke-width: 1;
+}
+
+.cv-out { stroke: rgba(240, 246, 243, 0.08); }
+.cv-mid { stroke: rgba(240, 246, 243, 0.14); }
+
+.cv-one {
+    stroke: url(#cvg);
+    stroke-width: 1.2;
+    opacity: 0.6;
+}
+
+.cv-dot {
+    position: absolute;
+    left: 18.1%;
+    bottom: -5px;
+    width: 9px;
+    height: 9px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: var(--grad);
+    box-shadow: 0 0 16px rgba(0, 232, 150, 0.65);
+}
+
+/* Draw on arrival: paths sweep in when the section crosses the focal
+   plane; the dot lights last. Static, no-JS, reduced-motion: fully drawn. */
+@media (prefers-reduced-motion: no-preference) {
+    body.js .convergence .cv {
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+        transition: stroke-dashoffset 0.9s ease;
+    }
+
+    body.js .featured-moment-section.is-focal .convergence .cv {
+        stroke-dashoffset: 0;
+    }
+
+    body.js .convergence .cv-mid { transition-delay: 0.15s; }
+    body.js .convergence .cv-one { transition-delay: 0.35s; transition-duration: 1.1s; }
+
+    body.js .convergence .cv-dot {
+        opacity: 0.25;
+        box-shadow: none;
+        transition: opacity 0.5s ease 1.1s, box-shadow 0.5s ease 1.1s;
+    }
+
+    body.js .featured-moment-section.is-focal .convergence .cv-dot {
+        opacity: 1;
+        box-shadow: 0 0 16px rgba(0, 232, 150, 0.65);
+    }
+}
+
+.featured-frame {
+    position: relative;
+    flex-shrink: 0;
+    width: min(300px, 100%);
+    aspect-ratio: 1;
+    z-index: 1;
+}
+
+/* The landing: a short gradient tick where the completed line meets him */
+.featured-frame::before {
+    content: '';
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    width: 2px;
+    height: 26px;
+    transform: translateX(-50%);
+    background: var(--grad);
+    opacity: 0.85;
+}
+
+.featured-moment-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+    object-position: top;
+}
+
+/* Rack focus: with JS + motion, the photo rests slightly out of focus and
+   resolves sharp when the section crosses the focal plane — the funnel's
+   physics (45,000 blurred, 24 sharp) landing on the person himself.
+   Static, no-JS, and reduced-motion renders are always sharp. */
+@media (prefers-reduced-motion: no-preference) {
+    body.js .featured-moment-photo {
+        filter: blur(6px) saturate(0.85);
+        opacity: 0.8;
+        transition: filter 0.7s ease, opacity 0.7s ease;
+    }
+
+    body.js .featured-moment-section.is-focal .featured-moment-photo {
+        filter: blur(0) saturate(1);
+        opacity: 1;
+    }
+}
+
+.featured-moment-content {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+/* The label IS this section's h2 (deliberate ruling: the one-moment section
+   titles itself with the short mono label; the credential statement below is
+   body copy). weight/line-height pin the pre-h2 rendering exactly. */
+.featured-moment-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.7;
     color: var(--primary-accent);
-    font-size: 1.5rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+    display: block;
+}
+
+.featured-moment-statement {
+    font-family: var(--font-heading);
+    color: var(--text-color);
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
     margin-bottom: 1rem;
+    line-height: 1.4;
+    font-weight: 500;
 }
 
-.competency-details-panel ul {
-    list-style: none;
-}
-
-.competency-details-panel li {
+.featured-moment-content .session-line {
     color: var(--text-muted-color);
-    opacity: 0;
-    transform: translateY(10px);
+    margin-bottom: 0.6rem;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    max-width: 62ch;
+}
+
+/* 62ch @0.95rem and 69ch @0.85rem resolve to the same ~500px visual measure */
+.featured-moment-content .closing-line {
+    color: var(--text-muted-color);
+    font-size: 0.85rem;
+    max-width: 69ch;
+}
+
+/* ======== EXPERTISE — PROOF-LINKED COMPETENCIES ========
+   Two-column split: the four competency cards stack on the left; on the
+   right, the punch card. Hovering (or keyboard-focusing) a competency
+   lights up every project that proves it. */
+.expertise-layout {
+    display: grid;
+    grid-template-columns: 1fr minmax(280px, 340px);
+    gap: 3.5rem;
+    align-items: center;
+}
+
+.competency-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+/* ======== THE PUNCH CARD (Expertise hero) ========
+   The proof mapping as a perforated record: seven apertures punched
+   clean through an anodised card, the aurora showing through only where
+   work actually ran (PRISM and Decade One punch twice). Absence is
+   solid metal — unproven pairings were never cut, so no empty cells
+   exist and no scorecard reading is possible. The clipped top-left
+   corner is the punch card's registration cut: the site's corner
+   bracket made physical, its milled edge lit emerald (a LEFT corner in
+   the anchor-frame grammar); a cobalt tick closes the bottom-right.
+   Labels are real HTML type on the rem scale, so the 0.75rem micro
+   floor holds at every column width. Rests fully punched; under
+   desktop + motion + JS the focal band strikes the seven dies one by
+   one in reading order, bidirectionally. */
+.punchcard {
+    width: 100%;
+    max-width: 340px;
+    justify-self: end;
+    /* aria-hidden decoration; its mono labels look like the clickable
+       proof chips beside it, so dead clicks must pass through */
+    pointer-events: none;
+    /* Mount shadows ride drop-shadow so they follow the clipped
+       silhouette; a box-shadow would paint the un-cut rectangle */
+    filter:
+        drop-shadow(0 2px 5px rgba(0, 0, 0, 0.4))
+        drop-shadow(0 16px 26px rgba(0, 0, 0, 0.38))
+        drop-shadow(0 30px 55px rgba(3, 12, 14, 0.35));
+}
+
+.pc-plate {
+    position: relative;
+    /* The registration cut (-webkit- duplicate for old-Safari basic
+       shapes — without it the chamfer ::before floats un-shaved) */
+    -webkit-clip-path: polygon(30px 0, 100% 0, 100% 100%, 0 100%, 0 30px);
+    clip-path: polygon(30px 0, 100% 0, 100% 100%, 0 100%, 0 30px);
+    border-radius: 4px;
+    padding: 2rem 1.8rem 1.5rem;
+    /* Anodised card on the section's emerald pole: brushed band, corner
+       specular, emerald ground-bounce, striations, near-black body */
+    background:
+        linear-gradient(116deg, transparent 30%, rgba(160, 255, 220, 0.04) 45%, rgba(235, 255, 246, 0.05) 50%, transparent 66%),
+        radial-gradient(130% 70% at 18% -6%, rgba(220, 240, 234, 0.08), transparent 55%),
+        radial-gradient(90% 36% at 50% 108%, rgba(0, 232, 150, 0.05), transparent 70%),
+        repeating-linear-gradient(180deg, rgba(235, 255, 246, 0.013) 0 1px, rgba(2, 8, 8, 0.02) 1px 2px, transparent 2px 3px),
+        linear-gradient(180deg, #101B19 0%, #0B1214 58%, #080E10 100%);
+    border: 1px solid rgba(2, 8, 8, 0.65);
+    box-shadow:
+        inset 0 1px 0 rgba(205, 240, 226, 0.13),
+        inset 1px 0 0 rgba(205, 240, 226, 0.05),
+        inset -1px 0 0 rgba(2, 8, 8, 0.35),
+        inset 0 -2px 0 rgba(2, 8, 8, 0.5),
+        inset 0 0 30px rgba(2, 8, 8, 0.25);
+}
+
+/* The milled cut edge catches the light. 2px thick with its outer half
+   shaved by the clip-path, leaving a crisp 1px lit chamfer on the cut */
+.pc-plate::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: -7px;
+    width: 44px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(0, 232, 150, 0.55), rgba(160, 245, 210, 0.18));
+    transform: rotate(-45deg);
+    pointer-events: none;
+}
+
+.pc-plate::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 12px;
+    height: 12px;
+    border-right: 2px solid var(--secondary-accent);
+    border-bottom: 2px solid var(--secondary-accent);
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+/* Etched plate type: filled engraving — dark bite above the glyph, a
+   whisper of lip below (the carve grammar at label scale). "The
+   through-line": the career's connecting thread, and the light
+   literally coming through the lines of holes. His pick, meaning-first
+   wit in the site's own "The X" naming grammar. */
+.pc-head {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(240, 246, 243, 0.62);
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.85), 0 1px 0 rgba(205, 240, 226, 0.07);
+    /* Clears the registration cut */
+    padding-left: 1.1rem;
+    margin-bottom: 1.4rem;
+}
+
+/* Score line between groups: dark groove, light lower lip — the same
+   hairline carve the Ruled Off rules with. Each group is headed by its
+   FULL competency name (the exact wording of its card on the left, so
+   the hover link reads instantly; short codes were not reader-friendly) */
+.pc-group {
+    padding: 0.9rem 0 1rem;
+    border-top: 1px solid rgba(2, 8, 8, 0.6);
+    box-shadow: inset 0 1px 0 rgba(235, 255, 246, 0.05);
+}
+
+.pc-name {
+    display: block;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(240, 246, 243, 0.78);
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.85), 0 1px 0 rgba(205, 240, 226, 0.07);
+    margin-bottom: 0.7rem;
+    transition: color 0.35s ease;
+}
+
+.pc-rows {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.pc-punch {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+/* Aperture hues: the duotone sampled at 7 stops, top of the card
+   emerald to bottom cobalt (the userSpaceOnUse logic in HTML form).
+   --pc-c is the sampled stop, --pc-h its brightened core. */
+.pc-a1 { --pc-c: 0, 232, 150;  --pc-h: 115, 242, 197; }
+.pc-a2 { --pc-c: 10, 212, 168; --pc-h: 120, 231, 207; }
+.pc-a3 { --pc-c: 21, 190, 187; --pc-h: 126, 219, 218; }
+.pc-a4 { --pc-c: 31, 170, 203; --pc-h: 132, 208, 226; }
+.pc-a5 { --pc-c: 42, 150, 222; --pc-h: 138, 197, 237; }
+.pc-a6 { --pc-c: 52, 128, 237; --pc-h: 143, 185, 245; }
+.pc-a7 { --pc-c: 62, 107, 255; --pc-h: 149, 173, 255; }
+
+/* The aperture: a void cut through the plate. The element paints the
+   light coming through; its inset shadows are the die-cut wall (plate
+   thickness occludes the top of the void); the outer glow lives on the
+   ::after carrier so the focal stagger can never delay a hover flare */
+.pc-aperture {
+    position: relative;
+    flex: 0 0 auto;
+    width: 62px;
+    height: 17px;
+    border-radius: 2.5px;
+    background: radial-gradient(130% 150% at 50% 20%, rgba(var(--pc-h), 0.95), rgba(var(--pc-c), 0.5) 78%);
+    box-shadow:
+        inset 0 2px 3px rgba(2, 6, 10, 0.7),
+        inset 0 1px 0 rgba(2, 6, 10, 0.85),
+        0 0 26px rgba(var(--pc-c), 0);
+    transition: box-shadow 0.35s ease;
+}
+
+/* Light spilling onto the face: lip under the aperture + ambient bloom */
+.pc-aperture::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow:
+        0 1px 0 rgba(var(--pc-c), 0.28),
+        0 0 16px rgba(var(--pc-c), 0.32);
+    pointer-events: none;
+}
+
+.pc-label {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted-color);
+    white-space: nowrap;
+    transition: color 0.35s ease;
+}
+
+.pc-label.ghost-focus {
+    background: var(--grad-ink);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Card hover: that competency's name inks gradient and its apertures
+   flare — light pushed harder through the holes that prove it */
+.punchcard.pc-on-1 .pc-group[data-c="1"] .pc-name,
+.punchcard.pc-on-2 .pc-group[data-c="2"] .pc-name,
+.punchcard.pc-on-3 .pc-group[data-c="3"] .pc-name,
+.punchcard.pc-on-4 .pc-group[data-c="4"] .pc-name {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+}
+
+.punchcard.pc-on-1 .pc-group[data-c="1"] .pc-aperture,
+.punchcard.pc-on-2 .pc-group[data-c="2"] .pc-aperture,
+.punchcard.pc-on-3 .pc-group[data-c="3"] .pc-aperture,
+.punchcard.pc-on-4 .pc-group[data-c="4"] .pc-aperture {
+    box-shadow:
+        inset 0 2px 3px rgba(2, 6, 10, 0.7),
+        inset 0 1px 0 rgba(2, 6, 10, 0.85),
+        0 0 26px rgba(var(--pc-c), 0.5);
+}
+
+/* Focal choreography: the card rests scribed but un-struck (each die
+   position covered by a metal slug), then the seven dies punch in
+   reading order — slug pops through, light blooms after it. Gated so
+   no-JS, reduced-motion, and mobile all rest fully punched. */
+@media (min-width: 993px) and (prefers-reduced-motion: no-preference) {
+    body.js .pc-aperture::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        border-radius: inherit;
+        /* The un-struck die: plate metal continues, position scribed */
+        background: linear-gradient(180deg, #0E1917 0%, #0A1113 100%);
+        box-shadow: inset 0 0 0 1px rgba(235, 255, 246, 0.06);
+        opacity: 0;
+        transform: translateY(2px) scale(0.96);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        pointer-events: none;
+    }
+
+    body.js .pc-aperture::after {
+        transition: opacity 0.45s ease;
+    }
+
+    body.js #expertise:not(.is-focal) .pc-aperture::before {
+        opacity: 1;
+        transform: none;
+    }
+
+    body.js #expertise:not(.is-focal) .pc-aperture::after {
+        opacity: 0;
+    }
+
+    /* The strikes, staggered in reading order. Delays live only under
+       .is-focal, so de-focusing re-covers every die at once (the record
+       un-develops in one beat, bidirectional like every field state) */
+    body.js #expertise.is-focal .pc-a1::before { transition-delay: 0.3s; }
+    body.js #expertise.is-focal .pc-a2::before { transition-delay: 0.42s; }
+    body.js #expertise.is-focal .pc-a3::before { transition-delay: 0.54s; }
+    body.js #expertise.is-focal .pc-a4::before { transition-delay: 0.66s; }
+    body.js #expertise.is-focal .pc-a5::before { transition-delay: 0.78s; }
+    body.js #expertise.is-focal .pc-a6::before { transition-delay: 0.9s; }
+    body.js #expertise.is-focal .pc-a7::before { transition-delay: 1.02s; }
+
+    body.js #expertise.is-focal .pc-a1::after { transition-delay: 0.34s; }
+    body.js #expertise.is-focal .pc-a2::after { transition-delay: 0.46s; }
+    body.js #expertise.is-focal .pc-a3::after { transition-delay: 0.58s; }
+    body.js #expertise.is-focal .pc-a4::after { transition-delay: 0.7s; }
+    body.js #expertise.is-focal .pc-a5::after { transition-delay: 0.82s; }
+    body.js #expertise.is-focal .pc-a6::after { transition-delay: 0.94s; }
+    body.js #expertise.is-focal .pc-a7::after { transition-delay: 1.06s; }
+}
+
+.competency-block {
+    border: 1px solid #182827;
+    border-top-color: rgba(160, 245, 210, 0.12);
+    border-radius: 14px;
+    /* Emerald-teal member of the section-surface axis: Expertise is the
+       engine room, the lightest touch of the proof colour. Machined like
+       every plate on the site, at the gentlest alphas */
+    background:
+        linear-gradient(116deg, transparent 32%, rgba(160, 255, 220, 0.028) 46%, rgba(235, 255, 246, 0.038) 51%, transparent 66%),
+        radial-gradient(120% 60% at 18% 0%, rgba(240, 246, 243, 0.045), transparent 55%),
+        radial-gradient(90% 36% at 50% 108%, rgba(0, 232, 150, 0.05), transparent 70%),
+        repeating-linear-gradient(180deg, rgba(235, 255, 246, 0.011) 0 1px, rgba(2, 10, 8, 0.016) 1px 2px, transparent 2px 3px),
+        linear-gradient(180deg, #0F1C1A 0%, #0B1215 100%);
+    padding: 1.8rem 2rem;
+    box-shadow:
+        inset 0 -2px 0 rgba(2, 10, 8, 0.35),
+        inset 0 0 24px rgba(2, 10, 8, 0.16),
+        0 2px 5px rgba(0, 0, 0, 0.35),
+        0 10px 22px -10px rgba(0, 0, 0, 0.45),
+        0 26px 52px -22px rgba(0, 0, 0, 0.5),
+        0 16px 48px -24px rgba(0, 232, 150, 0.12);
+    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.competency-block:hover {
+    border-color: rgba(0, 232, 150, 0.35);
+    transform: translateY(-3px);
+    /* Hover glow stays on the section's own pole (emerald); a cobalt
+       glow here contradicted the surface axis. Layer order mirrors rest */
+    box-shadow:
+        inset 0 -2px 0 rgba(2, 10, 8, 0.35),
+        inset 0 0 24px rgba(2, 10, 8, 0.16),
+        0 3px 7px rgba(0, 0, 0, 0.4),
+        0 14px 30px -12px rgba(0, 0, 0, 0.5),
+        0 32px 60px -24px rgba(0, 0, 0, 0.55),
+        0 18px 54px -24px rgba(0, 232, 150, 0.3);
+}
+
+.competency-block h3 {
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+}
+
+.competency-block p {
+    color: var(--text-muted-color);
+    font-size: 0.92rem;
+    margin-bottom: 1.1rem;
+}
+
+.proof-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.proof-chip {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+    color: var(--primary-accent);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.35rem 0.75rem;
+    cursor: pointer;
+    transition: border-color 0.25s ease, background-color 0.25s ease,
+        transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.proof-chip::before {
+    /* alt-text form keeps the arrow out of the chip's accessible name
+       (it was announcing as "right arrow PRISM"); plain form first for
+       engines without content-alt support */
+    content: '→ ';
+    content: '→ ' / '';
+    color: var(--text-muted-color);
+}
+
+/* Chip lifts off the surface with bracket-grammar bevel hairlines,
+   then presses back down on activation, into the modal */
+.proof-chip:hover,
+.proof-chip:focus-visible {
+    border-color: var(--primary-accent);
+    background: rgba(0, 232, 150, 0.06);
+    transform: translateY(-1px);
+    box-shadow: inset 1px 1px 0 rgba(0, 232, 150, 0.35), inset -1px -1px 0 rgba(62, 107, 255, 0.3);
+}
+
+.proof-chip:active {
+    transform: translateY(0);
 }
 
 /* ======== TYPOGRAPHIC CARD VISUAL ======== */
 .card-visual {
     width: 100%;
-    height: 200px;
-    background: linear-gradient(135deg, var(--surface-color) 0%, rgba(0, 245, 195, 0.04) 100%);
+    height: 190px;
+    /* Base sits on the EMERALD side of the section-surface axis, matching
+       the host card/modal face (the flat --surface-color leaned cobalt and
+       broke the card's own material); duotone washes float on top */
+    background:
+        radial-gradient(80% 90% at 30% 20%, rgba(0, 232, 150, 0.07), transparent 65%),
+        radial-gradient(80% 90% at 80% 90%, rgba(62, 107, 255, 0.08), transparent 65%),
+        repeating-linear-gradient(180deg, rgba(230, 255, 244, 0.01) 0 1px, rgba(2, 10, 8, 0.014) 1px 2px, transparent 2px 3px),
+        #0D1917;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
+    /* Clip the giant ghost-text echo so it can't bleed across neighbouring cards */
     border-bottom: 1px solid var(--border-color);
 }
 
-.card-visual::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, rgba(0, 245, 195, 0.12) 0%, transparent 70%);
-    pointer-events: none;
-}
-
 .card-visual-anchor {
-    font-family: 'Space Mono', monospace;
-    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-family: var(--font-mono);
+    font-size: clamp(2rem, 3.6vw, 3rem);
     font-weight: 700;
-    color: var(--primary-accent);
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     text-align: center;
     position: relative;
     z-index: 1;
@@ -515,22 +2223,28 @@ section {
 }
 
 .card-visual::after {
+    /* alt-text form + the aria-hidden on .card-visual keep the ghost
+       echo from double-announcing against the visible anchor span */
     content: attr(data-anchor);
-    font-family: 'Space Mono', monospace;
+    content: attr(data-anchor) / "";
+    font-family: var(--font-mono);
     font-size: clamp(4rem, 8vw, 7rem);
-    color: var(--primary-accent);
-    opacity: 0.04;
+    color: var(--text-color);
+    opacity: 0.03;
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    /* --fy is written by the field engine on .projects-grid: every card's
+       ghost echo drifts a few px against its sharp anchor (micro-depth) */
+    transform: translate(-50%, calc(-50% + var(--fy, 0px)));
     pointer-events: none;
     white-space: nowrap;
     z-index: 0;
+    -webkit-user-select: none;
     user-select: none;
 }
 
-/* ======== ANCHOR FRAME (PROJECT CARD VISUAL) ======== */
+/* ======== ANCHOR FRAME (CORNER BRACKETS) ======== */
 .anchor-frame {
     position: relative;
     display: inline-flex;
@@ -568,8 +2282,8 @@ section {
 .anchor-frame > span:first-child::after {
     top: 0;
     right: 0;
-    border-top: 2px solid var(--primary-accent);
-    border-right: 2px solid var(--primary-accent);
+    border-top: 2px solid var(--secondary-accent);
+    border-right: 2px solid var(--secondary-accent);
 }
 
 .anchor-frame > span:last-child::before {
@@ -582,26 +2296,30 @@ section {
 .anchor-frame > span:last-child::after {
     bottom: 0;
     right: 0;
-    border-bottom: 2px solid var(--primary-accent);
-    border-right: 2px solid var(--primary-accent);
+    border-bottom: 2px solid var(--secondary-accent);
+    border-right: 2px solid var(--secondary-accent);
 }
 
-.project-card:hover .anchor-frame > span:first-child::before {
+.project-card:hover .anchor-frame > span:first-child::before,
+.project-card:has(.project-link:focus-visible) .anchor-frame > span:first-child::before {
     top: -4px;
     left: -4px;
 }
 
-.project-card:hover .anchor-frame > span:first-child::after {
+.project-card:hover .anchor-frame > span:first-child::after,
+.project-card:has(.project-link:focus-visible) .anchor-frame > span:first-child::after {
     top: -4px;
     right: -4px;
 }
 
-.project-card:hover .anchor-frame > span:last-child::before {
+.project-card:hover .anchor-frame > span:last-child::before,
+.project-card:has(.project-link:focus-visible) .anchor-frame > span:last-child::before {
     bottom: -4px;
     left: -4px;
 }
 
-.project-card:hover .anchor-frame > span:last-child::after {
+.project-card:hover .anchor-frame > span:last-child::after,
+.project-card:has(.project-link:focus-visible) .anchor-frame > span:last-child::after {
     bottom: -4px;
     right: -4px;
 }
@@ -614,117 +2332,120 @@ section {
     overflow: hidden;
 }
 
-/* ======== FEATURED MOMENT SECTION ======== */
-.featured-moment-section {
-    padding: 4rem 0 6rem;
+/* ======== PROJECTS ======== */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1.75rem;
 }
 
-.featured-moment-strip {
+/* The signature's lane: the grid cedes just enough width on the right
+   that the riding mark never sits under the cards. 872px - 48vw is the
+   exact clearance for the mark's width + margins vs the container gutter
+   (zero on very wide screens, where the gutter already fits the lane);
+   100vw - 930px is the best-effort ceiling that keeps cards >= ~270px
+   wide on narrow desktops, where the mark tucks under the cards instead. */
+@media (min-width: 993px) {
+    .projects-grid {
+        margin-right: clamp(0px, min(872px - 48vw, 100vw - 930px), 400px);
+    }
+}
+
+.project-card {
     position: relative;
+    grid-column: span 2;
     display: flex;
-    align-items: center;
-    gap: 3.5rem;
-    background: rgba(0, 245, 195, 0.03);
-    border: 1px solid rgba(0, 245, 195, 0.18);
-    border-radius: 20px;
-    padding: 3rem 3.5rem;
+    flex-direction: column;
+    /* Machined material on the EMERALD side of the section-surface axis
+       (emerald = proof/execution; Work is the evidence). Same fabrication
+       as the Recognition plates, raised instead of recessed: brushed
+       highlight band, corner specular, emerald ground-bounce into the
+       lower edge, fine brushing striations, emerald-black body */
+    background:
+        linear-gradient(116deg, transparent 30%, rgba(150, 255, 210, 0.035) 45%, rgba(230, 255, 244, 0.045) 50%, transparent 66%),
+        radial-gradient(130% 55% at 20% 0%, rgba(240, 246, 243, 0.05), transparent 58%),
+        radial-gradient(90% 40% at 50% 108%, rgba(0, 232, 150, 0.05), transparent 70%),
+        repeating-linear-gradient(180deg, rgba(230, 255, 244, 0.012) 0 1px, rgba(2, 10, 8, 0.018) 1px 2px, transparent 2px 3px),
+        linear-gradient(180deg, #12211D 0%, #0B1218 100%);
+    border-radius: 14px;
+    padding: 0;
+    color: var(--text-color);
+    border: 1px solid #1B2B2C;
+    border-top-color: rgba(160, 245, 210, 0.16);
+    box-shadow:
+        /* Arris: side and bottom edges of the raised face (the top light
+           lives in the lit border), soft vignette pulling the face down */
+        inset 1px 0 0 rgba(200, 255, 228, 0.04),
+        inset -1px 0 0 rgba(2, 10, 8, 0.3),
+        inset 0 -2px 0 rgba(2, 10, 8, 0.4),
+        inset 0 0 30px rgba(2, 10, 8, 0.18),
+        /* Staged mount: contact, mid drop, deep drop, emerald bloom */
+        0 2px 6px rgba(0, 0, 0, 0.4),
+        0 14px 28px -12px rgba(0, 0, 0, 0.5),
+        0 36px 72px -24px rgba(0, 0, 0, 0.6),
+        0 24px 80px -32px rgba(0, 232, 150, 0.2);
+    transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
     overflow: hidden;
+    cursor: pointer;
 }
 
-.featured-moment-strip::before {
+/* The gloss: a diagonal specular sweep across the face, above the
+   card's content layers (a positioned pseudo paints over static
+   children), fading out before it reaches the copy */
+.project-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(155deg, rgba(240, 246, 243, 0.07), rgba(240, 246, 243, 0.02) 24%, transparent 42%);
+}
+
+.project-card::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(to right, transparent, var(--primary-accent), transparent);
+    background: var(--grad);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: 2;
 }
 
-.featured-moment-strip::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 25% 50%, rgba(0, 245, 195, 0.05) 0%, transparent 60%);
-    pointer-events: none;
+/* Keyboard focus lives on the inner .project-link button now — :has()
+   lifts the whole card when it's focused (old engines fall back to the
+   button's own outline, still a visible indicator) */
+.project-card:hover,
+.project-card:has(.project-link:focus-visible) {
+    transform: translateY(-6px);
+    border-color: rgba(0, 232, 150, 0.35);
+    /* Same layer order as rest so the shadow interpolates smoothly:
+       arris unchanged, mount lifts deeper, bloom brightens */
+    box-shadow:
+        inset 1px 0 0 rgba(200, 255, 228, 0.04),
+        inset -1px 0 0 rgba(2, 10, 8, 0.3),
+        inset 0 -2px 0 rgba(2, 10, 8, 0.4),
+        inset 0 0 30px rgba(2, 10, 8, 0.18),
+        0 4px 10px rgba(0, 0, 0, 0.45),
+        0 22px 44px -14px rgba(0, 0, 0, 0.6),
+        0 48px 92px -26px rgba(0, 0, 0, 0.68),
+        0 28px 90px -30px rgba(0, 232, 150, 0.32);
 }
 
-.featured-moment-photo {
-    flex-shrink: 0;
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: top;
-    border: 2px solid rgba(0, 245, 195, 0.35);
-    box-shadow: 0 0 35px rgba(0, 245, 195, 0.15);
-    position: relative;
-    z-index: 1;
+.project-card:hover::after,
+.project-card:has(.project-link:focus-visible)::after {
+    opacity: 1;
 }
 
-.featured-moment-content {
-    flex: 1;
-    position: relative;
-    z-index: 1;
-}
-
-.featured-moment-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--primary-accent);
-    letter-spacing: 0.22em;
+.card-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    margin-bottom: 0.85rem;
-    display: block;
-}
-
-.featured-moment-content h2 {
-    font-size: clamp(1.1rem, 2vw, 1.5rem);
-    margin-bottom: 1rem;
-    color: var(--text-color);
-    line-height: 1.4;
-    font-weight: 700;
-}
-
-.featured-moment-content .session-line {
-    font-style: italic;
     color: var(--text-muted-color);
-    margin-bottom: 0.6rem;
-    font-size: 0.95rem;
-    line-height: 1.7;
-}
-
-.featured-moment-content .closing-line {
-    color: var(--text-muted-color);
-    font-size: 0.85rem;
-    opacity: 0.75;
-}
-
-/* ======== PROJECTS SECTION ======== */
-#projects {
-    background-color: transparent;
-}
-
-.projects-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 2rem;
-    perspective: 1500px;
-}
-
-.project-card {
-    grid-column: span 2;
-    display: block;
-    background: rgba(16, 24, 44, 0.6);
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-    padding: 0;
-    text-decoration: none;
-    color: var(--text-color);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
-    will-change: transform;
-    overflow: hidden;
+    margin: 1.5rem 1.5rem 0.35rem;
 }
 
 /* Centre the last two cards (4th and 5th) in the second row */
@@ -737,34 +2458,69 @@ section {
 }
 
 .project-card h3 {
-    font-size: 1.5rem;
-    margin: 1.5rem 1.5rem 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin: 0 1.5rem 0.5rem;
+    letter-spacing: -0.01em;
 }
 
 .project-card p {
     color: var(--text-muted-color);
-    margin: 0 1.5rem 1.5rem;
+    font-size: 0.92rem;
+    margin: 0 1.5rem 1.35rem;
+}
+
+/* The kicker is a p too — restate its micro-label size at higher
+   specificity so the body rule above can't inflate it (0.92rem wrapped
+   preCaution's kicker and knocked row-1 titles out of alignment) */
+.project-card p.card-kicker {
+    font-size: 0.75rem;
 }
 
 .project-tags {
     display: flex;
     gap: 0.5rem;
-    margin: 0 1.5rem 1.5rem;
+    margin: 0 1.5rem 1.35rem;
+    flex-wrap: wrap;
 }
 
 .project-tags span {
-    background-color: var(--border-color);
-    color: var(--primary-accent);
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted-color);
+    border: 1px solid var(--border-color);
+    padding: 0.25rem 0.7rem;
+    border-radius: 6px;
 }
 
 .project-link {
+    /* A real <button> now (the card's only control) — reset the UA face */
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    line-height: inherit;
+    text-align: right;
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 0.5rem;
-    font-family: var(--font-heading);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--primary-accent);
+    /* margin-top auto pins every card's link to the bottom-right corner,
+       regardless of how much copy sits above it */
+    margin: auto 1.5rem 1.4rem;
+}
+
+/* Stretched hit area: the whole card stays one click target, exactly as
+   when the card itself was the button */
+.project-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
 }
 
 .project-link i {
@@ -775,237 +2531,1093 @@ section {
     transform: translateX(5px);
 }
 
-.project-link {
-    justify-content: flex-end;
-    /* Align View Impact to the right */
-    margin-right: 1.5rem;
-    /* Explicitly keep the margin if needed, or rely on cascade */
-}
-
-/* ======== RECOGNITION SECTION ======== */
-#recognition {
-    background-color: transparent;
-}
-
-.recognition-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    max-width: 900px;
-    margin: 0 auto;
+/* ======== RECOGNITION — LEDGER ======== */
+/* Four engraved plates: the honours as physical objects. 2x2 across the
+   full container width, each a machined plate — anodised cobalt-steel,
+   brushed anisotropic sheen, a true chamfered edge, a scored plaque
+   frame, deep mount shadow — with the result debossed into its face.
+   Materially the opposite of the Work cards (recessed carve vs raised
+   UI surface, near-square corners, non-interactive). ONE light for all
+   four plates: up and slightly left, the site's lit-top-edge grammar.
+   Ruled Off closes the set beneath. */
+.recognition-ledger {
+    list-style: none;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
 }
 
 .recognition-item {
-    padding: 1.75rem 2rem;
-    background: rgba(16, 24, 44, 0.6);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    border-left: 3px solid var(--primary-accent);
-    opacity: 0;
-    transform: translateX(-20px);
-    transition: opacity 0.5s ease, transform 0.5s ease, border-left-color 0.3s ease;
-}
-
-.recognition-item.is-visible {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.recognition-item:hover {
-    border-left-color: var(--secondary-accent);
-    transform: translateX(6px);
-}
-
-.recognition-item h3 {
-    font-size: 1.05rem;
-    color: var(--text-color);
-    margin-bottom: 0.4rem;
-}
-
-.recognition-item p {
-    color: var(--text-muted-color);
-    font-size: 0.95rem;
-    line-height: 1.65;
-}
-
-/* ======== VISION SECTION ======== */
-#vision {
-    background-color: var(--background-color);
-}
-
-.vision-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-}
-
-.vision-orb-container {
     position: relative;
-    width: 100%;
-    padding-top: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 2.6rem 2.4rem;
+    /* The plate body, cobalt-steel register (cobalt = trajectory/honour;
+       cold engraved metal). Layers, top to bottom: one broad diagonal
+       brushed highlight (anisotropic sheen — brushed metal reflects in a
+       band, not a point), the corner specular from the site's light,
+       a faint cobalt ground-bounce into the lower edge, fine horizontal
+       brushing striations, then the anodised body falling near-black */
+    background:
+        linear-gradient(116deg, transparent 30%, rgba(150, 178, 255, 0.04) 45%, rgba(226, 236, 255, 0.05) 50%, transparent 66%),
+        radial-gradient(130% 85% at 16% -6%, rgba(202, 218, 255, 0.10), transparent 52%),
+        radial-gradient(90% 40% at 50% 108%, rgba(62, 107, 255, 0.07), transparent 70%),
+        repeating-linear-gradient(180deg, rgba(226, 236, 255, 0.014) 0 1px, rgba(2, 6, 12, 0.02) 1px 2px, transparent 2px 3px),
+        linear-gradient(180deg, #131B2B 0%, #0D1420 58%, #0A0F18 100%);
+    /* Die-cut rim: a translucent dark border darkens whatever the plate
+       gradient is at the edge — the outline that separates metal from void */
+    border: 1px solid rgba(2, 6, 12, 0.65);
+    border-radius: 4px;
+    box-shadow:
+        /* Arris light: top edge catches the light, left a grazing touch,
+           right falls off, bottom edge in its own occlusion — the base
+           bevel that also serves browsers without the masked chamfer */
+        inset 0 1px 0 rgba(205, 221, 255, 0.14),
+        inset 1px 0 0 rgba(205, 221, 255, 0.05),
+        inset -1px 0 0 rgba(2, 6, 12, 0.35),
+        inset 0 -2px 0 rgba(2, 6, 12, 0.5),
+        /* Soft face vignette: pulls the face down toward its edges */
+        inset 0 0 30px rgba(2, 6, 12, 0.25),
+        /* The mount: tight contact shadow, mid drop, deep soft drop,
+           and the cobalt ambient bloom of metal near the aurora */
+        0 2px 6px rgba(0, 0, 0, 0.45),
+        0 14px 28px -12px rgba(0, 0, 0, 0.55),
+        0 36px 72px -24px rgba(0, 0, 0, 0.65),
+        0 28px 84px -36px rgba(62, 107, 255, 0.25);
 }
 
-.vision-lines {
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-}
-
-.vision-lines line {
-    stroke: var(--border-color);
-    stroke-width: 1;
-    stroke-dasharray: 400;
-    stroke-dashoffset: 400;
-    transition: stroke-dashoffset 2s ease-out;
-}
-
-.vision-lines.draw-active line {
-    stroke-dashoffset: 0;
-}
-
-.vision-orb {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100px;
-    height: 100px;
-    background: radial-gradient(circle, var(--primary-accent) 0%, var(--surface-color) 70%);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 0 50px var(--primary-accent);
-    animation: orb-pulse 4s infinite ease-in-out;
-}
-
-@keyframes orb-pulse {
-    50% {
-        transform: translate(-50%, -50%) scale(1.1);
+/* The chamfer: a 2px milled face running around the plate, light where
+   it tilts toward the light (top), dark where it tilts away (bottom),
+   with a whisper of cobalt bounce on the bottom run. A gradient ring cut
+   by mask-composite; guarded so non-supporting browsers keep the plain
+   box-shadow bevel instead of an unmasked gradient slab. */
+@supports ((-webkit-mask-composite: xor) or (mask-composite: exclude)) {
+    .recognition-item::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 3px;
+        padding: 2px;
+        pointer-events: none;
+        background:
+            linear-gradient(90deg, rgba(205, 221, 255, 0.05), transparent 18%, transparent 82%, rgba(2, 6, 12, 0.30)),
+            linear-gradient(180deg, rgba(216, 229, 255, 0.30) 0%, rgba(170, 192, 255, 0.10) 14%, rgba(110, 130, 180, 0.04) 45%, rgba(2, 6, 12, 0.30) 82%, rgba(90, 120, 190, 0.16) 100%);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: exclude;
     }
 }
 
-.vision-pillar {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    transition: transform 0.3s ease;
-}
-
-.vision-pillar span {
-    display: block;
-    background: var(--surface-color);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
-    white-space: nowrap;
-}
-
-.vision-pillar:hover {
-    transform: translate(-50%, -50%) scale(1.1);
-}
-
-#pillar-1 {
-    top: 26.25%;
-    left: 73.75%;
-}
-
-#pillar-2 {
-    top: 26.25%;
-    left: 26.25%;
-}
-
-#pillar-3 {
-    top: 73.75%;
-    left: 26.25%;
-}
-
-#pillar-4 {
-    top: 73.75%;
-    left: 73.75%;
-}
-
-.vision-card {
-    padding: 3rem;
-    border-radius: 20px;
-    text-align: left;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-    /* Match theme border */
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-    /* Enhanced shadow */
-}
-
-.vision-card::before {
+/* The scored frame: the fine line a plaque engraver rules inside the
+   edge before cutting the legend. Same carve grammar as the engraving
+   at hairline scale — dark groove, light lower lip (inset top shadow =
+   lip under the top run; outset bottom shadow = lip under the bottom
+   run; verticals catch no lip under a top light). */
+.recognition-item::after {
     content: '';
     position: absolute;
+    inset: 12px;
+    border-radius: 1px;
+    border: 1px solid rgba(2, 6, 12, 0.55);
+    box-shadow:
+        inset 0 1px 0 rgba(205, 221, 255, 0.05),
+        0 1px 0 rgba(205, 221, 255, 0.05);
+    pointer-events: none;
+}
+
+/* The engraving: what a trophy engraves — the result itself. Real copy
+   (read by screen readers; the titles carry event and year). Debossed:
+   the glyph sits in shadow below the plate's surface, the thin light
+   line under each letter is the light catching the lower lip of the
+   cut. The focal band inks the carve via the stacked ::before
+   duplicate. Static, no-JS, reduced-motion: rests fully inked. */
+.ledger-engraving {
+    position: relative;
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(2.4rem, 3.2vw, 3.4rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    /* The recess: glyph darker than any point on the plate face */
+    color: #05080F;
+    /* Under the top light a cut reads as: shadow inside its upper edge
+       (the dark -1px above), a crisp light lip on the lower edge of the
+       cut, and a softer cool spill under that lip */
+    text-shadow:
+        0 1px 0 rgba(208, 223, 255, 0.13),
+        0 2px 3px rgba(120, 150, 215, 0.05),
+        0 -1px 1px rgba(0, 0, 0, 0.9);
+    margin-bottom: 1.5rem;
+}
+
+/* The ink floats on the carved glyph: z-index lifts it above the dark
+   base (a ::before otherwise paints BEHIND its element's text), while
+   the parent's lit lower lip still peeks out beneath, so the inked
+   state keeps reading as depth */
+.ledger-engraving::before {
+    content: attr(data-e);
+    /* alt-text form: keeps the ink out of the accessibility tree so the
+       result isn't announced twice; older browsers fall back to the line above */
+    content: attr(data-e) / "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    /* The lifted-cobalt ink: brighter light through the carve (his call,
+       Option B1) — the engraving stays a 3D cut, the glow gains ~1pt of
+       contrast on the right-hand plates (Champion / Runner-up) */
+    background: var(--grad-ink);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+}
+
+.ledger-title {
+    display: block;
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: clamp(1.15rem, 1.4vw, 1.35rem);
+    letter-spacing: -0.01em;
+    /* as an h3 the global heading rule would impose 1.2; pin the inherited body rhythm */
+    line-height: 1.7;
+    color: var(--text-color);
+    margin-bottom: 0.45rem;
+}
+
+.ledger-note {
+    display: block;
+    color: var(--text-muted-color);
+    font-size: 0.92rem;
+    line-height: 1.65;
+    max-width: 48ch;
+}
+
+/* ======== VISION — THE MACRO STATEMENT ======== */
+/* Centred on the vista's axis: statement, path, and destination dot
+   share one vertical line */
+.vision-statement {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: clamp(1.6rem, 3.2vw, 2.5rem);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 24ch;
+    color: var(--text-color);
+}
+
+/* ======== FIELD SYSTEM (v14 "FOCAL PLANE") ========
+   One field, three laws: quantized depth tiers (reusing the hero's frag
+   optics), the content plane never moves, decorative layers settle to rest
+   exactly when their section crosses the focal plane (the scrollspy band).
+   All field markup is static HTML — JS only adds motion. */
+
+.section-field {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Promote field layers only where the engine actually runs */
+@media (min-width: 993px) and (prefers-reduced-motion: no-preference) {
+    [data-fz] {
+        will-change: transform;
+    }
+}
+
+/* Deep tier: the card-visual ghost-echo recipe promoted to section scale */
+.section-ghost {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(7rem, 13vw, 12rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--text-color);
+    opacity: 0.03;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.featured-ghost { top: -1.5rem; right: 0; font-size: clamp(6rem, 11vw, 10rem); }
+.projects-ghost { top: 3.2rem; right: -1rem; }
+.recognition-ghost { top: 3rem; right: -0.5rem; font-size: clamp(5.5rem, 10vw, 9rem); }
+
+/* ======== ABOUT HERO — THE ASSEMBLING FRAME ========
+   The corner bracket is the site's mark for "in focus" (cursor, Summit
+   portrait, footer terminus). Here it becomes the section's hero: a frame
+   with a single dot at its center, and each chapter of The Story draws one
+   corner as it crosses the reading band. Read the story, close the frame.
+   No text, nothing to go stale. Fully assembled without JS. */
+.about-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 700px) 1fr;
+    gap: 4rem;
+    align-items: stretch;
+}
+
+.about-frame-col {
+    position: relative;
+}
+
+.about-frame {
+    position: sticky;
+    /* Center the frame on the focal plane (the 40-45% reading band the
+       scrollspy uses), so it rides level with whichever chapter is
+       currently drawing its corner */
+    top: calc(42.5vh - 150px);
+    width: min(300px, 100%);
+    aspect-ratio: 1;
+    /* Right: pushed past the content column toward the viewport edge, but
+       clamped so narrower desktops never clip it. Bottom: shortens the
+       sticky travel so the frame detaches with the story's last chapter
+       instead of riding into the next section's arrival. */
+    margin: 0 calc(-1 * clamp(0px, 50vw - 600px, 3.5rem)) 8rem auto;
+}
+
+.about-frame::before {
+    content: '';
+    position: absolute;
+    inset: 14%;
+    background:
+        radial-gradient(circle at 40% 38%, rgba(0, 232, 150, 0.10), transparent 62%),
+        radial-gradient(circle at 62% 64%, rgba(62, 107, 255, 0.10), transparent 62%);
+    filter: blur(18px);
+    pointer-events: none;
+}
+
+.afc {
+    position: absolute;
+    width: 54px;
+    height: 54px;
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.afc-tl {
     top: 0;
     left: 0;
-    width: 4px;
+    border-top: 2.5px solid var(--primary-accent);
+    border-left: 2.5px solid var(--primary-accent);
+}
+
+.afc-tr {
+    top: 0;
+    right: 0;
+    border-top: 2.5px solid var(--secondary-accent);
+    border-right: 2.5px solid var(--secondary-accent);
+}
+
+.afc-bl {
+    bottom: 0;
+    left: 0;
+    border-bottom: 2.5px solid var(--primary-accent);
+    border-left: 2.5px solid var(--primary-accent);
+}
+
+.afc-br {
+    bottom: 0;
+    right: 0;
+    border-bottom: 2.5px solid var(--secondary-accent);
+    border-right: 2.5px solid var(--secondary-accent);
+}
+
+.af-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    margin: -5px 0 0 -5px;
+    border-radius: 50%;
+    background: var(--grad);
+    box-shadow: 0 0 18px rgba(0, 232, 150, 0.45);
+    transition: opacity 0.45s ease, box-shadow 0.45s ease;
+}
+
+/* Story completed: the closed frame's dot burns brighter */
+.about-frame.built-4 .af-dot {
+    box-shadow: 0 0 28px rgba(0, 232, 150, 0.75);
+}
+
+/* JS + motion: corners start withdrawn and draw in as chapters are read;
+   scrolling back up lets them recede. Static page shows the full frame. */
+@media (prefers-reduced-motion: no-preference) {
+    body.js .afc {
+        opacity: 0;
+    }
+
+    body.js .afc-tl { transform: translate(-12px, -12px); }
+    body.js .afc-tr { transform: translate(12px, -12px); }
+    body.js .afc-bl { transform: translate(-12px, 12px); }
+    body.js .afc-br { transform: translate(12px, 12px); }
+
+    body.js .about-frame.built-1 .afc-tl,
+    body.js .about-frame.built-2 .afc-tr,
+    body.js .about-frame.built-3 .afc-bl,
+    body.js .about-frame.built-4 .afc-br {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+
+    body.js .about-frame:not(.built-1) .af-dot {
+        opacity: 0.45;
+        box-shadow: none;
+    }
+}
+
+/* Featured Moment: the funnel labels annotate the convergence diagram's
+   stages — wide field, surviving cluster, the final few. Plus the one
+   coordinate in the story that isn't Singapore's. */
+.fm1 { top: 8.6rem; right: 7%; }
+.fm2 { top: 12.4rem; right: 32%; }
+.fm3 { top: 16.2rem; left: 27%; }
+.fm4 { bottom: 2rem; left: 4%; }
+
+/* ======== WORK HERO — THE SIGNATURE ========
+   The section's name made literal: a YG monogram, the mark a finished
+   canvas is signed with. It rides the lower right of the viewport for the
+   whole section (sticky, so it leads the section in and never leaves the
+   frame), inked in by the scroll itself — the field engine scrubs the
+   stroke to reading progress — then docks into the grid's open
+   bottom-right corner, complete, exactly where a canvas is signed. */
+/* The field is the sticky rail: flex-end pins the mark's natural (docked)
+   position at the section's bottom-right; the absolute ghost ignores flex */
+#projects .section-field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.signature-mark {
+    position: sticky;
+    bottom: 2.5rem;
+    width: min(280px, 23vw);
+    aspect-ratio: 320 / 360;
+    /* Right: hug the viewport edge so the ride lives in the gutter beside
+       the card column as much as the screen allows. Bottom: the docked
+       resting offset above the section's end. */
+    margin: 0 clamp(1.25rem, 2vw, 2.5rem) 2rem 0;
+}
+
+/* The engraved track: the full monogram is legibly present from first
+   glance, so the mark has real static weight before any scroll; the
+   gradient pen inks over it as you read */
+.signature-track {
+    fill: none;
+    stroke: var(--text-color);
+    stroke-width: 7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.14;
+}
+
+.signature-mark svg {
+    display: block;
+    width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, var(--primary-accent), var(--secondary-accent));
+    overflow: visible;
 }
 
-.vision-text p {
-    font-size: 1.1rem;
+.signature-path {
+    fill: none;
+    stroke: url(#sig-grad);
+    stroke-width: 7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.55;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+}
+
+.signature-dot {
+    fill: url(#sig-grad);
+    opacity: 0.7;
+}
+
+/* JS + motion + desktop: the scroll holds the pen (the field engine scrubs
+   stroke-dashoffset). Static, no-JS, reduced-motion: fully signed. */
+@media (prefers-reduced-motion: no-preference) and (min-width: 993px) {
+    body.js .signature-path {
+        stroke-dashoffset: 1;
+    }
+}
+
+/* ======== RECOGNITION HERO — RULED OFF ========
+   The ledger's own grammar for "final and audited": the closing double
+   rule beneath the last entry. Rests as two quiet hairlines (the ledger's
+   ruling, always present); the field engine inks the gradient across them
+   scrubbed to reading progress, so the account closes exactly as the
+   reader finishes the record. The pen lifts onto the dot. Recognition
+   rules off what is; Vision's dashed PROPOSED line below it drafts what
+   isn't yet. */
+.ruled-off {
+    position: relative;
+    height: 7px;
+    margin-top: 2rem;
+}
+
+/* The resting ruling: same hairline vocabulary as the row borders, now
+   scored into the page like the plates' frames — dark groove with the
+   light lower lip of the cut, so the ledger and its close are cut from
+   one material */
+.ruled-off::before,
+.ruled-off::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--border-color);
+    box-shadow: 0 1px 0 rgba(205, 221, 255, 0.045);
+}
+
+.ruled-off::before { top: 0; }
+.ruled-off::after { bottom: 0; }
+
+.ro-ink {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--grad);
+    transform-origin: left center;
+}
+
+.ro-ink-1 { top: 0; }
+.ro-ink-2 { bottom: 0; }
+
+.ro-dot {
+    position: absolute;
+    right: -16px;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    margin-top: -3px;
+    border-radius: 50%;
+    background: var(--grad);
+    box-shadow: 0 0 14px rgba(0, 232, 150, 0.55);
+}
+
+/* JS + motion + desktop: the scroll holds the pen (the field engine
+   scrubs scaleX to section reading progress; .ro-done lands the dot).
+   Static, no-JS, reduced-motion, mobile: fully ruled off. */
+@media (prefers-reduced-motion: no-preference) and (min-width: 993px) {
+    body.js .ro-ink {
+        transform: scaleX(0);
+    }
+
+    body.js .ro-dot {
+        opacity: 0;
+        transition: opacity 0.45s ease;
+    }
+
+    body.js .ruled-off.ro-done .ro-dot {
+        opacity: 1;
+    }
+}
+
+/* --- Timeline: the field's time axis, drawn down the decade on scroll --- */
+.timeline-progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--grad);
+    transform: scaleY(0);
+    transform-origin: top;
+    display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    body.js .timeline-progress {
+        display: block;
+    }
+
+    /* Focal states are additive only: the item crossing the reading band
+       gains emphasis, nothing legible is ever dimmed */
+    body.js .timeline-item::before {
+        transition: box-shadow 0.3s ease;
+    }
+
+    body.js .timeline-item.is-focal::before {
+        box-shadow: 0 0 16px rgba(0, 232, 150, 0.85);
+    }
+
+    body.js .timeline-item.is-focal .timeline-marker {
+        background: var(--grad);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+}
+
+/* Ledger: engravings rest as bare carve; the field engine inks the
+   plates ONE BY ONE in reading order, scrubbed to ledger progress
+   (is-focal is engine-owned here, not band-owned — side-by-side plates
+   share a Y, so the viewport band could only ever light pairs).
+   The ink arrives as a left-to-right WIPE (clip-path, compositor-
+   friendly), light sweeping along the cut the way a graver draws a
+   stroke — not an opacity fade — and the carve's light lip brightens
+   as the light catches it. Negative insets keep antialiasing and the
+   descenders of "Runner-up" outside the clip line; the rest state
+   over-clips past 100% so no left-edge sliver ever shows. If clip-path
+   were ever unsupported the rule drops and the ink simply rests inked.
+   Static, no-JS, reduced-motion, mobile (engine off): rest fully inked. */
+@media (prefers-reduced-motion: no-preference) and (min-width: 993px) {
+    body.js .ledger-engraving {
+        transition: text-shadow 0.8s ease;
+    }
+
+    body.js .ledger-engraving::before {
+        /* -webkit- duplicates enable the wipe on Safari 9.1-13 (no
+           unprefixed basic-shape clip-path); in every current engine the
+           standard line immediately after carries the identical value and
+           wins, so rendering is unchanged. */
+        -webkit-clip-path: inset(-0.2em 102% -0.25em -0.05em);
+        clip-path: inset(-0.2em 102% -0.25em -0.05em);
+        transition: clip-path 0.9s cubic-bezier(0.22, 0.1, 0.25, 1);
+    }
+
+    body.js .recognition-item.is-focal .ledger-engraving::before {
+        -webkit-clip-path: inset(-0.2em -0.25em -0.25em -0.05em);
+        clip-path: inset(-0.2em -0.25em -0.25em -0.05em);
+    }
+
+    /* The catchlight: additive only — the resting lip stays, focus turns
+       it up as the sweep passes */
+    body.js .recognition-item.is-focal .ledger-engraving {
+        text-shadow:
+            0 1px 0 rgba(214, 228, 255, 0.22),
+            0 2px 4px rgba(130, 160, 225, 0.10),
+            0 -1px 1px rgba(0, 0, 0, 0.9);
+    }
+}
+
+
+
+/* --- Vision: THE HORIZON. The only section that opens INWARD: a true
+   CSS-3D perspective plane recedes to a vanishing point, the dashed
+   PROPOSED path (the site's unbuilt grammar) runs from the reader's
+   feet into the distance, and the terminus dot — every hero's pen-lift,
+   promoted to destination — waits on the horizon line. The grid drifts
+   toward the viewer in motion: travelling forward. The statement floats
+   in the sky, static; the content plane never moves. --- */
+.vision-section {
+    /* The horizon is anchored a fixed height above the section's BOTTOM,
+       so however the statement wraps, the vista starts below it — the
+       bottom padding is the vista's sky-to-floor room */
+    --hzb: 30vh;
+    --hz: calc(100% - var(--hzb));
+    padding-bottom: 38vh;
+}
+
+.horizon-stage {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    perspective: 900px;
+    perspective-origin: 50% var(--hz);
+}
+
+/* The floor: rotated into the screen, hinged at the horizon line.
+   Oversized sideways so its edges never enter the frame. */
+.horizon-plane {
+    position: absolute;
+    left: -40%;
+    right: -40%;
+    top: var(--hz);
+    height: 120%;
+    transform: rotateX(78deg);
+    transform-origin: 50% 0;
+    overflow: hidden;
+}
+
+/* The grid rides inside the plane and loops by exactly two cells via
+   transform (compositor-friendly). Layers: the dashed centre path,
+   then cross-lines emerald/cobalt. */
+.horizon-grid {
+    position: absolute;
+    inset: -160px 0 0 0;
+    background:
+        repeating-linear-gradient(to bottom, rgba(62, 107, 255, 0.85) 0 24px, transparent 24px 80px) 50% 0 / 3px 100% no-repeat,
+        repeating-linear-gradient(to right, rgba(0, 232, 150, 0.10) 0 1px, transparent 1px 80px),
+        repeating-linear-gradient(to bottom, rgba(62, 107, 255, 0.13) 0 1px, transparent 1px 80px);
+}
+
+@keyframes horizon-travel {
+    to {
+        transform: translateY(160px);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .horizon-grid {
+        animation: horizon-travel 9s linear infinite;
+    }
+}
+
+/* Atmosphere: the far field dissolves into haze at the horizon, and an
+   aurora bloom sits behind the destination */
+.horizon-fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(var(--hz) - 1px);
+    height: 34%;
+    background: linear-gradient(to bottom, var(--background-color) 10%, rgba(6, 9, 11, 0) 100%);
+}
+
+.horizon-glow {
+    position: absolute;
+    left: 50%;
+    top: var(--hz);
+    width: min(680px, 70vw);
+    height: 250px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(50% 55% at 50% 58%,
+            rgba(0, 232, 150, 0.13),
+            rgba(62, 107, 255, 0.07) 55%,
+            transparent 78%);
+}
+
+/* The destination */
+.horizon-dot {
+    position: absolute;
+    left: 50%;
+    top: var(--hz);
+    width: 10px;
+    height: 10px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--grad);
+    box-shadow:
+        0 0 22px rgba(0, 232, 150, 0.75),
+        0 0 60px rgba(62, 107, 255, 0.4);
+}
+
+.vision-substatement {
     color: var(--text-muted-color);
-    margin-bottom: 1.5rem;
-    line-height: 1.8;
+    font-size: 1.02rem;
+    line-height: 1.7;
+    max-width: 56ch;
+    margin: 1.4rem auto 0;
+    text-align: center;
 }
 
-.vision-text p strong {
-    color: var(--text-color);
-    font-size: 1.2rem;
+/* --- Footer: the field resolves. The only fully closed anchor frame on the
+   site — the reader arrives at the one thing in permanent focus. --- */
+.footer-frame {
+    position: relative;
+    padding: 2.75rem 3rem;
+}
+
+.footer-frame > span:first-child,
+.footer-frame > span:last-child {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.footer-frame > span:first-child::before,
+.footer-frame > span:first-child::after,
+.footer-frame > span:last-child::before,
+.footer-frame > span:last-child::after {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+}
+
+.footer-frame > span:first-child::before {
+    top: 0;
+    left: 0;
+    border-top: 2px solid var(--primary-accent);
+    border-left: 2px solid var(--primary-accent);
+}
+
+.footer-frame > span:first-child::after {
+    top: 0;
+    right: 0;
+    border-top: 2px solid var(--secondary-accent);
+    border-right: 2px solid var(--secondary-accent);
+}
+
+.footer-frame > span:last-child::before {
+    bottom: 0;
+    left: 0;
+    border-bottom: 2px solid var(--primary-accent);
+    border-left: 2px solid var(--primary-accent);
+}
+
+.footer-frame > span:last-child::after {
+    bottom: 0;
+    right: 0;
+    border-bottom: 2px solid var(--secondary-accent);
+    border-right: 2px solid var(--secondary-accent);
 }
 
 /* ======== FOOTER ======== */
 .footer {
-    padding: 6rem 2rem 2rem;
-    background-color: transparent;
-    text-align: center;
+    position: relative;
+    padding: 6rem 0 2rem;
+    text-align: left;
+}
+
+/* The arrival: the Horizon's centre-axis path continues across the
+   section boundary and turns solid — dashed is the site's word for
+   "proposed"; the line is real at the point of contact. It spans the
+   footer's top padding exactly, landing dot-first on the frame. */
+.arrival-path {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 6rem;
+    margin-left: -1px;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(to bottom, rgba(62, 107, 255, 0.55) 0 6px, transparent 6px 14px) 0 0 / 2px 42% no-repeat,
+        linear-gradient(180deg, var(--secondary-accent), var(--primary-accent)) 0 100% / 2px 54% no-repeat;
+}
+
+.arrival-path::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -3px;
+    width: 7px;
+    height: 7px;
+    margin-left: -3.5px;
+    border-radius: 50%;
+    background: var(--grad);
+    box-shadow: 0 0 12px rgba(0, 232, 150, 0.6);
+}
+
+/* Arrival flare: reaching the footer draws the closed frame's corners
+   out and brightens the landing — additive only, JS + motion gated */
+@media (prefers-reduced-motion: no-preference) {
+
+    .footer-frame > span:first-child::before,
+    .footer-frame > span:first-child::after,
+    .footer-frame > span:last-child::before,
+    .footer-frame > span:last-child::after {
+        transition: width 0.5s ease, height 0.5s ease, filter 0.5s ease;
+    }
+
+    body.js .footer.is-focal .footer-frame > span:first-child::before,
+    body.js .footer.is-focal .footer-frame > span:first-child::after,
+    body.js .footer.is-focal .footer-frame > span:last-child::before,
+    body.js .footer.is-focal .footer-frame > span:last-child::after {
+        width: 32px;
+        height: 32px;
+        filter: drop-shadow(0 0 7px rgba(0, 232, 150, 0.45));
+    }
+
+    body.js .footer.is-focal .arrival-path::after {
+        box-shadow: 0 0 20px rgba(0, 232, 150, 0.95);
+    }
+}
+
+.footer .container {
+    max-width: 1200px;
 }
 
 .footer-cta {
     margin-bottom: 4rem;
 }
 
-.footer-cta .section-title {
+.footer-cta .section-head {
     margin-bottom: 1.5rem;
 }
 
 .footer-cta .subtitle {
-    max-width: 600px;
-    margin: 0 auto 2.5rem auto;
+    margin-bottom: 2.2rem;
+}
+
+/* The frame splits: the conversation on the left, the artifact on the
+   right. */
+.footer-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 400px);
+    gap: 3.5rem;
+    align-items: center;
+}
+
+/* The draft: the old footer paragraph as a live object — a message
+   already addressed to him, FROM: You, its subject lines the four
+   reasons to write (two professional, two personality). Every subject
+   is a real mailto with the subject prefilled: picking one means the
+   conversation has already started. Plate material matches the site's
+   glossy surfaces. */
+.draft-card {
+    font-family: var(--font-mono);
+    padding: 1.7rem 1.9rem 0.9rem;
+    /* The duotone made surface: emerald-black falling to cobalt-black,
+       specular at the top corner, and the signature gradient as the
+       plate's lit edge (border-box layer under a transparent border) */
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background:
+        linear-gradient(116deg, transparent 34%, rgba(235, 248, 255, 0.05) 48%, transparent 64%) padding-box,
+        radial-gradient(120% 70% at 16% 0%, rgba(240, 246, 243, 0.07), transparent 55%) padding-box,
+        repeating-linear-gradient(180deg, rgba(235, 248, 255, 0.012) 0 1px, rgba(3, 7, 12, 0.016) 1px 2px, transparent 2px 3px) padding-box,
+        linear-gradient(165deg, #12241D 0%, #0C141B 48%, #101B33 100%) padding-box,
+        linear-gradient(150deg, rgba(0, 232, 150, 0.55), rgba(23, 36, 42, 0.3) 45%, rgba(62, 107, 255, 0.6)) border-box;
+    box-shadow:
+        inset 0 1px 0 rgba(240, 246, 243, 0.06),
+        inset 0 -2px 0 rgba(3, 7, 12, 0.35),
+        0 26px 60px -18px rgba(0, 0, 0, 0.65),
+        0 10px 34px -14px rgba(0, 232, 150, 0.12),
+        0 3px 10px rgba(0, 0, 0, 0.4);
+    /* Spatial posture: the draft stands slightly angled toward the
+       reader, a card propped on the desk rather than printed on it */
+    transform: perspective(1100px) rotateY(-5deg) rotateX(1.2deg);
+}
+
+/* Engaging the draft turns it to face you */
+@media (prefers-reduced-motion: no-preference) {
+    .draft-card {
+        transition: transform 0.55s ease, box-shadow 0.55s ease;
+    }
+
+    .draft-card:hover,
+    .draft-card:focus-within {
+        transform: perspective(1100px) rotateY(0deg) rotateX(0deg);
+        box-shadow:
+            inset 0 1px 0 rgba(240, 246, 243, 0.06),
+            inset 0 -2px 0 rgba(3, 7, 12, 0.35),
+            0 30px 70px -18px rgba(0, 0, 0, 0.7),
+            0 12px 40px -14px rgba(0, 232, 150, 0.18),
+            0 3px 10px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* Label type on the duotone plate: bright and readable — the page's
+   muted grey sinks into the tinted surface (twice-flagged by Yuvraj) */
+.draft-kicker,
+.draft-subject-label,
+.draft-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(240, 246, 243, 0.86);
+}
+
+.draft-kicker {
+    margin-bottom: 1.3rem;
+}
+
+.draft-meta {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    column-gap: 1rem;
+    row-gap: 0.5rem;
+    align-items: baseline;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.1rem;
+}
+
+.draft-value {
+    font-size: 0.85rem;
+    color: var(--text-color);
+}
+
+.draft-subject-label {
+    margin-bottom: 0.3rem;
+}
+
+.draft-subjects {
+    list-style: none;
+}
+
+.draft-subjects li + li {
+    border-top: 1px solid var(--border-color);
+}
+
+.draft-subjects a {
+    position: relative;
+    display: block;
+    padding: 0.78rem 1.6rem 0.78rem 1.5rem;
+    font-size: 0.84rem;
+    line-height: 1.5;
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+/* The send affordance: a paper plane waits at the row's end */
+.draft-subjects a::after {
+    /* alt-text form: an unmapped PUA codepoint was being appended to
+       every mailto link's accessible name (opacity 0 does not remove
+       pseudo-content from the a11y tree) */
+    content: '\f1d8';
+    content: '\f1d8' / '';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 0.2rem;
+    top: 50%;
+    transform: translate(-6px, -50%);
+    font-size: 0.72rem;
+    color: var(--primary-accent);
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.draft-subjects a:hover::after,
+.draft-subjects a:focus-visible::after {
+    opacity: 1;
+    transform: translate(0, -50%);
+}
+
+/* The caret: the site's tick, waiting in the gutter; hovering a subject
+   draws it and inks the line */
+.draft-subjects a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: -1px;
+    width: 16px;
+    height: 2px;
+    background: var(--grad);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.draft-subjects a:hover,
+.draft-subjects a:focus-visible {
+    background: var(--grad-ink);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.draft-subjects a:hover::before,
+.draft-subjects a:focus-visible::before {
+    transform: scaleX(1);
+}
+
+/* The fifth subject is an empty field with a live caret: the four above
+   are only suggestions, and the draft is the reader's to finish. Clicks
+   through to a blank draft. */
+.draft-freeform a {
+    color: rgba(240, 246, 243, 0.9);
+}
+
+.draft-caret {
+    display: inline-block;
+    width: 7px;
+    height: 0.95em;
+    margin-left: 7px;
+    vertical-align: text-bottom;
+    background: var(--grad);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .draft-caret {
+        animation: caret-blink 1.1s steps(1) infinite;
+    }
+}
+
+@keyframes caret-blink {
+
+    0%,
+    45% {
+        opacity: 1;
+    }
+
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+
+/* The channels: official marks only, handles tucked behind them (in the
+   hrefs and aria-labels). Clean bordered squares that lift and light. */
+.channel-row {
+    display: flex;
+    gap: 0.9rem;
+    margin-top: 2.4rem;
+}
+
+.channel {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-muted-color);
+    font-size: 1.1rem;
+    transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.channel:hover,
+.channel:focus-visible {
+    color: var(--primary-accent);
+    border-color: rgba(0, 232, 150, 0.45);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 26px -14px rgba(0, 0, 0, 0.7);
+}
+
+/* Where the coordinates used to be: the base is in motion. JS wanders
+   the bearing across the globe; the live readout carries the gradient */
+.base-line {
+    margin-top: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted-color);
+}
+
+.coords-live {
+    background: var(--grad-ink);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .footer-bottom {
     padding-top: 2rem;
     border-top: 1px solid var(--border-color);
-}
-
-.footer-bottom .social-links {
     display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-bottom: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
-.footer-bottom .social-links a {
-    font-size: 1.5rem;
+/* The mark closes the page the way it signs the work */
+.footer-mark {
+    height: 24px;
+    width: auto;
     color: var(--text-muted-color);
-    transition: color 0.3s ease;
-}
-
-.footer-bottom .social-links a:hover {
-    color: var(--primary-accent);
+    opacity: 0.7;
 }
 
 .footer-bottom p {
     color: var(--text-muted-color);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
 }
 
-/* ======== MODAL STYLES ======== */
+/* ======== MODALS ======== */
 #modal-container {
     position: fixed;
     top: 0;
@@ -1031,25 +3643,42 @@ section {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(10, 15, 44, 0.8);
-    backdrop-filter: blur(5px);
+    background-color: rgba(6, 9, 11, 0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
 .modal-content {
     position: relative;
-    background: rgba(16, 24, 44, 0.95);
-    backdrop-filter: blur(20px);
+    /* Same machined emerald-black material as the Work card that opened
+       it: brushed band, corner specular, emerald ground-bounce,
+       striations, body */
+    background:
+        linear-gradient(116deg, transparent 30%, rgba(150, 255, 210, 0.03) 45%, rgba(230, 255, 244, 0.04) 50%, transparent 66%),
+        radial-gradient(130% 40% at 20% 0%, rgba(240, 246, 243, 0.04), transparent 58%),
+        radial-gradient(90% 30% at 50% 106%, rgba(0, 232, 150, 0.05), transparent 70%),
+        repeating-linear-gradient(180deg, rgba(230, 255, 244, 0.012) 0 1px, rgba(2, 10, 8, 0.018) 1px 2px, transparent 2px 3px),
+        linear-gradient(180deg, #12211D 0%, #0B1218 100%);
     border-radius: 16px;
     width: 100%;
     max-width: 800px;
+    /* svh after vh: on iOS Safari 90 large-viewport-heights puts the
+       close button under the expanded toolbar (same fix as .home-section) */
     max-height: 90vh;
+    max-height: 90svh;
     overflow-y: auto;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transform: scale(0.95);
+    border: 1px solid #1B2B2C;
+    border-top-color: rgba(160, 245, 210, 0.14);
+    transform: scale(0.97);
     opacity: 0;
     transition: transform 0.3s ease, opacity 0.3s ease;
     display: none;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    box-shadow:
+        inset 0 -2px 0 rgba(2, 10, 8, 0.4),
+        inset 0 0 40px rgba(2, 10, 8, 0.16),
+        0 2px 8px rgba(0, 0, 0, 0.4),
+        0 20px 60px rgba(0, 0, 0, 0.6),
+        0 40px 110px -30px rgba(0, 232, 150, 0.16);
 }
 
 .modal-content.active {
@@ -1059,33 +3688,47 @@ section {
 }
 
 .modal-close-btn {
-    position: absolute;
+    /* Sticky inside the modal's scroll container so the close control
+       never scrolls out of view in long modals. The margins reproduce
+       the old absolute top/right 1rem offsets, and the negative bottom
+       margin (36px height + 1rem top margin) removes the button from
+       the flow so the visual band below starts at the modal top. */
+    position: sticky;
     top: 1rem;
-    right: 1rem;
-    background: none;
-    border: none;
+    margin: 1rem 1rem -52px auto;
+    display: grid;
+    place-items: center;
+    background: rgba(6, 9, 11, 0.5);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
     color: var(--text-muted-color);
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: color 0.3s;
+    transition: color 0.3s, border-color 0.3s;
     z-index: 10;
 }
 
 .modal-close-btn:hover {
     color: var(--primary-accent);
-}
-
-.modal-img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
+    border-color: var(--primary-accent);
 }
 
 .modal-content h2 {
+    padding: 0.55rem 2rem 0;
+    font-size: 1.7rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+.modal-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--primary-accent);
     padding: 2rem 2rem 0;
-    font-size: 2rem;
 }
 
 .modal-body {
@@ -1095,14 +3738,58 @@ section {
 }
 
 .modal-body h3 {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
     color: var(--primary-accent);
-    font-size: 1.2rem;
     margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.modal-body p {
+    color: var(--text-muted-color);
+    font-size: 0.95rem;
+    /* the modals are the longest-dwell reading surface; cap the measure */
+    max-width: 68ch;
+}
+
+/* Multi-paragraph modal groups (Decade One) need breathing room between
+   paragraphs; grid children otherwise carry margin 0 and butt together */
+.modal-body div p + p {
+    margin-top: 0.9rem;
 }
 
 .modal-body strong {
+    color: var(--text-color);
+    /* 500 is Inter's heaviest LOADED weight; 600 was browser-synthesized */
+    font-weight: 500;
+}
+
+.modal-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 0.5rem;
+}
+
+.modal-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
     color: var(--primary-accent);
-    font-weight: 700;
+    text-decoration: none;
+    padding: 0.6rem 1.1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.modal-link:hover {
+    border-color: var(--primary-accent);
+    background-color: rgba(0, 232, 150, 0.05);
 }
 
 /* ======== HAMBURGER MENU ======== */
@@ -1149,25 +3836,29 @@ section {
     left: 0;
     width: 100%;
     z-index: 999;
-    background: rgba(10, 15, 44, 0.97);
+    background: rgba(6, 9, 11, 0.97);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.35s ease;
+    /* visibility keeps closed-menu links out of the tab order without JS
+       (JS also sets inert); the delay lets the collapse animation finish */
+    visibility: hidden;
+    transition: max-height 0.35s ease, visibility 0s linear 0.35s;
     padding-top: 72px;
 }
 
 .mobile-nav.open {
     max-height: 450px;
+    visibility: visible;
+    transition: max-height 0.35s ease, visibility 0s;
 }
 
 .mobile-nav ul {
     list-style: none;
-    padding: 0;
+    padding: 0 0 1.5rem;
     margin: 0;
-    padding-bottom: 1.5rem;
 }
 
 .mobile-nav a {
@@ -1176,7 +3867,7 @@ section {
     color: var(--text-muted-color);
     text-decoration: none;
     font-weight: 500;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-family: var(--font-heading);
     border-bottom: 1px solid var(--border-color);
     transition: color 0.3s ease, background-color 0.3s ease, padding-left 0.3s ease;
@@ -1185,41 +3876,106 @@ section {
 .mobile-nav a:hover,
 .mobile-nav a.active {
     color: var(--primary-accent);
-    background-color: rgba(0, 245, 195, 0.05);
+    background-color: rgba(0, 232, 150, 0.05);
     padding-left: 2.5rem;
 }
 
-/* ======== RESPONSIVE DESIGN ======== */
+/* ======== RESPONSIVE ======== */
 @media (max-width: 992px) {
-    .home-grid {
-        grid-template-columns: 1fr;
-        text-align: center;
-        gap: 3rem;
+    /* Mobile keeps the sky (wash + back curtains); only the front
+       layer drops, and the credential row stacks. The canvas never
+       renders here — the CSS curtains return even if sky-live was
+       set at a wider size */
+    .au-front {
+        display: none;
     }
 
-    .home-intro-text {
-        text-align: center;
-        padding: 0 1rem;
+    body.sky-live .au-live {
+        display: none;
     }
 
-    .home-intro-text .subtitle {
-        margin: 0 auto 2rem auto;
+    body.sky-live .au-back {
+        display: block;
     }
 
-    .home-buttons {
+    /* The landings collapse to a static centred stack; beams and
+       pools leave with the spatial layout. Top padding clears the
+       fixed navbar so the h1 never renders under it */
+    .home-section {
+        flex-direction: column;
+        padding-top: 6.5rem;
+    }
+
+    .creds-field {
+        position: static;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1.5rem;
+        gap: 0.9rem;
+        /* 5.5rem bottom, not 2.5: the scroll cue holds bottom 2rem
+           (~43px tall) and the stacked third plate was running into
+           it on tall phones. Spacing clears the cue — the cue itself
+           is never removed (his standing rule) */
+        padding: 0 24px 5.5rem;
     }
 
-    .btn-secondary {
-        margin-left: 0;
+    .cred-wrap {
+        position: static;
+        width: min(100%, 340px);
     }
 
-    #headline-canvas-container {
-        margin-bottom: 1rem;
-        min-height: 10rem;
+    /* The depth engine writes inline drift transforms every frame;
+       the stacked plates must stay aligned, so pin them here */
+    .creds-field .cred-wrap {
+        transform: none !important;
+    }
+
+    .creds-field .cred-beam,
+    .creds-field .cred-pool {
+        display: none;
+    }
+
+    .creds-field .cred {
+        width: 100%;
+    }
+
+    /* Field frags leave with the hero frags; the deep ghosts, the horizon
+       vista, photo brackets, and footer frame stay, so mobile keeps the
+       layered page */
+    .section-field .frag {
+        display: none;
+    }
+
+    .expertise-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .punchcard {
+        display: none;
+    }
+
+    .about-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .about-frame-col {
+        display: none;
+    }
+
+    .convergence {
+        display: none;
+    }
+
+    .signature-mark {
+        display: none;
+    }
+
+    .section-ghost {
+        font-size: clamp(4.5rem, 14vw, 7rem);
+    }
+
+    .competency-grid {
+        grid-template-columns: 1fr;
     }
 
     .projects-grid {
@@ -1230,256 +3986,75 @@ section {
     .project-card:nth-child(4),
     .project-card:nth-child(5) {
         grid-column: 1;
-        margin: 0 1rem;
     }
 
-    /* Prevent text bleeding */
-    /* Prevent text bleeding & align right */
-    .project-link {
-        font-size: 0.9rem;
-        flex-wrap: wrap;
-        white-space: normal;
-        height: auto;
-        display: flex;
-        /* Restore flex */
-        justify-content: flex-end;
-        /* Align right */
-        text-align: right;
-        line-height: 1.4;
-        margin-top: 0.5rem;
-        width: auto;
-        /* Allow it to take necessary width */
-        margin-right: 0;
-        /* Align flush with padding */
-    }
-
-    .expertise-interactive-map {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1.5rem;
-        height: auto;
-        padding-bottom: 2rem;
-    }
-
-    .competency-node {
-        width: 100%;
-        max-width: 280px;
-        height: auto;
-        padding: 1rem;
-        aspect-ratio: auto;
-        border-radius: 12px;
-    }
-
-    .competency-details-panel {
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
-        width: 100%;
-        margin-top: 2rem;
-        padding: 0 1rem;
-    }
-
-    /* Vision Section Mobile Fixes */
-    .vision-grid {
+    .recognition-ledger {
         grid-template-columns: 1fr;
-        gap: 4rem;
-        /* Increased gap to prevent overlap */
+        gap: 1.25rem;
     }
 
-    .vision-orb-container {
-        height: 450px;
-        /* Increased height for pillars */
-        margin-bottom: 2rem;
+    .recognition-item {
+        padding: 1.8rem 1.5rem;
     }
 
-    .vision-text {
-        text-align: center;
-        margin-top: 2rem;
-        /* Ensure text clears the graphic */
-        padding: 0 1rem;
+    .ledger-engraving {
+        font-size: 2rem;
+        margin-bottom: 1rem;
     }
 
-    .vision-text p {
-        margin: 0 auto;
+    .vision-statement {
+        max-width: 20ch;
     }
 
-    /* Adjust pillars for mobile visibility */
-    .vision-pillar span {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.8rem;
-        background: rgba(16, 24, 44, 0.95);
-        /* High contrast background */
-        border: 1px solid var(--primary-accent);
-        /* Make it pop */
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    .vision-section {
+        --hzb: 22vh;
+        padding-bottom: 28vh;
     }
 
-    /* Bring pillars closer to center on small screens */
-
-    #pillar-4 {
-        top: 50%;
-        left: 85%;
+    /* minmax(0, 1fr): a bare 1fr track's minimum is the items'
+       min-content, and the draft card's unbreakable email string
+       forced the whole column past the viewport */
+    .footer-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2.75rem;
     }
 
-    .competency-lines {
-        display: none !important;
+    .draft-value {
+        overflow-wrap: anywhere;
     }
 
-    .competency-details-panel {
-        position: static;
+    /* The wandering bearing wraps as one unit, never mid-value */
+    .coords-live {
+        white-space: nowrap;
+    }
+
+    /* Full-width stacked draft lies flat */
+    .draft-card {
         transform: none;
-        width: 100%;
-        margin-top: 1rem;
-        text-align: center;
-        pointer-events: auto;
-    }
-
-    /* ** FINAL BUG FIX: Vision Section Mobile Layout ** */
-    .vision-grid {
-        grid-template-columns: 1fr;
-        gap: 3rem;
-    }
-
-    .vision-orb-container {
-        display: block;
-        position: relative;
-        padding-top: 0;
-        width: 100%;
-        max-width: 350px;
-        margin: 0 auto;
-    }
-
-    .vision-orb-container::before {
-        content: '';
-        position: absolute;
-        left: 50%;
-        top: 0;
-        bottom: 0;
-        width: 2px;
-        background-color: var(--border-color);
-        transform: translateX(-50%);
-    }
-
-    .vision-lines,
-    .vision-orb {
-        display: none;
-    }
-
-    .vision-pillar {
-        position: relative;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80%;
-        margin-bottom: 4rem;
-        /* Increased spacing */
-        text-align: center;
-        opacity: 0;
-        animation: fadeInPillar 0.5s ease-out forwards;
-        transition: transform 0.2s ease-out;
-        /* Added for tap effect */
-    }
-
-    .vision-pillar::before {
-        content: '';
-        position: absolute;
-        left: -40px;
-        top: 50%;
-        width: 15px;
-        height: 15px;
-        background-color: var(--primary-accent);
-        border-radius: 50%;
-        transform: translateY(-50%);
-    }
-
-    .vision-pillar:nth-child(even)::before {
-        left: auto;
-        right: -40px;
-    }
-
-    #pillar-1 {
-        animation-delay: 0.1s;
-    }
-
-    #pillar-2 {
-        animation-delay: 0.2s;
-    }
-
-    #pillar-3 {
-        animation-delay: 0.3s;
-    }
-
-    #pillar-4 {
-        animation-delay: 0.4s;
-    }
-
-    @keyframes fadeInPillar {
-        from {
-            opacity: 0;
-            transform: translateX(-50%) translateY(20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-    }
-
-    .vision-pillar:active {
-        transform: translateX(-50%) scale(1.05);
-        /* Subtle pop effect on tap */
-    }
-
-    .vision-text {
-        text-align: center;
-        padding: 2rem !important;
-    }
-
-    .vision-card::before {
-        width: 100%;
-        height: 4px;
-        background: linear-gradient(to right, var(--primary-accent), var(--secondary-accent));
-    }
-
-    .vision-text p {
-        margin: 0 auto 1.5rem;
-    }
-
-    /* Reset pillar positioning for vertical stack */
-    #pillar-1,
-    #pillar-2,
-    #pillar-3,
-    #pillar-4 {
-        top: auto !important;
-        left: 50% !important;
-        right: auto !important;
-        transform: translateX(-50%) !important;
-        margin-bottom: 2rem;
-        position: relative;
-    }
-
-    /* Ensure pillars are visible and stacked */
-    .vision-pillar {
-        display: block;
-        width: 80%;
-        max-width: 300px;
     }
 }
 
 @media (max-width: 768px) {
-    body {
+    .navbar .container {
+        padding: 0 1.5rem;
+    }
+
+    .cursor {
+        display: none !important;
+    }
+
+    /* Narrow fine-pointer windows: restore the native cursor system.
+       Interactives get pointer back explicitly — a bare `cursor: auto`
+       on the grouped selector out-specified every component's
+       `cursor: pointer` and showed the arrow on links and cards */
+    body.custom-cursor {
         cursor: auto;
     }
 
-    .navbar {
-        position: fixed;
-        width: 100%;
-    }
-
-    .cursor,
-    .cursor-follower {
-        display: none;
+    body.custom-cursor a,
+    body.custom-cursor button,
+    body.custom-cursor [role="button"] {
+        cursor: pointer;
     }
 
     .nav-menu {
@@ -1494,12 +4069,8 @@ section {
         display: block;
     }
 
-    .projects-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .about-narrative-grid {
-        grid-template-columns: 1fr;
+    section {
+        padding: 5rem 0;
     }
 
     .featured-moment-strip {
@@ -1509,19 +4080,80 @@ section {
         gap: 1.5rem;
     }
 
-    .featured-moment-photo {
-        width: 110px;
-        height: 110px;
+    .featured-frame {
+        width: min(240px, 75vw);
+        margin: 0 auto;
     }
 
-    .recognition-item:hover {
-        transform: translateX(0);
+    .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
     }
+
+    .footer-frame {
+        padding: 1.75rem 1.25rem;
+    }
+
+    .draft-card {
+        padding: 1.4rem 1.3rem 0.7rem;
+    }
+
 }
 
-/* Apply hover effects only on devices that can hover */
-@media (hover: hover) {
-    .vision-pillar:hover {
-        transform: translateX(-50%) scale(1.1);
+/* ======== REDUCED MOTION ======== */
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    body.js .reveal {
+        opacity: 1;
+        transform: none;
+    }
+
+    body.js .hero > * {
+        opacity: 1;
+        transform: none;
+        animation: none;
+    }
+
+    /* The landings rest fully formed; beams and pools keep their
+       centring translate (transform: none would shift them) */
+    body.js .creds-field .cred {
+        opacity: 1;
+        transform: none;
+        animation: none;
+    }
+
+    body.js .creds-field .cred-beam,
+    body.js .creds-field .cred-pool,
+    body.js .creds-field .cred::before,
+    body.js .creds-field .cred-catch {
+        animation: none;
+    }
+
+    /* The sky rests at full form: entrance fade killed, curtains keep
+       their skew (transform: none would flatten the rays) */
+    body.js .hero-aurora {
+        opacity: 1;
+        animation: none;
+    }
+
+    .au-curtain {
+        animation: none;
+        opacity: 1;
+    }
+
+    .scroll-indicator {
+        animation: none;
     }
 }
