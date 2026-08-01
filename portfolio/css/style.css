@@ -686,6 +686,236 @@ button:focus-visible,
     border-radius: 10px;
 }
 
+/* THE LIVE EDGE (hover border-light on pressable surfaces: hero
+   buttons, footer Calendly, the five Work cards): on hover the
+   border ring lights with the duotone loop and a bright glint laps
+   the surface while hovered. Rest is the plain machined border. The
+   ring is a decorative .btn-edge span masked with the plates'
+   composite trick; the motion is a compositor transform turning an
+   oversized gradient disc inside it. TWO ENGINE RULES: (1) never
+   animate the gradient's angle via a registered @property — Chrome
+   recalculates the angle but never repaints the conic
+   (paint-invalidation gap), which shipped a frozen ring; transforms
+   always repaint. (2) never put the spatial cast (filter or
+   box-shadow) on the masked span — the mask erases shadow ink
+   (filter-then-mask order), which shipped an invisible aura; casts
+   live on unmasked carriers (.btn-live-edge::before, the cards'
+   repurposed ::after). Reduced motion and older browsers rest at
+   rotate(0): the static lit ring on hover, glint parked on the top
+   arris. Face and label never move. */
+@supports ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
+    .btn-live-edge {
+        position: relative;
+    }
+
+    .btn-edge {
+        position: absolute;
+        inset: -1px;
+        border-radius: 11px;
+        /* Ring spans the 1px border plus a hair of face either side */
+        padding: 2px;
+        overflow: hidden;
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        /* The duotone lives HERE, static: emerald parked on the left
+           edge, cobalt on the right (the anchor grammar, held), only
+           the two theme accents interpolating directly so midtones
+           are exactly what --grad passes through. The light moves,
+           the colour does not */
+        background: conic-gradient(from 90deg,
+            var(--secondary-accent) 0turn,
+            var(--primary-accent) 0.5turn,
+            var(--secondary-accent) 1turn);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    /* The spatial cast: the lit ring throws its light off the arris
+       into space, emerald leftward, cobalt rightward, hugging the
+       control's shape. Lives on an UNMASKED pseudo of the button:
+       shadow ink on the masked span itself would be erased by the
+       mask (engine rule 2 above) */
+    .btn-live-edge::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 10px;
+        box-shadow:
+            -6px 0 14px rgba(0, 232, 150, 0.30),
+            6px 0 14px rgba(62, 107, 255, 0.32);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .btn-live-edge:hover::before,
+    .btn-live-edge:focus-visible::before {
+        opacity: 1;
+    }
+
+    /* The ground pool: the circulating light lands beneath the
+       button, the Landings' beam-and-pool grammar at control scale.
+       Static blur (never animated), dual-pole like the aura */
+    .btn-live-edge::after {
+        content: '';
+        position: absolute;
+        left: 8%;
+        right: 8%;
+        bottom: -16px;
+        height: 18px;
+        background:
+            radial-gradient(60% 100% at 30% 50%, rgba(0, 232, 150, 0.22), transparent 70%),
+            radial-gradient(60% 100% at 70% 50%, rgba(62, 107, 255, 0.24), transparent 70%);
+        filter: blur(6px);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .btn-live-edge:hover::after,
+    .btn-live-edge:focus-visible::after {
+        opacity: 1;
+    }
+
+    .btn-edge::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        /* Square disc large enough to cover the ring at any rotation */
+        width: 340%;
+        aspect-ratio: 1;
+        transform: translate(-50%, -50%) rotate(0deg);
+        /* The disc carries ONLY the light: a translucent mint glint
+           arc plus its dim counter-arc opposite. Sweeping over the
+           static duotone beneath, it BRIGHTENS the local colour, so
+           the glint flares emerald over the left edge and cobalt
+           over the right, sampling the border's own gradient as it
+           travels. Rest parks the glint on the top arris */
+        background: conic-gradient(from 180deg,
+            rgba(234, 255, 247, 0.20) 0turn,
+            rgba(255, 255, 255, 0) 0.06turn,
+            rgba(255, 255, 255, 0) 0.4turn,
+            rgba(234, 255, 247, 0.72) 0.5turn,
+            rgba(255, 255, 255, 0) 0.6turn,
+            rgba(255, 255, 255, 0) 0.94turn,
+            rgba(234, 255, 247, 0.20) 1turn);
+    }
+
+    .btn-live-edge:hover .btn-edge,
+    .btn-live-edge:focus-visible .btn-edge {
+        opacity: 1;
+    }
+
+    /* PERSONALISED VARIANTS. Same formula, each element's own light. */
+
+    /* The primary's face already carries the gradient, so its ring is
+       that material's LIT EDGE: the two accents lifted toward the
+       site light, never re-saturated (a second full-strength gradient
+       against the gradient face would cancel out) */
+    .btn-primary.btn-live-edge .btn-edge {
+        background: conic-gradient(from 90deg,
+            rgba(154, 178, 255, 0.95) 0turn,
+            rgba(148, 255, 214, 0.95) 0.5turn,
+            rgba(154, 178, 255, 0.95) 1turn);
+    }
+
+    /* The footer control sits at the page's cobalt terminus: its cast
+       and pool weight toward cobalt (the draft plate's ambience); the
+       ring keeps the full anchor grammar */
+    .edge-cobalt::before {
+        box-shadow:
+            -6px 0 14px rgba(0, 232, 150, 0.20),
+            6px 0 15px rgba(62, 107, 255, 0.42);
+    }
+
+    .edge-cobalt.btn-live-edge::after {
+        background:
+            radial-gradient(60% 100% at 30% 50%, rgba(0, 232, 150, 0.14), transparent 70%),
+            radial-gradient(60% 100% at 70% 50%, rgba(62, 107, 255, 0.34), transparent 70%);
+    }
+
+    /* THE QUIET CUT (Work cards): the formula at card scale. The card
+       clips at its edge (overflow hidden), so the ring sits at inset 0
+       and its cast falls INWARD onto the machined face; outward depth
+       stays with the card's own hover lift and emerald mount bloom,
+       so no ground pool either. Softer accents, slower lap */
+    .card-edge {
+        inset: 0;
+        border-radius: 14px;
+        z-index: 2;
+        background: conic-gradient(from 90deg,
+            rgba(62, 107, 255, 0.55) 0turn,
+            rgba(0, 232, 150, 0.55) 0.5turn,
+            rgba(62, 107, 255, 0.55) 1turn);
+    }
+
+    .card-edge::before {
+        background: conic-gradient(from 180deg,
+            rgba(234, 255, 247, 0.12) 0turn,
+            rgba(255, 255, 255, 0) 0.06turn,
+            rgba(255, 255, 255, 0) 0.4turn,
+            rgba(234, 255, 247, 0.5) 0.5turn,
+            rgba(255, 255, 255, 0) 0.6turn,
+            rgba(255, 255, 255, 0) 0.94turn,
+            rgba(234, 255, 247, 0.12) 1turn);
+    }
+
+    .project-card:hover .card-edge,
+    .project-card:has(.project-link:focus-visible) .card-edge {
+        opacity: 1;
+    }
+
+    /* On live-edge cards the old hover top-strip ::after is
+       REPURPOSED as the inward cast: the ring's light falling onto
+       the machined face (the card clips at its edge, and shadow ink
+       on the masked span would be erased by the mask — engine rule 2
+       — so the cast lives on this unmasked pseudo and falls inward).
+       It now spans the full face above the z-1 click overlay, so
+       pointer-events must stay none. Rest opacity 0 and the hover
+       opacity 1 come from the strip's existing rules */
+    .project-card:has(.card-edge)::after {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: auto;
+        background: none;
+        border-radius: 14px;
+        pointer-events: none;
+        box-shadow:
+            inset 10px 0 22px -12px rgba(0, 232, 150, 0.22),
+            inset -10px 0 22px -12px rgba(62, 107, 255, 0.24);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .btn-edge::before {
+            animation: edge-orbit 3s linear infinite;
+            animation-play-state: paused;
+        }
+
+        /* Card scale: the same angular speed would race around the
+           longer perimeter */
+        .card-edge::before {
+            animation-duration: 5s;
+        }
+
+        .btn-live-edge:hover .btn-edge::before,
+        .btn-live-edge:focus-visible .btn-edge::before,
+        .project-card:hover .card-edge::before,
+        .project-card:has(.project-link:focus-visible) .card-edge::before {
+            animation-play-state: running;
+        }
+
+        @keyframes edge-orbit {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    }
+}
+
 /* Hero entrance: one orchestrated load moment (JS-gated so no-JS stays visible) */
 body.js .hero > * {
     opacity: 0;
