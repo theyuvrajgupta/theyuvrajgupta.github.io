@@ -1,6 +1,6 @@
-# Aurora Field
+# Portfolio
 
-**The portfolio of Yuvraj Gupta — Product & Platform Leader.**
+**Yuvraj Gupta — Product & Platform Leader.**
 
 Ten years of systems that could not fail, now leading what organisations build with AI. MBA (Dean's Honours List), Nanyang Business School.
 
